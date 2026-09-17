@@ -1,0 +1,4171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+<meta name="description" content="Snake Unbound: Ultra Evolution — a rogue-lite arcade snake with DNA mutations, rival AI, boss battles and dimensional layers.">
+<title>Snake Unbound: Ultra Evolution</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%230b1018'/%3E%3Cpath d='M5 21c5 0 5-6 10-6s5 6 12 6' stroke='%2334d399' stroke-width='3.4' fill='none' stroke-linecap='round'/%3E%3Cpath d='M5 13c5 0 5-6 10-6s5 6 12 6' stroke='%2322d3ee' stroke-width='3.4' fill='none' stroke-linecap='round'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#070a10;
+  --bg-2:#0b1018;
+  --surface:rgba(20,26,38,0.92);
+  --surface-solid:#141a26;
+  --surface-hi:rgba(32,41,58,0.96);
+  --line:rgba(148,163,184,0.14);
+  --line-hi:rgba(148,163,184,0.28);
+
+  --emerald:#34d399;
+  --cyan:#22d3ee;
+  --amber:#fbbf24;
+  --violet:#a78bfa;
+  --rose:#fb7185;
+  --blue:#60a5fa;
+
+  --text:#eef2f7;
+  --text-2:#a3adbd;
+  --text-3:#6b7689;
+
+  --r-lg:20px;
+  --r-md:14px;
+  --r-sm:10px;
+  --shadow:0 24px 60px rgba(0,0,0,.55);
+}
+
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+html,body{height:100%}
+body{
+  font-family:'Plus Jakarta Sans',system-ui,-apple-system,'Segoe UI',sans-serif;
+  background:
+    radial-gradient(1200px 700px at 50% -15%, #16203200 0%, #0000 70%),
+    radial-gradient(900px 600px at 12% 8%, rgba(52,211,153,.07), transparent 60%),
+    radial-gradient(900px 600px at 88% 92%, rgba(96,165,250,.07), transparent 60%),
+    var(--bg);
+  color:var(--text);
+  min-height:100vh;
+  display:flex;
+  align-items:flex-start;
+  justify-content:center;
+  padding:16px;
+  overflow-x:hidden;
+  user-select:none;-webkit-user-select:none;
+  touch-action:manipulation;
+}
+
+.app{width:100%;max-width:1220px;display:flex;flex-direction:column;gap:14px;margin:auto}
+
+/* ---------- Top bar ---------- */
+.topbar{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
+.brand{display:flex;align-items:center;gap:12px;min-width:0}
+.brand-mark{
+  width:42px;height:42px;border-radius:13px;flex:none;
+  background:linear-gradient(145deg,#34d399,#0ea5e9);
+  display:grid;place-items:center;
+  box-shadow:0 10px 26px rgba(52,211,153,.3), inset 0 1px 0 rgba(255,255,255,.35);
+}
+.brand-mark svg{width:24px;height:24px}
+.brand-text{min-width:0}
+.brand-title{font-size:1.02rem;font-weight:800;letter-spacing:-.02em;line-height:1.15;white-space:nowrap}
+.brand-sub{font-size:.66rem;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:var(--text-3)}
+.topbar-actions{display:flex;gap:8px;align-items:center}
+
+.icon-btn{
+  width:38px;height:38px;border-radius:12px;display:grid;place-items:center;cursor:pointer;
+  background:var(--surface);border:1px solid var(--line);color:var(--text-2);
+  transition:.16s ease;font-size:.95rem;
+}
+.icon-btn:hover{border-color:var(--line-hi);color:var(--text);transform:translateY(-1px)}
+.icon-btn svg{width:18px;height:18px}
+.icon-btn.off{color:var(--text-3)}
+
+/* ---------- Layout ---------- */
+.layout{display:grid;grid-template-columns:230px minmax(0,1fr) 230px;gap:14px;align-items:start}
+@media (max-width:980px){
+  .layout{grid-template-columns:minmax(0,1fr)}
+  .rail{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px;align-items:start}
+  .rail-left{order:1}
+  .stage-col{order:2}
+  .rail-right{order:3}
+  .rail-left .card{padding:10px 12px}
+  .rail-left .stat-val.big{font-size:1.5rem}
+  .mut-list{max-height:150px}
+}
+@media (max-width:520px){
+  body{padding:10px}
+  .rail-left{grid-template-columns:1fr 1fr}
+  .rail-left .card:nth-child(3){grid-column:1/-1}
+  .brand-title{font-size:.94rem}
+}
+
+.card{
+  background:var(--surface);border:1px solid var(--line);border-radius:var(--r-md);
+  padding:13px 14px;box-shadow:0 10px 30px rgba(0,0,0,.28);
+}
+.card + .card{margin-top:10px}
+@media (max-width:980px){.card + .card{margin-top:0}}
+
+.card-label{font-size:.6rem;font-weight:800;letter-spacing:.16em;text-transform:uppercase;color:var(--text-3);margin-bottom:8px;display:flex;align-items:center;justify-content:space-between;gap:6px}
+
+.stat-row{display:flex;align-items:baseline;justify-content:space-between;gap:10px}
+.stat-row + .stat-row{margin-top:7px}
+.stat-name{font-size:.74rem;font-weight:700;color:var(--text-2)}
+.stat-val{font-size:1.02rem;font-weight:800;letter-spacing:-.02em;font-variant-numeric:tabular-nums}
+.stat-val.big{font-size:1.9rem;line-height:1.05}
+.stat-val.em{color:var(--emerald)}
+.stat-val.am{color:var(--amber)}
+
+.meter{height:6px;border-radius:99px;background:rgba(148,163,184,.14);overflow:hidden;margin-top:8px}
+.meter > i{display:block;height:100%;width:0%;border-radius:99px;transition:width .12s linear}
+.meter.xp > i{background:linear-gradient(90deg,#22d3ee,#60a5fa)}
+.meter.combo > i{background:linear-gradient(90deg,#fbbf24,#fb7185)}
+
+.combo-head{display:flex;align-items:baseline;justify-content:space-between}
+.combo-x{font-size:1.25rem;font-weight:800;color:var(--amber);transition:transform .12s ease;transform-origin:left center}
+.combo-x.pump{transform:scale(1.18)}
+
+/* Mutation list */
+.mut-list{display:flex;flex-direction:column;gap:6px;max-height:260px;overflow:auto}
+.mut-row{display:flex;align-items:center;gap:8px;padding:6px 8px;border-radius:var(--r-sm);background:rgba(148,163,184,.06);border:1px solid var(--line)}
+.mut-row .ic{width:22px;height:22px;border-radius:7px;display:grid;place-items:center;font-size:.8rem;flex:none;background:rgba(255,255,255,.06)}
+.mut-row .nm{font-size:.68rem;font-weight:800;letter-spacing:.02em;line-height:1.2;flex:1;min-width:0;text-overflow:ellipsis;overflow:hidden;white-space:nowrap}
+.mut-row .tier{font-size:.6rem;font-weight:800;color:var(--text-3);letter-spacing:.06em}
+.empty-note{font-size:.7rem;font-weight:600;color:var(--text-3);line-height:1.5}
+
+/* Key legend */
+.keys{display:flex;flex-direction:column;gap:6px}
+.key-row{display:flex;align-items:center;gap:8px;font-size:.68rem;font-weight:700;color:var(--text-2)}
+kbd{
+  font-family:inherit;font-size:.62rem;font-weight:800;padding:3px 6px;border-radius:6px;
+  background:rgba(148,163,184,.12);border:1px solid var(--line-hi);color:var(--text);min-width:24px;text-align:center;
+}
+.key-row .desc{flex:1}
+.key-row.locked{opacity:.4}
+
+/* ---------- Stage ---------- */
+.stage-col{display:flex;flex-direction:column;gap:10px;min-width:0}
+
+.statusline{display:flex;gap:8px;align-items:center;flex-wrap:wrap;min-height:30px}
+.statusline:empty{min-height:0;display:none}
+.badge{
+  display:inline-flex;align-items:center;gap:6px;padding:5px 10px;border-radius:99px;
+  font-size:.66rem;font-weight:800;letter-spacing:.04em;
+  background:var(--surface);border:1px solid var(--line);
+  animation:pop .18s cubic-bezier(.18,.89,.32,1.28);
+}
+@keyframes pop{from{transform:scale(.82);opacity:0}to{transform:scale(1);opacity:1}}
+.badge .dot{width:6px;height:6px;border-radius:99px;background:currentColor;box-shadow:0 0 8px currentColor}
+
+.boss-bar{
+  display:none;align-items:center;gap:10px;padding:9px 12px;border-radius:var(--r-md);
+  background:var(--surface);border:1px solid rgba(251,113,133,.3);
+}
+.boss-bar.on{display:flex;animation:pop .25s ease}
+.boss-bar .nm{font-size:.68rem;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:var(--rose);white-space:nowrap}
+.boss-bar .track{flex:1;height:8px;border-radius:99px;background:rgba(148,163,184,.14);overflow:hidden}
+.boss-bar .track > i{display:block;height:100%;width:100%;border-radius:99px;background:linear-gradient(90deg,#fb7185,#f59e0b);transition:width .2s ease}
+.boss-bar .hp{font-size:.66rem;font-weight:800;font-variant-numeric:tabular-nums;color:var(--text-2);min-width:52px;text-align:right}
+
+.stage{
+  position:relative;width:100%;aspect-ratio:1/1;border-radius:var(--r-lg);overflow:hidden;
+  background:#05070c;border:1px solid var(--line);box-shadow:var(--shadow);
+}
+.stage canvas{display:block;width:100%;height:100%}
+
+/* ---------- Overlays ---------- */
+.overlay{
+  position:absolute;inset:0;z-index:12;display:flex;flex-direction:column;align-items:center;justify-content:center;
+  gap:14px;padding:clamp(16px,4vw,34px);text-align:center;
+  background:linear-gradient(180deg,rgba(7,10,16,.9),rgba(7,10,16,.96));
+  opacity:0;visibility:hidden;pointer-events:none;
+  transition:opacity .2s ease, visibility 0s linear .2s;overflow:auto;
+}
+.overlay.on{
+  opacity:1;visibility:visible;pointer-events:auto;
+  backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);
+  transition:opacity .2s ease, visibility 0s linear 0s;
+}
+.overlay h1{
+  font-size:clamp(1.5rem,4.6vw,2.15rem);font-weight:800;letter-spacing:-.03em;line-height:1.05;
+  background:linear-gradient(140deg,#fff 20%,var(--emerald));-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;
+}
+.overlay h1.warn{background:linear-gradient(140deg,#fff 20%,var(--rose));-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
+.overlay h2{font-size:1.02rem;font-weight:800;letter-spacing:-.01em}
+.eyebrow{font-size:.64rem;font-weight:800;letter-spacing:.24em;text-transform:uppercase;color:var(--text-3)}
+.lede{font-size:.8rem;font-weight:600;color:var(--text-2);max-width:44ch;line-height:1.55}
+
+.modes{display:flex;flex-direction:column;gap:9px;width:100%;max-width:330px}
+.mode-btn{
+  display:flex;align-items:center;gap:12px;width:100%;padding:12px 14px;border-radius:var(--r-md);cursor:pointer;text-align:left;
+  background:var(--surface-hi);border:1px solid var(--line);color:var(--text);transition:.16s ease;font-family:inherit;
+}
+.mode-btn:hover{transform:translateY(-2px);border-color:var(--line-hi);background:rgba(44,56,78,.9)}
+.mode-btn .ic{width:36px;height:36px;border-radius:11px;display:grid;place-items:center;font-size:1.05rem;flex:none;background:rgba(255,255,255,.07)}
+.mode-btn .tt{display:block;font-size:.82rem;font-weight:800;letter-spacing:-.01em}
+.mode-btn .ds{display:block;font-size:.66rem;font-weight:600;color:var(--text-3);margin-top:2px;line-height:1.35}
+.mode-btn.primary{background:linear-gradient(135deg,#34d399,#10b981);border-color:transparent;color:#04110c;box-shadow:0 12px 30px rgba(52,211,153,.25)}
+.mode-btn.primary .ds{color:rgba(4,17,12,.7)}
+.mode-btn.primary .ic{background:rgba(0,0,0,.14)}
+
+.btn{
+  padding:11px 20px;border-radius:12px;font-family:inherit;font-size:.78rem;font-weight:800;letter-spacing:.02em;
+  cursor:pointer;border:1px solid transparent;transition:.16s ease;display:inline-flex;align-items:center;gap:8px;justify-content:center;
+}
+.btn-primary{background:var(--emerald);color:#04110c;box-shadow:0 10px 26px rgba(52,211,153,.24)}
+.btn-primary:hover{filter:brightness(1.07);transform:translateY(-2px)}
+.btn-ghost{background:var(--surface-hi);border-color:var(--line);color:var(--text)}
+.btn-ghost:hover{border-color:var(--line-hi);transform:translateY(-2px)}
+.btn-row{display:flex;gap:9px;flex-wrap:wrap;justify-content:center}
+
+.pill-row{display:flex;gap:7px;flex-wrap:wrap;justify-content:center}
+.pill{
+  padding:6px 12px;border-radius:99px;font-size:.66rem;font-weight:800;cursor:pointer;
+  background:var(--surface-hi);border:1px solid var(--line);color:var(--text-3);transition:.15s ease;font-family:inherit;
+}
+.pill:hover{color:var(--text)}
+.pill.on{background:var(--text);color:#0b1018;border-color:var(--text)}
+
+/* Level-up cards */
+.mut-cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px;width:100%;max-width:620px}
+.mut-card{
+  position:relative;padding:14px 13px;border-radius:var(--r-md);cursor:pointer;text-align:left;font-family:inherit;color:var(--text);
+  background:var(--surface-hi);border:1px solid var(--line);transition:.16s ease;overflow:hidden;
+}
+.mut-card:hover{transform:translateY(-3px);border-color:var(--line-hi)}
+.mut-card::after{content:"";position:absolute;inset:0;background:radial-gradient(120px 80px at 80% 0%,var(--tint,transparent),transparent 70%);opacity:.5;pointer-events:none}
+.mut-card .ic{width:34px;height:34px;border-radius:11px;display:grid;place-items:center;font-size:1rem;background:rgba(255,255,255,.07);margin-bottom:9px}
+.mut-card .nm{font-size:.78rem;font-weight:800;letter-spacing:-.01em;line-height:1.2}
+.mut-card .tg{font-size:.58rem;font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:var(--text-3);margin-top:3px}
+.mut-card .ds{font-size:.68rem;font-weight:600;color:var(--text-2);line-height:1.45;margin-top:7px}
+.mut-card .num{position:absolute;top:10px;right:11px;font-size:.6rem;font-weight:800;color:var(--text-3);border:1px solid var(--line);border-radius:6px;padding:2px 6px}
+
+/* Result stats */
+.result-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(104px,1fr));gap:9px;width:100%;max-width:440px}
+.res{background:var(--surface-hi);border:1px solid var(--line);border-radius:var(--r-md);padding:11px 8px}
+.res .v{font-size:1.18rem;font-weight:800;color:var(--emerald);font-variant-numeric:tabular-nums}
+.res .l{font-size:.58rem;font-weight:800;letter-spacing:.11em;text-transform:uppercase;color:var(--text-3);margin-top:3px}
+
+.ach-strip{display:flex;gap:7px;flex-wrap:wrap;justify-content:center;max-width:520px}
+.ach{display:inline-flex;align-items:center;gap:6px;padding:5px 10px;border-radius:99px;font-size:.64rem;font-weight:800;background:rgba(251,191,36,.12);border:1px solid rgba(251,191,36,.35);color:var(--amber)}
+.ach.locked{background:rgba(148,163,184,.07);border-color:var(--line);color:var(--text-3)}
+
+.help-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(215px,1fr));gap:10px;width:100%;max-width:660px;text-align:left}
+.help-box{background:var(--surface-hi);border:1px solid var(--line);border-radius:var(--r-md);padding:11px 12px}
+.help-box h3{font-size:.66rem;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:var(--text-3);margin-bottom:7px}
+.help-box p{font-size:.68rem;font-weight:600;color:var(--text-2);line-height:1.5}
+.help-box p + p{margin-top:5px}
+.help-box b{color:var(--text);font-weight:800}
+
+/* Mobile controls */
+.touch-deck{display:none;gap:8px;justify-content:center;flex-wrap:wrap}
+.touch-deck.on{display:flex}
+.tbtn{
+  flex:1;min-width:66px;max-width:120px;padding:11px 8px;border-radius:var(--r-md);font-family:inherit;cursor:pointer;
+  background:var(--surface);border:1px solid var(--line);color:var(--text);
+  display:flex;flex-direction:column;align-items:center;gap:3px;transition:.12s ease;
+}
+.tbtn:active{transform:scale(.95);background:var(--surface-hi)}
+.tbtn .ti{font-size:1rem;line-height:1}
+.tbtn .tl{font-size:.55rem;font-weight:800;letter-spacing:.09em;text-transform:uppercase;color:var(--text-3)}
+.tbtn[disabled]{opacity:.35}
+
+.hint{font-size:.66rem;font-weight:700;color:var(--text-3);text-align:center;line-height:1.5}
+.hint b{color:var(--text-2)}
+
+/* Toasts */
+.toasts{position:fixed;left:50%;transform:translateX(-50%);bottom:18px;z-index:60;display:flex;flex-direction:column;gap:7px;align-items:center;pointer-events:none}
+.toast{
+  padding:9px 15px;border-radius:99px;font-size:.7rem;font-weight:800;letter-spacing:.02em;
+  background:rgba(20,26,38,.95);border:1px solid rgba(251,191,36,.4);color:var(--amber);
+  box-shadow:0 12px 30px rgba(0,0,0,.45);animation:toastIn .3s cubic-bezier(.18,.89,.32,1.28);
+  display:flex;align-items:center;gap:8px;
+}
+@keyframes toastIn{from{transform:translateY(14px);opacity:0}to{transform:translateY(0);opacity:1}}
+.toast.out{opacity:0;transform:translateY(-8px);transition:.35s ease}
+
+::-webkit-scrollbar{width:7px;height:7px}
+::-webkit-scrollbar-thumb{background:rgba(148,163,184,.22);border-radius:99px}
+::-webkit-scrollbar-track{background:transparent}
+
+@media (prefers-reduced-motion:reduce){*{animation-duration:.01ms!important;transition-duration:.01ms!important}}
+</style>
+</head>
+<body>
+<div class="app">
+
+  <!-- ===== Top bar ===== -->
+  <header class="topbar">
+    <div class="brand">
+      <div class="brand-mark">
+        <svg viewBox="0 0 24 24" fill="none" stroke="#04110c" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M4 17c4 0 4-5 8-5s4 5 8 5"/><path d="M4 12c4 0 4-5 8-5s4 5 8 5"/>
+        </svg>
+      </div>
+      <div class="brand-text">
+        <div class="brand-title">Snake Unbound</div>
+        <div class="brand-sub">Ultra Evolution</div>
+      </div>
+    </div>
+    <div class="topbar-actions">
+      <button class="icon-btn" id="btnHelp" title="Codex (H)">?</button>
+      <button class="icon-btn" id="btnSound" title="Sound (M)">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 5 6 9H2v6h4l5 4V5z"/><path d="M15.5 8.5a5 5 0 0 1 0 7"/><path d="M19 5a9 9 0 0 1 0 14"/></svg>
+      </button>
+      <button class="icon-btn" id="btnPause" title="Pause (P)">
+        <svg viewBox="0 0 24 24" fill="currentColor"><rect x="6" y="5" width="4" height="14" rx="1"/><rect x="14" y="5" width="4" height="14" rx="1"/></svg>
+      </button>
+    </div>
+  </header>
+
+  <!-- ===== Layout ===== -->
+  <div class="layout">
+
+    <!-- Left rail -->
+    <div class="rail rail-left">
+      <div class="card">
+        <div class="card-label">Score <span id="modeTag" style="color:var(--text-2)">Classic</span></div>
+        <div class="stat-val big" id="uiScore">0</div>
+        <div class="stat-row" style="margin-top:9px">
+          <span class="stat-name">Personal best</span><span class="stat-val am" id="uiHigh">0</span>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-label">Combo</div>
+        <div class="combo-head">
+          <span class="combo-x" id="uiCombo">1.0×</span>
+          <span class="stat-name" id="uiComboNote">build a chain</span>
+        </div>
+        <div class="meter combo"><i id="uiComboBar"></i></div>
+      </div>
+
+      <div class="card">
+        <div class="card-label">Biomass <span id="uiLevel" style="color:var(--cyan)">LV 1</span></div>
+        <div class="stat-row"><span class="stat-name">DNA progress</span><span class="stat-val" id="uiXp">0/4</span></div>
+        <div class="meter xp"><i id="uiXpBar"></i></div>
+        <div class="stat-row" style="margin-top:10px"><span class="stat-name">Length</span><span class="stat-val" id="uiLength">3</span></div>
+        <div class="stat-row"><span class="stat-name">Armor</span><span class="stat-val em" id="uiArmor">0</span></div>
+      </div>
+    </div>
+
+    <!-- Stage -->
+    <div class="stage-col">
+      <div class="statusline" id="statusLine"></div>
+
+      <div class="boss-bar" id="bossBar">
+        <span class="nm" id="bossName">BOSS</span>
+        <span class="track"><i id="bossFill"></i></span>
+        <span class="hp" id="bossHp">0/0</span>
+      </div>
+
+      <div class="stage" id="stage">
+        <canvas id="game"></canvas>
+
+        <!-- Menu -->
+        <div class="overlay on" id="ovMenu">
+          <div class="eyebrow">Rogue-lite arcade</div>
+          <h1>SNAKE UNBOUND</h1>
+          <p class="lede">Evolve mid-run. Mutate your DNA, shed your tail into turrets, phase between dimensional floors and break the bosses that eat the arena.</p>
+          <div class="modes">
+            <button class="mode-btn primary" data-mode="classic">
+              <span class="ic">🧬</span>
+              <span><span class="tt">Classic Evolution</span><span class="ds">Pure snake core loop plus in-run DNA mutations</span></span>
+            </button>
+            <button class="mode-btn" data-mode="frenzy">
+              <span class="ic">⚡</span>
+              <span><span class="tt">Frenzy Run</span><span class="ds">High speed, dense spawns, rival AI snakes hunting you</span></span>
+            </button>
+            <button class="mode-btn" data-mode="dimensional">
+              <span class="ic">🌀</span>
+              <span><span class="tt">Dimensional Shift</span><span class="ds">Two stacked sub-grids — shift floors to escape any trap</span></span>
+            </button>
+          </div>
+          <div>
+            <div class="eyebrow" style="margin-bottom:7px">Scale pattern</div>
+            <div class="pill-row" id="skinRow"></div>
+          </div>
+          <div class="pill-row" style="margin-top:2px">
+            <button class="pill" id="btnCodex">Codex &amp; controls</button>
+            <button class="pill" id="btnAchv">Achievements</button>
+          </div>
+          <p class="hint">Move with <b>WASD</b> or <b>arrows</b> · <b>Space</b> ability · <b>Shift</b> shed tail · <b>E</b> shift floor · <b>Q</b> rewind</p>
+        </div>
+
+        <!-- Level up -->
+        <div class="overlay" id="ovLevel">
+          <div class="eyebrow">DNA Splice</div>
+          <h1 id="levelTitle">LEVEL 2</h1>
+          <p class="lede">Biomass threshold reached. Integrate one mutation into your genome.</p>
+          <div class="mut-cards" id="mutCards"></div>
+          <p class="hint">Press <b>1</b>, <b>2</b> or <b>3</b> to splice</p>
+        </div>
+
+        <!-- Pause -->
+        <div class="overlay" id="ovPause">
+          <div class="eyebrow">Suspended</div>
+          <h1>PAUSED</h1>
+          <div class="btn-row">
+            <button class="btn btn-primary" id="btnResume">Resume</button>
+            <button class="btn btn-ghost" id="btnQuit">Quit to menu</button>
+          </div>
+          <p class="hint">Press <b>P</b> or <b>Esc</b> to resume</p>
+        </div>
+
+        <!-- Game over -->
+        <div class="overlay" id="ovOver">
+          <div class="eyebrow" id="overEyebrow">Run terminated</div>
+          <h1 class="warn">GAME OVER</h1>
+          <p class="lede" id="overReason">You crashed.</p>
+          <div class="result-grid" id="resultGrid"></div>
+          <div class="ach-strip" id="overAch"></div>
+          <div class="btn-row">
+            <button class="btn btn-primary" id="btnRetry">Run it back</button>
+            <button class="btn btn-ghost" id="btnMenu">Main menu</button>
+          </div>
+        </div>
+
+        <!-- Codex -->
+        <div class="overlay" id="ovHelp">
+          <div class="eyebrow">Codex</div>
+          <h1>FIELD MANUAL</h1>
+          <div class="help-grid" id="helpGrid"></div>
+          <button class="btn btn-primary" id="btnCloseHelp">Back</button>
+        </div>
+
+        <!-- Achievements -->
+        <div class="overlay" id="ovAch">
+          <div class="eyebrow">Career</div>
+          <h1>ACHIEVEMENTS</h1>
+          <div class="result-grid" id="careerGrid"></div>
+          <div class="ach-strip" id="achGrid"></div>
+          <div class="btn-row">
+            <button class="btn btn-primary" id="btnCloseAch">Back</button>
+            <button class="btn btn-ghost" id="btnWipe">Reset save</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="touch-deck" id="touchDeck">
+        <button class="tbtn" data-act="ability"><span class="ti">🔥</span><span class="tl">Ability</span></button>
+        <button class="tbtn" data-act="shed"><span class="ti">✂️</span><span class="tl">Shed</span></button>
+        <button class="tbtn" data-act="shift"><span class="ti">🌀</span><span class="tl">Floor</span></button>
+        <button class="tbtn" data-act="rewind"><span class="ti">⏪</span><span class="tl">Rewind</span></button>
+      </div>
+    </div>
+
+    <!-- Right rail -->
+    <div class="rail rail-right">
+      <div class="card">
+        <div class="card-label">Genome <span id="uiMutCount" style="color:var(--text-2)">0</span></div>
+        <div class="mut-list" id="mutList"><p class="empty-note">No mutations spliced yet. Eat biomass to trigger a DNA splice.</p></div>
+      </div>
+      <div class="card">
+        <div class="card-label">Abilities</div>
+        <div class="keys" id="abilityKeys"></div>
+      </div>
+      <div class="card">
+        <div class="card-label">Run telemetry</div>
+        <div class="stat-row"><span class="stat-name">Biomass eaten</span><span class="stat-val" id="uiEaten">0</span></div>
+        <div class="stat-row"><span class="stat-name">Bosses felled</span><span class="stat-val" id="uiBosses">0</span></div>
+        <div class="stat-row"><span class="stat-name">Rivals culled</span><span class="stat-val" id="uiKills">0</span></div>
+        <div class="stat-row"><span class="stat-name">Floor</span><span class="stat-val" id="uiFloor">1</span></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="toasts" id="toasts"></div>
+
+<script>
+"use strict";
+/* ════════════════════════════════════════════════════════════════════════════
+   SNAKE UNBOUND: ULTRA EVOLUTION
+   Single-file HTML5 / CSS3 / Vanilla ES2020+ arcade rogue-lite.
+   Subsystems: SoundEngine · ParticleSystem · World · SnakeEntity · FoodManager
+               MutationEngine · AIManager · BossManager · CanvasRenderer · Game
+   ════════════════════════════════════════════════════════════════════════════ */
+
+/* ───────────────────────────── 0. CONSTANTS ───────────────────────────── */
+
+const COLS = 30;                 // logical grid width
+const ROWS = 30;                 // logical grid height
+const CELL = 20;                 // logical units per cell
+const VIEW = COLS * CELL;        // 600 logical units
+const LAYERS = 2;                // dimensional sub-grids
+
+const TILE = { FLOOR: 0, ICE: 1, CONVEYOR: 2, LAVA: 3, VOID: 4 };
+
+const DIRS = [
+  { x: 1, y: 0, name: 'right' },
+  { x: -1, y: 0, name: 'left' },
+  { x: 0, y: 1, name: 'down' },
+  { x: 0, y: -1, name: 'up' }
+];
+
+const MODES = {
+  classic:     { label: 'Classic Evolution', tick: 112, rivals: 0, layers: 1, spawn: 1, hazardRate: 0.35 },
+  frenzy:      { label: 'Frenzy Run',        tick: 78,  rivals: 3, layers: 1, spawn: 3, hazardRate: 0.75 },
+  dimensional: { label: 'Dimensional Shift', tick: 104, rivals: 1, layers: 2, spawn: 2, hazardRate: 0.6 }
+};
+
+const SKINS = {
+  emerald: { id: 'emerald', name: 'Emerald',  head: '#34d399', body: '#10b981', deep: '#065f46', light: '#6ee7b7' },
+  cobalt:  { id: 'cobalt',  name: 'Cobalt',   head: '#60a5fa', body: '#3b82f6', deep: '#1e3a8a', light: '#93c5fd' },
+  solar:   { id: 'solar',   name: 'Solar',    head: '#fbbf24', body: '#f59e0b', deep: '#78350f', light: '#fde68a' },
+  orchid:  { id: 'orchid',  name: 'Orchid',   head: '#c084fc', body: '#a855f7', deep: '#4c1d95', light: '#e9d5ff' },
+  ember:   { id: 'ember',   name: 'Ember',    head: '#fb7185', body: '#f43f5e', deep: '#881337', light: '#fecdd3' }
+};
+
+const COLOR = {
+  apple: '#f87171', scarab: '#4ade80', mimic: '#c084fc', golden: '#fbbf24',
+  quantum: '#22d3ee', collapse: '#e879f9', rival: '#94a3b8', mini: '#f472b6',
+  boss: '#fb7185', plasma: '#67e8f9', acid: '#a3e635', turret: '#38bdf8',
+  wall: '#64748b', ice: '#7dd3fc', conveyor: '#818cf8', lava: '#f97316'
+};
+
+/* ───────────────────────────── 1. UTILITIES ───────────────────────────── */
+
+const clamp = (v, a, b) => v < a ? a : (v > b ? b : v);
+const lerp = (a, b, t) => a + (b - a) * t;
+const rnd = (a = 1, b = 0) => b + Math.random() * (a - b);
+const rndInt = (n) => Math.floor(Math.random() * n);
+const pick = (arr) => arr[rndInt(arr.length)];
+const key = (x, y, layer = 0) => (layer * ROWS + y) * COLS + x;
+const inBounds = (x, y) => x >= 0 && y >= 0 && x < COLS && y < ROWS;
+const manhattan = (a, b) => Math.abs(a.x - b.x) + Math.abs(a.y - b.y);
+const ease = (t) => t * t * (3 - 2 * t);
+
+function shuffled(arr) {
+  const a = arr.slice();
+  for (let i = a.length - 1; i > 0; i--) { const j = rndInt(i + 1); [a[i], a[j]] = [a[j], a[i]]; }
+  return a;
+}
+
+function hexToRgb(hex) {
+  const n = parseInt(hex.slice(1), 16);
+  return [(n >> 16) & 255, (n >> 8) & 255, n & 255];
+}
+function rgba(hex, a) {
+  const [r, g, b] = hexToRgb(hex);
+  return `rgba(${r},${g},${b},${a})`;
+}
+function mixHex(a, b, t) {
+  const ca = hexToRgb(a), cb = hexToRgb(b);
+  const m = ca.map((v, i) => Math.round(lerp(v, cb[i], t)));
+  return `rgb(${m[0]},${m[1]},${m[2]})`;
+}
+
+/* ─────────────────────────── 2. SAVE / STORAGE ─────────────────────────── */
+
+const Store = {
+  KEY: 'snake_unbound_ultra_v1',
+  data: {
+    high: { classic: 0, frenzy: 0, dimensional: 0 },
+    totals: { runs: 0, apples: 0, bosses: 0, kills: 0, score: 0, bestLength: 0, bestCombo: 1 },
+    achievements: {},
+    skin: 'emerald',
+    muted: false
+  },
+  load() {
+    try {
+      const raw = localStorage.getItem(this.KEY);
+      if (raw) {
+        const parsed = JSON.parse(raw);
+        this.data = {
+          high: Object.assign({ classic: 0, frenzy: 0, dimensional: 0 }, parsed.high || {}),
+          totals: Object.assign({ runs: 0, apples: 0, bosses: 0, kills: 0, score: 0, bestLength: 0, bestCombo: 1 }, parsed.totals || {}),
+          achievements: parsed.achievements || {},
+          skin: SKINS[parsed.skin] ? parsed.skin : 'emerald',
+          muted: !!parsed.muted
+        };
+      }
+    } catch (e) { /* storage blocked — run with defaults */ }
+    return this.data;
+  },
+  save() {
+    try { localStorage.setItem(this.KEY, JSON.stringify(this.data)); } catch (e) { /* ignore quota/private mode */ }
+  },
+  wipe() {
+    try { localStorage.removeItem(this.KEY); } catch (e) {}
+    this.data = {
+      high: { classic: 0, frenzy: 0, dimensional: 0 },
+      totals: { runs: 0, apples: 0, bosses: 0, kills: 0, score: 0, bestLength: 0, bestCombo: 1 },
+      achievements: {}, skin: 'emerald', muted: false
+    };
+  }
+};
+
+const ACHIEVEMENTS = [
+  { id: 'genesis',   icon: '🌱', name: 'Biogenesis',       desc: 'Eat your first biomass.' },
+  { id: 'chain',     icon: '🔗', name: 'Chain Reaction',   desc: 'Reach a 4× combo.' },
+  { id: 'splice',    icon: '🧬', name: 'Spliced',          desc: 'Reach DNA level 5.' },
+  { id: 'slayer',    icon: '⚔️', name: 'Giant Slayer',     desc: 'Defeat a boss.' },
+  { id: 'apex',      icon: '👑', name: 'Apex Predator',    desc: 'Defeat 3 bosses in one run.' },
+  { id: 'chrono',    icon: '⏪', name: 'Chronomancer',     desc: 'Rewind time mid-run.' },
+  { id: 'sacrifice', icon: '✂️', name: 'Tactical Sacrifice', desc: 'Amputate your tail.' },
+  { id: 'quantum',   icon: '🔮', name: 'Superposition',    desc: 'Collapse a quantum twin.' },
+  { id: 'century',   icon: '💯', name: 'Five Hundred',     desc: 'Score 500 in a single run.' },
+  { id: 'leviathan', icon: '🐉', name: 'Leviathan',        desc: 'Grow to 40 segments.' },
+  { id: 'drifter',   icon: '🌀', name: 'Dimensional Drifter', desc: 'Shift floors 10 times in a run.' },
+  { id: 'gunner',    icon: '🔫', name: 'Living Artillery', desc: 'Kill an enemy with a tail turret.' }
+];
+
+/* ─────────────────────── 3. SOUND ENGINE (Web Audio) ─────────────────────── */
+
+class SoundEngine {
+  constructor() {
+    this.ctx = null;
+    this.master = null;
+    this.muted = false;
+    this.ready = false;
+    this._noiseBuf = null;
+  }
+
+  init() {
+    if (this.ready) {
+      if (this.ctx.state === 'suspended') this.ctx.resume().catch(() => {});
+      return;
+    }
+    const AC = window.AudioContext || window.webkitAudioContext;
+    if (!AC) return;
+    try {
+      this.ctx = new AC();
+      this.master = this.ctx.createGain();
+      this.master.gain.value = 0.5;
+      const comp = this.ctx.createDynamicsCompressor();
+      comp.threshold.value = -18; comp.knee.value = 24; comp.ratio.value = 8;
+      comp.attack.value = 0.004; comp.release.value = 0.2;
+      this.master.connect(comp);
+      comp.connect(this.ctx.destination);
+      this.ready = true;
+    } catch (e) { this.ready = false; }
+  }
+
+  get now() { return this.ctx ? this.ctx.currentTime : 0; }
+
+  _ok() {
+    if (this.muted) return false;
+    if (!this.ready) this.init();
+    if (!this.ready) return false;
+    if (this.ctx.state === 'suspended') this.ctx.resume().catch(() => {});
+    return true;
+  }
+
+  /* One synthesised voice: oscillator → gain (ADSR-ish) → optional filter */
+  tone(opt) {
+    if (!this._ok()) return;
+    const t0 = this.now + (opt.delay || 0);
+    const dur = opt.dur ?? 0.12;
+    const osc = this.ctx.createOscillator();
+    const gain = this.ctx.createGain();
+    osc.type = opt.type || 'sine';
+    osc.frequency.setValueAtTime(Math.max(20, opt.freq), t0);
+    if (opt.to) {
+      const target = Math.max(20, opt.to);
+      if (opt.linear) osc.frequency.linearRampToValueAtTime(target, t0 + dur);
+      else osc.frequency.exponentialRampToValueAtTime(target, t0 + dur);
+    }
+    if (opt.detune) osc.detune.setValueAtTime(opt.detune, t0);
+
+    const peak = Math.max(0.0005, (opt.gain ?? 0.16));
+    gain.gain.setValueAtTime(0.0001, t0);
+    gain.gain.exponentialRampToValueAtTime(peak, t0 + Math.min(0.02, dur * 0.3));
+    gain.gain.exponentialRampToValueAtTime(0.0001, t0 + dur);
+
+    let node = osc;
+    if (opt.filter) {
+      const f = this.ctx.createBiquadFilter();
+      f.type = opt.filter;
+      f.frequency.setValueAtTime(opt.cutoff || 1200, t0);
+      if (opt.cutoffTo) f.frequency.exponentialRampToValueAtTime(Math.max(40, opt.cutoffTo), t0 + dur);
+      f.Q.value = opt.q || 1;
+      node.connect(f); f.connect(gain);
+    } else {
+      node.connect(gain);
+    }
+    gain.connect(this.master);
+    osc.start(t0);
+    osc.stop(t0 + dur + 0.02);
+  }
+
+  noiseBuffer() {
+    if (this._noiseBuf) return this._noiseBuf;
+    const len = Math.floor(this.ctx.sampleRate * 1.1);
+    const buf = this.ctx.createBuffer(1, len, this.ctx.sampleRate);
+    const d = buf.getChannelData(0);
+    for (let i = 0; i < len; i++) d[i] = Math.random() * 2 - 1;
+    this._noiseBuf = buf;
+    return buf;
+  }
+
+  noise(opt = {}) {
+    if (!this._ok()) return;
+    const t0 = this.now + (opt.delay || 0);
+    const dur = opt.dur ?? 0.3;
+    const src = this.ctx.createBufferSource();
+    src.buffer = this.noiseBuffer();
+    src.playbackRate.value = opt.rate || 1;
+    const f = this.ctx.createBiquadFilter();
+    f.type = opt.filter || 'lowpass';
+    f.frequency.setValueAtTime(opt.cutoff || 1800, t0);
+    f.frequency.exponentialRampToValueAtTime(Math.max(60, opt.cutoffTo || 200), t0 + dur);
+    f.Q.value = opt.q || 0.8;
+    const g = this.ctx.createGain();
+    g.gain.setValueAtTime(Math.max(0.0005, opt.gain ?? 0.2), t0);
+    g.gain.exponentialRampToValueAtTime(0.0001, t0 + dur);
+    src.connect(f); f.connect(g); g.connect(this.master);
+    src.start(t0);
+    src.stop(t0 + dur + 0.02);
+  }
+
+  /* ── Named cues ── */
+  eat(combo = 1) {
+    const step = Math.min(11, Math.round((combo - 1) * 2));
+    const base = 392 * Math.pow(2, step / 12);
+    this.tone({ freq: base, to: base * 1.5, dur: 0.09, type: 'triangle', gain: 0.13 });
+    this.tone({ freq: base * 2, to: base * 3, dur: 0.07, type: 'sine', gain: 0.06, delay: 0.015 });
+  }
+  special(kind) {
+    if (kind === 'golden') {
+      [523, 659, 784, 1046].forEach((f, i) => this.tone({ freq: f, dur: 0.1, type: 'triangle', gain: 0.1, delay: i * 0.045 }));
+    } else if (kind === 'scarab') {
+      this.tone({ freq: 720, to: 1500, dur: 0.11, type: 'square', gain: 0.07 });
+    } else if (kind === 'mimic') {
+      this.tone({ freq: 260, to: 110, dur: 0.24, type: 'sawtooth', gain: 0.12, filter: 'lowpass', cutoff: 1400, cutoffTo: 220 });
+    } else if (kind === 'quantum') {
+      this.tone({ freq: 880, to: 1760, dur: 0.3, type: 'sine', gain: 0.1 });
+      this.tone({ freq: 660, to: 1320, dur: 0.3, type: 'sine', gain: 0.07, detune: 14, delay: 0.03 });
+    }
+  }
+  powerup() {
+    [440, 587, 880].forEach((f, i) => this.tone({ freq: f, to: f * 1.35, dur: 0.14, type: 'triangle', gain: 0.11, delay: i * 0.05 }));
+  }
+  levelUp() {
+    [523, 659, 784, 1046, 1318].forEach((f, i) =>
+      this.tone({ freq: f, dur: 0.24, type: 'triangle', gain: 0.1, delay: i * 0.07 }));
+    this.tone({ freq: 130, to: 65, dur: 0.5, type: 'sine', gain: 0.12 });
+  }
+  plasma() {
+    this.tone({ freq: 1400, to: 260, dur: 0.16, type: 'sawtooth', gain: 0.1, filter: 'bandpass', cutoff: 1800, cutoffTo: 400, q: 4 });
+    this.noise({ dur: 0.12, gain: 0.07, cutoff: 3200, cutoffTo: 500 });
+  }
+  laser() {
+    this.tone({ freq: 1800, to: 900, dur: 0.07, type: 'square', gain: 0.045 });
+  }
+  hit() {
+    this.tone({ freq: 220, to: 90, dur: 0.14, type: 'square', gain: 0.1 });
+    this.noise({ dur: 0.1, gain: 0.08, cutoff: 2400, cutoffTo: 300 });
+  }
+  bossHit() {
+    this.tone({ freq: 160, to: 70, dur: 0.22, type: 'sawtooth', gain: 0.14, filter: 'lowpass', cutoff: 1400, cutoffTo: 180 });
+    this.noise({ dur: 0.2, gain: 0.1, cutoff: 1800, cutoffTo: 160 });
+  }
+  explosion() {
+    this.noise({ dur: 0.62, gain: 0.26, cutoff: 3000, cutoffTo: 60, rate: 0.85 });
+    this.tone({ freq: 140, to: 28, dur: 0.6, type: 'sawtooth', gain: 0.2 });
+    this.tone({ freq: 70, to: 20, dur: 0.75, type: 'sine', gain: 0.16, delay: 0.03 });
+  }
+  rewind() {
+    this.tone({ freq: 180, to: 1400, dur: 0.46, type: 'triangle', gain: 0.1 });
+    this.tone({ freq: 260, to: 1900, dur: 0.42, type: 'sine', gain: 0.06, delay: 0.05 });
+    this.noise({ dur: 0.4, gain: 0.05, filter: 'highpass', cutoff: 300, cutoffTo: 4000 });
+  }
+  amputate() {
+    this.noise({ dur: 0.2, gain: 0.14, cutoff: 5000, cutoffTo: 700, filter: 'bandpass', q: 2 });
+    this.tone({ freq: 620, to: 180, dur: 0.18, type: 'square', gain: 0.08 });
+  }
+  shift() {
+    this.tone({ freq: 300, to: 900, dur: 0.2, type: 'sine', gain: 0.1 });
+    this.tone({ freq: 450, to: 1350, dur: 0.2, type: 'sine', gain: 0.05, delay: 0.04 });
+  }
+  achieve() {
+    [784, 988, 1175, 1568].forEach((f, i) => this.tone({ freq: f, dur: 0.3, type: 'sine', gain: 0.09, delay: i * 0.08 }));
+  }
+  die() {
+    this.tone({ freq: 300, to: 48, dur: 0.75, type: 'sawtooth', gain: 0.18, linear: true, filter: 'lowpass', cutoff: 2000, cutoffTo: 120 });
+    this.tone({ freq: 150, to: 30, dur: 0.9, type: 'triangle', gain: 0.12, delay: 0.06 });
+    this.noise({ dur: 0.6, gain: 0.12, cutoff: 1400, cutoffTo: 80 });
+  }
+}
+
+const Sound = new SoundEngine();
+
+/* ────────────────── 4. PARTICLE SYSTEM & FLOATING TEXT ────────────────── */
+
+class ParticleSystem {
+  constructor(max = 520) {
+    this.max = max;
+    this.parts = [];
+    this.texts = [];
+    this.rings = [];
+  }
+  clear() { this.parts.length = 0; this.texts.length = 0; this.rings.length = 0; }
+
+  burst(x, y, color, count = 12, opt = {}) {
+    const spread = opt.spread ?? Math.PI * 2;
+    const dirAngle = opt.angle ?? 0;
+    const speed = opt.speed ?? 2.4;
+    const layer = opt.layer ?? 0;
+    for (let i = 0; i < count; i++) {
+      if (this.parts.length >= this.max) break;
+      const a = dirAngle + (Math.random() - 0.5) * spread;
+      const s = speed * rnd(1.35, 0.25);
+      this.parts.push({
+        x, y, layer,
+        vx: Math.cos(a) * s, vy: Math.sin(a) * s,
+        size: rnd(3.4, 1.1) * (opt.scale || 1),
+        color, life: 1, decay: rnd(0.045, 0.018) * (opt.decay || 1),
+        grav: opt.grav ?? 0.02, drag: opt.drag ?? 0.94,
+        glow: opt.glow ?? true, spin: rnd(0.3, -0.3), rot: rnd(Math.PI * 2)
+      });
+    }
+  }
+
+  trail(x, y, color, layer = 0) {
+    if (this.parts.length >= this.max) return;
+    this.parts.push({
+      x, y, layer, vx: rnd(0.4, -0.4), vy: rnd(0.4, -0.4),
+      size: rnd(2.6, 1), color, life: 1, decay: 0.06,
+      grav: -0.01, drag: 0.9, glow: true, spin: 0, rot: 0
+    });
+  }
+
+  ring(x, y, color, radius = 40, opt = {}) {
+    this.rings.push({
+      x, y, color, r: opt.from ?? 4, max: radius, life: 1,
+      decay: opt.decay ?? 0.045, width: opt.width ?? 3, layer: opt.layer ?? 0
+    });
+  }
+
+  text(str, x, y, color, opt = {}) {
+    if (opt.banner) {
+      // Only one headline at a time — the newest replaces the last.
+      for (let i = this.texts.length - 1; i >= 0; i--) if (this.texts[i].banner) this.texts.splice(i, 1);
+    }
+    this.texts.push({
+      str, x, y, color, life: 1,
+      decay: opt.decay ?? 0.02, vy: opt.vy ?? -0.55,
+      size: opt.size ?? 15, layer: opt.layer ?? 0, weight: opt.weight ?? 800,
+      banner: !!opt.banner
+    });
+    if (this.texts.length > 30) this.texts.splice(0, this.texts.length - 30);
+  }
+
+  update(dt) {
+    const f = clamp(dt / 16.67, 0.2, 3);
+    for (let i = this.parts.length - 1; i >= 0; i--) {
+      const p = this.parts[i];
+      p.x += p.vx * f; p.y += p.vy * f;
+      p.vy += p.grav * f;
+      p.vx *= Math.pow(p.drag, f); p.vy *= Math.pow(p.drag, f);
+      p.rot += p.spin * f;
+      p.life -= p.decay * f;
+      if (p.life <= 0) this.parts.splice(i, 1);
+    }
+    for (let i = this.rings.length - 1; i >= 0; i--) {
+      const r = this.rings[i];
+      r.r = lerp(r.r, r.max, 0.18 * f);
+      r.life -= r.decay * f;
+      if (r.life <= 0) this.rings.splice(i, 1);
+    }
+    for (let i = this.texts.length - 1; i >= 0; i--) {
+      const t = this.texts[i];
+      t.y += t.vy * f; t.vy *= Math.pow(0.96, f);
+      t.life -= t.decay * f;
+      if (t.life <= 0) this.texts.splice(i, 1);
+    }
+  }
+}
+
+const FX = new ParticleSystem();
+
+/* ─────────────────── 5. MUTATION ENGINE (DNA rogue-lite) ─────────────────── */
+
+const MUTATIONS = [
+  {
+    id: 'hydra', name: 'Hydra Head', icon: '🐍', tint: 'rgba(52,211,153,.35)', max: 2,
+    desc: r => r === 0
+      ? 'Grow a second mouth on your tail. The tail devours any biomass it touches.'
+      : 'The tail mouth also bites through hostile minions.',
+    tag: 'Tail'
+  },
+  {
+    id: 'scales', name: 'Diamond Scales', icon: '💎', tint: 'rgba(96,165,250,.35)', max: 3,
+    desc: r => r === 0
+      ? 'Gain 2 armor stacks. Spend a stack to smash through a wall or lava instead of dying.'
+      : 'Gain 2 more armor stacks and reinforce your plating.',
+    tag: 'Defense'
+  },
+  {
+    id: 'plasma', name: 'Plasma Breath', icon: '🔥', tint: 'rgba(103,232,249,.35)', max: 3,
+    desc: r => r === 0
+      ? 'Press SPACE to exhale a plasma bolt that shreds enemies and boss armor.'
+      : 'Plasma gains +2 charges, heavier damage and deeper penetration.',
+    tag: 'Offense'
+  },
+  {
+    id: 'acid', name: 'Acid Trail', icon: '🧪', tint: 'rgba(163,230,53,.35)', max: 3,
+    desc: r => r === 0
+      ? 'Secrete an acid trail that dissolves hazards and burns anything that follows you.'
+      : 'Acid lingers longer and bites deeper.',
+    tag: 'Control'
+  },
+  {
+    id: 'gravity', name: 'Gravity Well', icon: '🌌', tint: 'rgba(167,139,250,.35)', max: 3,
+    desc: r => r === 0
+      ? 'Your biomass warps space — distant food drifts toward your body.'
+      : 'Extend the gravitational radius of your mass.',
+    tag: 'Utility'
+  },
+  {
+    id: 'turret', name: 'Tail Turret', icon: '🔫', tint: 'rgba(56,189,248,.35)', max: 3,
+    desc: r => r === 0
+      ? 'Amputated segments harden into auto-targeting laser turrets instead of barricades.'
+      : 'Turrets fire faster and reach further.',
+    tag: 'Offense'
+  },
+  {
+    id: 'chronos', name: 'Chronos Core', icon: '⏳', tint: 'rgba(251,191,36,.35)', max: 3,
+    desc: r => r === 0
+      ? 'Press Q to rewind roughly two seconds of time. Starts with 2 charges.'
+      : 'Store one extra rewind charge and reach further back.',
+    tag: 'Utility'
+  },
+  {
+    id: 'ghost', name: 'Ghost Phase', icon: '👻', tint: 'rgba(192,132,252,.35)', max: 2,
+    desc: r => r === 0
+      ? 'Your body becomes permeable — pass through your own segments freely.'
+      : 'Phase through rival snakes and their coils as well.',
+    tag: 'Defense'
+  },
+  {
+    id: 'metabolism', name: 'Metabolic Surge', icon: '⚡', tint: 'rgba(251,113,133,.35)', max: 3,
+    desc: r => r === 0
+      ? 'Digest 50% faster: more DNA per meal and a far slower combo decay.'
+      : 'Accelerate digestion further.',
+    tag: 'Growth'
+  },
+  {
+    id: 'venom', name: 'Venom Fangs', icon: '☠️', tint: 'rgba(74,222,128,.35)', max: 3,
+    desc: r => r === 0
+      ? 'Ramming an enemy head-on injects venom, dealing heavy contact damage.'
+      : 'Venom potency increases.',
+    tag: 'Offense'
+  }
+];
+
+const MUT_BY_ID = Object.fromEntries(MUTATIONS.map(m => [m.id, m]));
+
+class MutationEngine {
+  constructor(game) {
+    this.game = game;
+    this.ranks = {};
+    this.level = 1;
+    this.xp = 0;
+    this.need = 4;
+    this.pending = 0;
+    this.offer = [];
+  }
+  reset() {
+    this.ranks = {}; this.level = 1; this.xp = 0; this.need = 4; this.pending = 0; this.offer = [];
+  }
+  rank(id) { return this.ranks[id] || 0; }
+  has(id) { return (this.ranks[id] || 0) > 0; }
+  get count() { return Object.values(this.ranks).reduce((a, b) => a + b, 0); }
+  get list() {
+    return Object.keys(this.ranks).map(id => ({ def: MUT_BY_ID[id], rank: this.ranks[id] }));
+  }
+
+  gainXp(n) {
+    const boost = 1 + 0.5 * this.rank('metabolism');
+    this.xp += n * boost;
+    let leveled = false;
+    while (this.xp >= this.need) {
+      this.xp -= this.need;
+      this.level++;
+      this.need = Math.round(4 + this.level * 2.2);
+      this.pending++;
+      leveled = true;
+    }
+    return leveled;
+  }
+
+  /** Build an offer of 3 distinct, non-maxed mutations. */
+  roll() {
+    const pool = MUTATIONS.filter(m => this.rank(m.id) < m.max);
+    const weighted = [];
+    for (const m of pool) {
+      // Slight bias toward unexplored branches so early offers stay varied.
+      const w = this.rank(m.id) === 0 ? 3 : 2;
+      for (let i = 0; i < w; i++) weighted.push(m);
+    }
+    const chosen = [];
+    const bag = shuffled(weighted);
+    for (const m of bag) {
+      if (chosen.length >= 3) break;
+      if (!chosen.some(c => c.id === m.id)) chosen.push(m);
+    }
+    this.offer = chosen;
+    return chosen;
+  }
+
+  take(id) {
+    const def = MUT_BY_ID[id];
+    if (!def) return null;
+    const r = this.rank(id);
+    if (r >= def.max) return null;
+    this.ranks[id] = r + 1;
+    this.pending = Math.max(0, this.pending - 1);
+    this.game.onMutationGained(def, r + 1);
+    return def;
+  }
+}
+
+/* ────────────────────────── 6. WORLD & HAZARD GRID ────────────────────────── */
+
+class World {
+  constructor() {
+    this.tiles = [];
+    this.conv = [];
+    for (let l = 0; l < LAYERS; l++) {
+      this.tiles.push(new Uint8Array(COLS * ROWS));
+      this.conv.push(new Uint8Array(COLS * ROWS));
+    }
+    this.perimeter = 0;      // rings consumed by The Grid-Eater
+  }
+
+  reset() {
+    for (let l = 0; l < LAYERS; l++) {
+      this.tiles[l].fill(TILE.FLOOR);
+      this.conv[l].fill(0);
+    }
+    this.perimeter = 0;
+  }
+
+  at(x, y, layer) {
+    if (!inBounds(x, y)) return TILE.VOID;
+    return this.tiles[layer][y * COLS + x];
+  }
+  set(x, y, layer, t, dir = 0) {
+    if (!inBounds(x, y)) return;
+    this.tiles[layer][y * COLS + x] = t;
+    this.conv[layer][y * COLS + x] = dir;
+  }
+  convDir(x, y, layer) {
+    if (!inBounds(x, y)) return DIRS[0];
+    return DIRS[this.conv[layer][y * COLS + x] % 4];
+  }
+  isLethal(x, y, layer) {
+    const t = this.at(x, y, layer);
+    return t === TILE.LAVA || t === TILE.VOID;
+  }
+
+  /** Procedurally lay an ice sheet, a conveyor belt or a lava vent. */
+  seedPatch(layer, kindHint) {
+    const kind = kindHint || pick([TILE.ICE, TILE.ICE, TILE.CONVEYOR, TILE.LAVA]);
+    const margin = 3 + this.perimeter;
+    const w = kind === TILE.LAVA ? rndInt(2) + 2 : rndInt(4) + 3;
+    const h = kind === TILE.LAVA ? rndInt(2) + 2 : rndInt(4) + 3;
+    const x0 = margin + rndInt(Math.max(1, COLS - margin * 2 - w));
+    const y0 = margin + rndInt(Math.max(1, ROWS - margin * 2 - h));
+    const dir = rndInt(4);
+    let placed = 0;
+    for (let y = y0; y < y0 + h; y++) {
+      for (let x = x0; x < x0 + w; x++) {
+        if (!inBounds(x, y)) continue;
+        if (this.at(x, y, layer) !== TILE.FLOOR) continue;
+        this.set(x, y, layer, kind, dir);
+        placed++;
+      }
+    }
+    return placed > 0 ? { x: x0, y: y0, w, h, kind, layer } : null;
+  }
+
+  /** The Grid-Eater devours a perimeter ring, shrinking the arena. */
+  consumeRing() {
+    const r = this.perimeter;
+    if (r >= Math.floor(COLS / 2) - 5) return false;
+    for (let l = 0; l < LAYERS; l++) {
+      for (let x = r; x < COLS - r; x++) {
+        this.set(x, r, l, TILE.LAVA);
+        this.set(x, ROWS - 1 - r, l, TILE.LAVA);
+      }
+      for (let y = r; y < ROWS - r; y++) {
+        this.set(r, y, l, TILE.LAVA);
+        this.set(COLS - 1 - r, y, l, TILE.LAVA);
+      }
+    }
+    this.perimeter++;
+    return true;
+  }
+
+  /** Acid neutralises hazard tiles back to clean floor. */
+  cleanse(x, y, layer) {
+    const t = this.at(x, y, layer);
+    if (t === TILE.LAVA || t === TILE.ICE || t === TILE.CONVEYOR) {
+      const inner = x >= this.perimeter && y >= this.perimeter &&
+                    x < COLS - this.perimeter && y < ROWS - this.perimeter;
+      if (inner) { this.set(x, y, layer, TILE.FLOOR); return true; }
+    }
+    return false;
+  }
+
+  /** True when a cell is inside the (possibly shrunken) playfield. */
+  playable(x, y) {
+    const p = this.perimeter;
+    return x >= p && y >= p && x < COLS - p && y < ROWS - p;
+  }
+}
+
+/* ────────────────────────── 7. SNAKE ENTITY ────────────────────────── */
+
+let ENTITY_ID = 1;
+
+class SnakeEntity {
+  constructor(opt = {}) {
+    this.id = ENTITY_ID++;
+    this.kind = opt.kind || 'rival';         // player | rival | mini | phantom
+    this.layer = opt.layer || 0;
+    this.dir = opt.dir || { x: 1, y: 0 };
+    this.nextDir = { x: this.dir.x, y: this.dir.y };
+    this.alive = true;
+    this.growth = 0;
+    this.color = opt.color || COLOR.rival;
+    this.accent = opt.accent || this.color;
+    this.speedDiv = opt.speedDiv || 1;        // move once every N ticks
+    this.phase = opt.phase || 0;
+    this.hp = opt.hp ?? 1;
+    this.cells = [];
+    this.prev = [];
+    this.spawnFlash = 1;
+
+    const len = opt.len || 3;
+    const sx = opt.x ?? 5, sy = opt.y ?? 5;
+    for (let i = 0; i < len; i++) {
+      this.cells.push({ x: clamp(sx - this.dir.x * i, 0, COLS - 1), y: clamp(sy - this.dir.y * i, 0, ROWS - 1) });
+    }
+    this.snapshotPrev();
+  }
+
+  get head() { return this.cells[0]; }
+  get tail() { return this.cells[this.cells.length - 1]; }
+  get length() { return this.cells.length; }
+
+  snapshotPrev() {
+    this.prev = this.cells.map(c => ({ x: c.x, y: c.y }));
+  }
+
+  contains(x, y, ignoreTail = false) {
+    const n = this.cells.length - (ignoreTail ? 1 : 0);
+    for (let i = 0; i < n; i++) {
+      if (this.cells[i].x === x && this.cells[i].y === y) return true;
+    }
+    return false;
+  }
+
+  indexAt(x, y) {
+    for (let i = 0; i < this.cells.length; i++) {
+      if (this.cells[i].x === x && this.cells[i].y === y) return i;
+    }
+    return -1;
+  }
+
+  /** Advance the head to (x,y); tail is kept when growing. */
+  advance(x, y) {
+    this.cells.unshift({ x, y });
+    if (this.growth > 0) this.growth--;
+    else this.cells.pop();
+  }
+
+  grow(n = 1) { this.growth += n; }
+
+  shrink(n = 1) {
+    for (let i = 0; i < n && this.cells.length > 2; i++) this.cells.pop();
+  }
+
+  setDir(d) {
+    // Reject direct reversals (would instantly self-collide).
+    if (this.cells.length > 1 && d.x === -this.dir.x && d.y === -this.dir.y) return false;
+    this.nextDir = { x: d.x, y: d.y };
+    return true;
+  }
+
+  serialize() {
+    return {
+      cells: this.cells.map(c => ({ x: c.x, y: c.y })),
+      dir: { x: this.dir.x, y: this.dir.y },
+      layer: this.layer, growth: this.growth, alive: this.alive, hp: this.hp
+    };
+  }
+  restore(s) {
+    this.cells = s.cells.map(c => ({ x: c.x, y: c.y }));
+    this.dir = { x: s.dir.x, y: s.dir.y };
+    this.nextDir = { x: s.dir.x, y: s.dir.y };
+    this.layer = s.layer; this.growth = s.growth; this.alive = s.alive; this.hp = s.hp;
+    this.snapshotPrev();
+  }
+}
+
+/* ─────────────────── 8. FOOD MANAGER (living prey AI) ─────────────────── */
+
+const FOOD_DEFS = {
+  apple:   { color: COLOR.apple,   value: 10, xp: 1, grow: 1, weight: 62 },
+  scarab:  { color: COLOR.scarab,  value: 25, xp: 2, grow: 1, weight: 14 },
+  mimic:   { color: COLOR.mimic,   value: 18, xp: 2, grow: 2, weight: 10 },
+  golden:  { color: COLOR.golden,  value: 40, xp: 3, grow: 2, weight: 9 },
+  quantum: { color: COLOR.quantum, value: 30, xp: 3, grow: 1, weight: 5 }
+};
+
+class FoodManager {
+  constructor(game) {
+    this.game = game;
+    this.items = [];
+  }
+  reset() { this.items = []; }
+
+  rollType(level) {
+    // Exotic prey becomes more common as the run escalates.
+    const entries = Object.entries(FOOD_DEFS).map(([id, def]) => {
+      let w = def.weight;
+      if (id !== 'apple') w *= (1 + level * 0.12);
+      if (id === 'quantum' && this.items.some(f => f.type === 'quantum')) w = 0;
+      if (id === 'quantum' && this.game.phantom) w = 0;
+      return [id, w];
+    });
+    const total = entries.reduce((a, [, w]) => a + w, 0);
+    let r = Math.random() * total;
+    for (const [id, w] of entries) { r -= w; if (r <= 0) return id; }
+    return 'apple';
+  }
+
+  spawn(typeHint, layerHint) {
+    const spot = this.game.freeCell(layerHint);
+    if (!spot) return null;
+    const type = typeHint || this.rollType(this.game.dna.level);
+    const def = FOOD_DEFS[type];
+    const food = {
+      x: spot.x, y: spot.y, layer: spot.layer, type,
+      value: def.value, xp: def.xp, grow: def.grow,
+      color: def.color, size: type === 'golden' ? 1.15 : 1,
+      cluster: 1, timer: 0, wobble: rnd(Math.PI * 2), born: this.game.tick
+    };
+    this.items.push(food);
+    return food;
+  }
+
+  removeAt(x, y, layer) {
+    const i = this.items.findIndex(f => f.x === x && f.y === y && f.layer === layer);
+    if (i < 0) return null;
+    return this.items.splice(i, 1)[0];
+  }
+
+  at(x, y, layer) {
+    return this.items.find(f => f.x === x && f.y === y && f.layer === layer) || null;
+  }
+
+  nearest(x, y, layer) {
+    let best = null, bd = Infinity;
+    for (const f of this.items) {
+      if (f.layer !== layer) continue;
+      const d = Math.abs(f.x - x) + Math.abs(f.y - y);
+      if (d < bd) { bd = d; best = f; }
+    }
+    return best;
+  }
+
+  /** Per-tick prey behaviour: fleeing scarabs, merging golden clusters. */
+  update(game) {
+    const head = game.player.alive ? game.player.head : null;
+
+    for (const f of this.items) {
+      f.timer++;
+
+      if (f.type === 'scarab' && head && f.layer === game.player.layer) {
+        // Scarab Fruit: distance-checking flight response.
+        const d = Math.abs(f.x - head.x) + Math.abs(f.y - head.y);
+        const every = d < 4 ? 2 : 4;
+        if (d < 9 && f.timer % every === 0) {
+          const options = shuffled(DIRS)
+            .map(dir => ({ dir, x: f.x + dir.x, y: f.y + dir.y }))
+            .filter(o => game.cellFreeForFood(o.x, o.y, f.layer))
+            .sort((a, b) => {
+              const da = Math.abs(a.x - head.x) + Math.abs(a.y - head.y);
+              const db = Math.abs(b.x - head.x) + Math.abs(b.y - head.y);
+              return db - da;
+            });
+          if (options.length) {
+            const o = options[0];
+            if (Math.abs(o.x - head.x) + Math.abs(o.y - head.y) > d) {
+              f.x = o.x; f.y = o.y;
+              if (Math.random() < 0.35) FX.trail(f.x * CELL + CELL / 2, f.y * CELL + CELL / 2, COLOR.scarab, f.layer);
+            }
+          }
+        }
+      }
+
+      if (f.type === 'golden' && f.timer % 6 === 0) {
+        // Golden Cluster: absorbs neighbours into a fatter, richer target.
+        for (let i = this.items.length - 1; i >= 0; i--) {
+          const o = this.items[i];
+          if (o === f || o.layer !== f.layer) continue;
+          const d = Math.abs(o.x - f.x) + Math.abs(o.y - f.y);
+          if (d <= 3 && o.type !== 'quantum' && f.cluster < 5) {
+            f.cluster++;
+            f.value += o.value;
+            f.xp += 1;
+            f.grow += 1;
+            f.size = 1.05 + f.cluster * 0.1;
+            this.items.splice(i, 1);
+            FX.ring(f.x * CELL + CELL / 2, f.y * CELL + CELL / 2, COLOR.golden, 26, { layer: f.layer });
+            FX.burst(o.x * CELL + CELL / 2, o.y * CELL + CELL / 2, COLOR.golden, 8, { speed: 1.6, layer: f.layer });
+          }
+        }
+      }
+    }
+  }
+
+  serialize() { return this.items.map(f => Object.assign({}, f)); }
+  restore(list) { this.items = list.map(f => Object.assign({}, f)); }
+}
+
+/* ───────────────── 9. PATHFINDING (A*) & SPACE ANALYSIS ───────────────── */
+
+/**
+ * A* over the 30×30 grid. `blocked(x,y)` returns true for impassable cells.
+ * Returns an array of {x,y} steps (excluding the start) or null.
+ */
+function findPath(start, goal, blocked, maxNodes = 900) {
+  if (start.x === goal.x && start.y === goal.y) return [];
+  const size = COLS * ROWS;
+  const gScore = new Float32Array(size).fill(Infinity);
+  const fScore = new Float32Array(size).fill(Infinity);
+  const cameFrom = new Int32Array(size).fill(-1);
+  const closed = new Uint8Array(size);
+  const si = start.y * COLS + start.x;
+  const gi = goal.y * COLS + goal.x;
+  gScore[si] = 0;
+  fScore[si] = manhattan(start, goal);
+  const open = [si];
+  let expanded = 0;
+
+  while (open.length && expanded < maxNodes) {
+    // Extract lowest fScore (linear scan is fastest at this grid size).
+    let bi = 0;
+    for (let i = 1; i < open.length; i++) if (fScore[open[i]] < fScore[open[bi]]) bi = i;
+    const cur = open.splice(bi, 1)[0];
+    if (cur === gi) {
+      const path = [];
+      let n = cur;
+      while (n !== si && n !== -1) {
+        path.push({ x: n % COLS, y: Math.floor(n / COLS) });
+        n = cameFrom[n];
+      }
+      return path.reverse();
+    }
+    closed[cur] = 1;
+    expanded++;
+    const cx = cur % COLS, cy = Math.floor(cur / COLS);
+    for (const d of DIRS) {
+      const nx = cx + d.x, ny = cy + d.y;
+      if (!inBounds(nx, ny)) continue;
+      const ni = ny * COLS + nx;
+      if (closed[ni]) continue;
+      if (ni !== gi && blocked(nx, ny)) continue;
+      const tentative = gScore[cur] + 1;
+      if (tentative < gScore[ni]) {
+        cameFrom[ni] = cur;
+        gScore[ni] = tentative;
+        fScore[ni] = tentative + manhattan({ x: nx, y: ny }, goal);
+        if (!open.includes(ni)) open.push(ni);
+      }
+    }
+  }
+  return null;
+}
+
+/** Flood fill the reachable area from (x,y), capped at `limit` cells. */
+function freeSpace(x, y, blocked, limit = 200) {
+  if (!inBounds(x, y) || blocked(x, y)) return 0;
+  const seen = new Uint8Array(COLS * ROWS);
+  const stack = [y * COLS + x];
+  seen[y * COLS + x] = 1;
+  let count = 0;
+  while (stack.length && count < limit) {
+    const n = stack.pop();
+    count++;
+    const cx = n % COLS, cy = Math.floor(n / COLS);
+    for (const d of DIRS) {
+      const nx = cx + d.x, ny = cy + d.y;
+      if (!inBounds(nx, ny)) continue;
+      const ni = ny * COLS + nx;
+      if (seen[ni] || blocked(nx, ny)) continue;
+      seen[ni] = 1;
+      stack.push(ni);
+    }
+  }
+  return count;
+}
+
+/* ─────────────────────── 10. RIVAL AI MANAGER ─────────────────────── */
+
+class AIManager {
+  constructor(game) {
+    this.game = game;
+    this.rivals = [];
+    this.minis = [];
+  }
+  reset() { this.rivals = []; this.minis = []; }
+
+  spawnRival(level = 1) {
+    const game = this.game;
+    const spot = game.freeCell(0, 6);
+    if (!spot) return null;
+    const hue = pick(['#94a3b8', '#cbd5e1', '#f472b6', '#38bdf8']);
+    const rival = new SnakeEntity({
+      kind: 'rival', x: spot.x, y: spot.y, layer: spot.layer,
+      len: 4 + Math.min(6, level), dir: pick(DIRS), color: hue, accent: '#e2e8f0',
+      speedDiv: 2, hp: 2
+    });
+    rival.aggression = rnd(0.55, 0.15);
+    rival.thinkTimer = 0;
+    rival.path = null;
+    this.rivals.push(rival);
+    FX.ring(spot.x * CELL + CELL / 2, spot.y * CELL + CELL / 2, hue, 60, { layer: spot.layer });
+    return rival;
+  }
+
+  spawnMini(x, y, layer, count = 2) {
+    for (let i = 0; i < count; i++) {
+      const d = DIRS[i % 4];
+      const nx = clamp(x + d.x, 0, COLS - 1), ny = clamp(y + d.y, 0, ROWS - 1);
+      const mini = new SnakeEntity({
+        kind: 'mini', x: nx, y: ny, layer, len: 3, dir: d,
+        color: COLOR.mini, accent: '#fbcfe8', speedDiv: 3, hp: 1
+      });
+      mini.thinkTimer = 0;
+      this.minis.push(mini);
+    }
+    FX.ring(x * CELL + CELL / 2, y * CELL + CELL / 2, COLOR.mini, 54, { layer });
+  }
+
+  /** Choose a direction for an AI snake: A* to prey, with survival vetting. */
+  think(snake, opts = {}) {
+    const game = this.game;
+    const head = snake.head;
+    const blocked = (x, y) => game.blockedForAI(x, y, snake);
+
+    let target = null;
+    if (opts.huntPlayer && game.player.alive && game.player.layer === snake.layer) {
+      target = { x: game.player.head.x, y: game.player.head.y };
+    } else {
+      const food = game.food.nearest(head.x, head.y, snake.layer);
+      if (food) target = { x: food.x, y: food.y };
+      else if (game.player.alive && game.player.layer === snake.layer) target = { x: game.player.head.x, y: game.player.head.y };
+    }
+    if (!target) target = { x: Math.floor(COLS / 2), y: Math.floor(ROWS / 2) };
+
+    let chosen = null;
+    const path = findPath(head, target, blocked, 420);
+    if (path && path.length) {
+      const step = path[0];
+      const d = DIRS.find(dd => dd.x === step.x - head.x && dd.y === step.y - head.y);
+      if (d && this.isViable(snake, d, blocked)) chosen = d;
+    }
+
+    if (!chosen) {
+      // Survival fallback: head for whichever neighbour opens the most space.
+      let best = null, bestScore = -Infinity;
+      for (const d of shuffled(DIRS)) {
+        if (d.x === -snake.dir.x && d.y === -snake.dir.y) continue;
+        const nx = head.x + d.x, ny = head.y + d.y;
+        if (!inBounds(nx, ny) || blocked(nx, ny)) continue;
+        const space = freeSpace(nx, ny, blocked, snake.length * 3 + 12);
+        const toward = target ? -manhattan({ x: nx, y: ny }, target) * 0.3 : 0;
+        const score = space + toward;
+        if (score > bestScore) { bestScore = score; best = d; }
+      }
+      chosen = best;
+    }
+    return chosen;
+  }
+
+  isViable(snake, d, blocked) {
+    const nx = snake.head.x + d.x, ny = snake.head.y + d.y;
+    if (!inBounds(nx, ny) || blocked(nx, ny)) return false;
+    const need = Math.min(60, Math.max(8, Math.floor(snake.length * 0.7)));
+    return freeSpace(nx, ny, blocked, need + 4) >= need;
+  }
+
+  update(game) {
+    // Rivals move on a slower cadence than the player and hunt opportunistically.
+    for (const r of this.rivals) {
+      if (!r.alive) continue;
+      if (game.tick % r.speedDiv !== 0) continue;
+      const hunt = game.player.alive &&
+        manhattan(r.head, game.player.head) < 9 &&
+        Math.random() < r.aggression;
+      const d = this.think(r, { huntPlayer: hunt });
+      r.snapshotPrev();
+      if (!d) { game.killSnake(r, 'trapped'); continue; }
+      r.dir = d; r.nextDir = d;
+      const nx = r.head.x + d.x, ny = r.head.y + d.y;
+      if (!inBounds(nx, ny) || game.world.isLethal(nx, ny, r.layer) || !game.world.playable(nx, ny)) {
+        game.killSnake(r, 'hazard'); continue;
+      }
+      const hitSelf = r.contains(nx, ny, true);
+      const hitOther = game.snakeOccupied(nx, ny, r.layer, r);
+      if (hitSelf || hitOther) {
+        // Rival rams the player: the player takes the hit, the rival dies.
+        if (game.player.alive && game.player.layer === r.layer && game.player.contains(nx, ny)) {
+          game.damagePlayer('A rival snake rammed you.', { x: nx, y: ny });
+        }
+        game.killSnake(r, 'collision');
+        continue;
+      }
+      const f = game.food.at(nx, ny, r.layer);
+      if (f) { game.food.removeAt(nx, ny, r.layer); r.grow(f.grow); game.food.spawn(); FX.burst(nx * CELL + CELL / 2, ny * CELL + CELL / 2, f.color, 8, { layer: r.layer, speed: 1.8 }); }
+      r.advance(nx, ny);
+      if (game.acidAt(nx, ny, r.layer)) game.damageSnake(r, 1, 'acid');
+    }
+
+    // Mimic spawn: relentless short hunters that always chase the player.
+    for (const m of this.minis) {
+      if (!m.alive) continue;
+      if (game.tick % m.speedDiv !== 0) continue;
+      const d = this.think(m, { huntPlayer: true });
+      m.snapshotPrev();
+      if (!d) { game.killSnake(m, 'trapped'); continue; }
+      m.dir = d; m.nextDir = d;
+      const nx = m.head.x + d.x, ny = m.head.y + d.y;
+      if (!inBounds(nx, ny) || game.world.isLethal(nx, ny, m.layer) || !game.world.playable(nx, ny)) { game.killSnake(m, 'hazard'); continue; }
+      if (game.player.alive && game.player.layer === m.layer && game.player.contains(nx, ny)) {
+        game.damagePlayer('A mimic spawn bit you.', { x: nx, y: ny });
+        game.killSnake(m, 'collision');
+        continue;
+      }
+      if (m.contains(nx, ny, true) || game.snakeOccupied(nx, ny, m.layer, m)) { game.killSnake(m, 'collision'); continue; }
+      m.advance(nx, ny);
+      if (game.acidAt(nx, ny, m.layer)) game.damageSnake(m, 1, 'acid');
+    }
+
+    this.rivals = this.rivals.filter(r => r.alive);
+    this.minis = this.minis.filter(m => m.alive);
+  }
+
+  get all() { return this.rivals.concat(this.minis); }
+}
+
+/* ─────────────────────── 11. BOSS ENCOUNTERS ─────────────────────── */
+
+const BOSS_TYPES = ['gridEater', 'hydraCentipede'];
+
+class Boss {
+  constructor(type, wave, game) {
+    this.type = type;
+    this.wave = wave;
+    this.game = game;
+    this.timer = 0;
+    this.flash = 0;
+    this.dead = false;
+    this.layer = 0;
+
+    if (type === 'gridEater') {
+      this.name = 'The Grid-Eater';
+      this.maxHp = 22 + wave * 10;
+      this.hp = this.maxHp;
+      this.size = 3;
+      this.ringIndex = 0;
+      this.ringPos = 0;
+      this.moveEvery = Math.max(2, 4 - Math.floor(wave / 2));
+      this.chompEvery = Math.max(26, 44 - wave * 4);
+      this.spitEvery = Math.max(18, 34 - wave * 3);
+      this.path = this.buildRing(game.world.perimeter);
+      const p = this.path[0];
+      this.x = p.x; this.y = p.y;
+    } else {
+      this.name = 'The Hydra Centipede';
+      this.maxHp = 26 + wave * 12;
+      this.hp = this.maxHp;
+      this.moveEvery = Math.max(2, 4 - Math.floor(wave / 3));
+      this.worms = [];
+      const spot = game.freeCell(0, 8) || { x: 2, y: 2, layer: 0 };
+      const len = 9 + wave * 2;
+      const cells = [];
+      for (let i = 0; i < len; i++) cells.push({ x: clamp(spot.x - i, 0, COLS - 1), y: spot.y });
+      this.worms.push({ cells, dir: { x: 1, y: 0 }, id: 1, phase: rnd(Math.PI * 2) });
+      this.nextWormId = 2;
+    }
+  }
+
+  buildRing(r) {
+    const path = [];
+    const span = (this.size || 2) - 1;
+    const lo = r + 1, hi = COLS - 1 - r - span;
+    if (hi <= lo) return [{ x: Math.floor(COLS / 2), y: Math.floor(ROWS / 2) }];
+    for (let x = lo; x <= hi; x++) path.push({ x, y: lo });
+    for (let y = lo + 1; y <= hi; y++) path.push({ x: hi, y });
+    for (let x = hi - 1; x >= lo; x--) path.push({ x, y: hi });
+    for (let y = hi - 1; y > lo; y--) path.push({ x: lo, y });
+    return path;
+  }
+
+  /** All grid cells the boss body currently occupies. */
+  bodyCells() {
+    if (this.type === 'gridEater') {
+      const out = [];
+      const n = this.size;
+      const mid = (n - 1) / 2;
+      for (let dy = 0; dy < n; dy++) for (let dx = 0; dx < n; dx++) {
+        out.push({ x: this.x + dx, y: this.y + dy, weak: dx === mid && dy === mid });
+      }
+      return out;
+    }
+    const out = [];
+    for (const w of this.worms) {
+      w.cells.forEach((c, i) => out.push({ x: c.x, y: c.y, weak: i > 0 && i % 3 === 0, worm: w, index: i }));
+    }
+    return out;
+  }
+
+  cellAt(x, y) {
+    return this.bodyCells().find(c => c.x === x && c.y === y) || null;
+  }
+
+  update(game) {
+    this.timer++;
+    if (this.flash > 0) this.flash -= 0.08;
+
+    if (this.type === 'gridEater') this.updateGridEater(game);
+    else this.updateHydra(game);
+  }
+
+  updateGridEater(game) {
+    // Crawls the arena perimeter, converting the border into lava as it feeds.
+    if (this.timer % this.moveEvery === 0) {
+      this.ringPos = (this.ringPos + 1) % this.path.length;
+      const p = this.path[this.ringPos];
+      this.x = p.x; this.y = p.y;
+      for (const c of this.bodyCells()) {
+        if (game.player.alive && game.player.layer === 0 && game.player.contains(c.x, c.y)) {
+          game.damagePlayer('The Grid-Eater crushed you.', c);
+        }
+      }
+    }
+
+    if (this.timer % this.chompEvery === 0) {
+      // Eat a bite of the border.
+      for (const c of this.bodyCells()) {
+        for (const d of DIRS) {
+          const nx = c.x + d.x, ny = c.y + d.y;
+          if (!inBounds(nx, ny)) continue;
+          const edge = nx <= game.world.perimeter || ny <= game.world.perimeter ||
+                       nx >= COLS - 1 - game.world.perimeter || ny >= ROWS - 1 - game.world.perimeter;
+          if (edge) game.world.set(nx, ny, 0, TILE.LAVA);
+        }
+      }
+      FX.ring(this.x * CELL + CELL * this.size / 2, this.y * CELL + CELL * this.size / 2, COLOR.lava, 80, { layer: 0 });
+      Sound.hit();
+    }
+
+    if (this.timer % 150 === 0) {
+      // Full ring devoured — the arena shrinks.
+      if (game.world.consumeRing()) {
+        this.path = this.buildRing(game.world.perimeter);
+        this.ringPos = this.ringPos % this.path.length;
+        game.shake(14);
+        game.flashText('ARENA COLLAPSING', COLOR.lava);
+        Sound.explosion();
+        game.purgeOutsidePlayfield();
+      }
+    }
+
+    if (this.timer % this.spitEvery === 0 && game.player.alive) {
+      const mx = this.x + Math.floor(this.size / 2), my = this.y + Math.floor(this.size / 2);
+      const dx = game.player.head.x - mx, dy = game.player.head.y - my;
+      const dir = Math.abs(dx) > Math.abs(dy)
+        ? { x: Math.sign(dx) || 1, y: 0 }
+        : { x: 0, y: Math.sign(dy) || 1 };
+      const mid = Math.floor(this.size / 2);
+      game.projectiles.push({
+        x: this.x + mid, y: this.y + mid, layer: 0, dir, kind: 'debris',
+        life: 40, power: 1, speed: 1, trail: COLOR.lava
+      });
+      Sound.laser();
+    }
+  }
+
+  updateHydra(game) {
+    if (this.timer % this.moveEvery !== 0) return;
+    const target = game.player.alive ? game.player.head : { x: Math.floor(COLS / 2), y: Math.floor(ROWS / 2) };
+
+    for (const w of this.worms) {
+      const head = w.cells[0];
+      const blocked = (x, y) => {
+        if (!game.world.playable(x, y)) return true;
+        if (game.world.isLethal(x, y, 0)) return true;
+        for (let i = 0; i < w.cells.length - 1; i++) if (w.cells[i].x === x && w.cells[i].y === y) return true;
+        return false;
+      };
+      let dir = null;
+      const path = findPath(head, target, blocked, 260);
+      if (path && path.length) {
+        const s = path[0];
+        dir = DIRS.find(d => d.x === s.x - head.x && d.y === s.y - head.y);
+      }
+      if (!dir) {
+        dir = shuffled(DIRS).find(d => {
+          const nx = head.x + d.x, ny = head.y + d.y;
+          return inBounds(nx, ny) && !blocked(nx, ny) && !(d.x === -w.dir.x && d.y === -w.dir.y);
+        }) || w.dir;
+      }
+      const nx = clamp(head.x + dir.x, 0, COLS - 1), ny = clamp(head.y + dir.y, 0, ROWS - 1);
+      w.dir = dir;
+      w.cells.unshift({ x: nx, y: ny });
+      w.cells.pop();
+
+      if (game.player.alive && game.player.layer === 0) {
+        for (const c of w.cells) {
+          if (game.player.contains(c.x, c.y)) {
+            game.damagePlayer('The Hydra Centipede coiled through you.', c);
+            break;
+          }
+        }
+      }
+      if (game.acidAt(nx, ny, 0) && this.timer % 6 === 0) game.damageBoss(2, { x: nx, y: ny }, 'acid');
+    }
+  }
+
+  /** Splitting the centipede at a weak spot spawns a second, shorter worm. */
+  splitAt(cell) {
+    if (this.type !== 'hydraCentipede' || !cell.worm) return false;
+    const w = cell.worm;
+    const i = cell.index;
+    if (i <= 1 || i >= w.cells.length - 1) return false;
+    const back = w.cells.splice(i);
+    back.shift();
+    if (back.length >= 3) {
+      this.worms.push({ cells: back, dir: { x: -w.dir.x || 1, y: -w.dir.y }, id: this.nextWormId++, phase: rnd(Math.PI * 2) });
+    }
+    this.worms = this.worms.filter(ww => ww.cells.length >= 3);
+    return true;
+  }
+
+  prune() {
+    if (this.type === 'hydraCentipede') {
+      this.worms = this.worms.filter(w => w.cells.length >= 3);
+      if (!this.worms.length) this.hp = 0;
+    }
+  }
+}
+
+/* ═══════════════════════ 12. GAME — STATE & CORE LOOP ═══════════════════════ */
+
+class Game {
+  constructor() {
+    this.world = new World();
+    this.dna = new MutationEngine(this);
+    this.food = new FoodManager(this);
+    this.ai = new AIManager(this);
+
+    this.state = 'MENU';          // MENU · PLAYING · LEVELUP · PAUSED · DYING · GAMEOVER
+    this.mode = 'classic';
+    this.cfg = MODES.classic;
+    this.skin = SKINS[Store.data.skin] || SKINS.emerald;
+
+    this.player = new SnakeEntity({ kind: 'player', x: 6, y: 15, len: 3 });
+    this.phantom = null;
+    this.boss = null;
+
+    this.projectiles = [];
+    this.barricades = [];
+    this.acid = [];
+    this.history = [];
+    this.inputQueue = [];
+    this.collapseItem = null;
+    this.collapseTimer = 0;
+
+    this.tick = 0;
+    this.acc = 0;
+    this.lastTime = 0;
+    this.tickRate = this.cfg.tick;
+    this.alpha = 0;
+
+    this.score = 0;
+    this.chain = 0;
+    this.comboTimer = 0;
+    this.comboMax = 46;
+    this.maxCombo = 1;
+    this.eaten = 0;
+    this.kills = 0;
+    this.bossKills = 0;
+    this.bossWave = 0;
+    this.nextBossScore = 100;
+    this.shifts = 0;
+
+    this.armor = 0;
+    this.invuln = 0;
+    this.plasmaAmmo = 0;
+    this.plasmaMax = 0;
+    this.rewinds = 0;
+    this.rewindMax = 0;
+    this.shiftCooldown = 0;
+    this.abilityCooldown = 0;
+    this.quantumCollected = 0;
+
+    this.shakeAmount = 0;
+    this.shakeX = 0;
+    this.shakeY = 0;
+    this.deathTimer = 0;
+    this.overReason = '';
+    this.runAchievements = [];
+    this.turretKill = false;
+  }
+
+  /* ───────── lifecycle ───────── */
+
+  start(mode) {
+    this.mode = MODES[mode] ? mode : 'classic';
+    this.cfg = MODES[this.mode];
+    this.skin = SKINS[Store.data.skin] || SKINS.emerald;
+
+    this.world.reset();
+    this.dna.reset();
+    this.food.reset();
+    this.ai.reset();
+    FX.clear();
+
+    this.player = new SnakeEntity({
+      kind: 'player', x: 8, y: Math.floor(ROWS / 2), len: 4,
+      dir: { x: 1, y: 0 }, layer: 0,
+      color: this.skin.body, accent: this.skin.head
+    });
+    this.phantom = null;
+    this.boss = null;
+    this.projectiles = [];
+    this.barricades = [];
+    this.acid = [];
+    this.history = [];
+    this.inputQueue = [];
+    this.collapseItem = null;
+    this.collapseTimer = 0;
+
+    this.tick = 0;
+    this.acc = 0;
+    this.alpha = 0;
+    this.tickRate = this.cfg.tick;
+    this.score = 0;
+    this.chain = 0;
+    this.comboTimer = 0;
+    this.maxCombo = 1;
+    this.eaten = 0;
+    this.kills = 0;
+    this.bossKills = 0;
+    this.bossWave = 0;
+    this.nextBossScore = 100;
+    this.shifts = 0;
+    this.armor = 0;
+    this.invuln = 0;
+    this.plasmaAmmo = 0;
+    this.plasmaMax = 0;
+    this.rewinds = 0;
+    this.rewindMax = 0;
+    this.shiftCooldown = 0;
+    this.abilityCooldown = 0;
+    this.quantumCollected = 0;
+    this.shakeAmount = 0;
+    this.deathTimer = 0;
+    this.overReason = '';
+    this.runAchievements = [];
+    this.turretKill = false;
+
+    // Seed hazards and prey.
+    const patches = this.mode === 'classic' ? 2 : 4;
+    for (let l = 0; l < this.cfg.layers; l++) {
+      for (let i = 0; i < patches; i++) this.world.seedPatch(l);
+    }
+    const targets = this.cfg.spawn + 1;
+    for (let i = 0; i < targets; i++) this.food.spawn('apple', 0);
+    if (this.cfg.layers > 1) this.food.spawn('apple', 1);
+    for (let i = 0; i < this.cfg.rivals; i++) this.ai.spawnRival(1);
+
+    Store.data.totals.runs++;
+    Store.save();
+
+    this.state = 'PLAYING';
+    Sound.init();
+    UI.onRunStart(this);
+    UI.sync(this);
+  }
+
+  quitToMenu() {
+    this.state = 'MENU';
+    this.boss = null;
+    this.phantom = null;
+    FX.clear();
+    UI.showOverlay('ovMenu');
+    UI.resetPanels(this);
+  }
+
+  togglePause() {
+    if (this.state === 'PLAYING') {
+      this.state = 'PAUSED';
+      UI.showOverlay('ovPause');
+    } else if (this.state === 'PAUSED') {
+      this.state = 'PLAYING';
+      this.lastTime = performance.now();
+      this.acc = 0;
+      UI.showOverlay(null);
+    }
+  }
+
+  /* ───────── frame loop ───────── */
+
+  frame(now) {
+    const dt = Math.min(64, now - this.lastTime || 16);
+    this.lastTime = now;
+
+    if (this.state === 'PLAYING') {
+      this.acc += dt;
+      let guard = 0;
+      while (this.acc >= this.tickRate && guard < 6) {
+        this.acc -= this.tickRate;
+        guard++;
+        this.step();
+        if (this.state !== 'PLAYING') { this.acc = 0; break; }
+      }
+      this.alpha = clamp(this.acc / this.tickRate, 0, 1);
+    } else if (this.state === 'DYING') {
+      this.deathTimer -= dt;
+      this.alpha = 1;
+      if (this.deathTimer <= 0) this.finishGameOver();
+    } else {
+      this.alpha = this.state === 'LEVELUP' || this.state === 'PAUSED' ? this.alpha : 1;
+    }
+
+    FX.update(dt);
+
+    if (this.shakeAmount > 0.4) {
+      this.shakeX = (Math.random() - 0.5) * this.shakeAmount;
+      this.shakeY = (Math.random() - 0.5) * this.shakeAmount;
+      this.shakeAmount *= Math.pow(0.88, dt / 16.67);
+    } else {
+      this.shakeAmount = 0; this.shakeX = 0; this.shakeY = 0;
+    }
+
+    Renderer.draw(this, now);
+  }
+
+  shake(n) { this.shakeAmount = Math.min(30, this.shakeAmount + n); }
+
+  flashText(str, color) {
+    FX.text(str, VIEW / 2, VIEW * 0.34, color,
+      { size: 26, decay: 0.012, vy: -0.28, layer: this.player.layer, banner: true });
+  }
+
+  /* ───────── grid queries ───────── */
+
+  freeCell(layerHint = null, minDist = 0) {
+    const layers = layerHint === null ? (this.cfg ? this.cfg.layers : 1) : 1;
+    for (let attempt = 0; attempt < 220; attempt++) {
+      const layer = layerHint === null ? rndInt(layers) : layerHint;
+      const p = this.world.perimeter;
+      const x = p + rndInt(Math.max(1, COLS - p * 2));
+      const y = p + rndInt(Math.max(1, ROWS - p * 2));
+      if (!this.world.playable(x, y)) continue;
+      const t = this.world.at(x, y, layer);
+      if (t === TILE.LAVA || t === TILE.VOID) continue;
+      if (this.snakeOccupied(x, y, layer, null)) continue;
+      if (this.food.at(x, y, layer)) continue;
+      if (this.barricadeAt(x, y, layer)) continue;
+      if (this.boss && this.boss.layer === layer && this.boss.cellAt(x, y)) continue;
+      if (minDist > 0 && this.player.alive && this.player.layer === layer &&
+          manhattan({ x, y }, this.player.head) < minDist) continue;
+      return { x, y, layer };
+    }
+    return null;
+  }
+
+  cellFreeForFood(x, y, layer) {
+    if (!inBounds(x, y) || !this.world.playable(x, y)) return false;
+    const t = this.world.at(x, y, layer);
+    if (t === TILE.LAVA || t === TILE.VOID) return false;
+    if (this.snakeOccupied(x, y, layer, null)) return false;
+    if (this.food.at(x, y, layer)) return false;
+    if (this.barricadeAt(x, y, layer)) return false;
+    return true;
+  }
+
+  snakeOccupied(x, y, layer, except) {
+    const list = [this.player, this.phantom, ...this.ai.rivals, ...this.ai.minis];
+    for (const s of list) {
+      if (!s || !s.alive || s === except || s.layer !== layer) continue;
+      if (s.contains(x, y)) return s;
+    }
+    return null;
+  }
+
+  barricadeAt(x, y, layer) {
+    return this.barricades.find(b => b.x === x && b.y === y && b.layer === layer) || null;
+  }
+
+  acidAt(x, y, layer) {
+    return this.acid.find(a => a.x === x && a.y === y && a.layer === layer) || null;
+  }
+
+  blockedForAI(x, y, self) {
+    if (!inBounds(x, y) || !this.world.playable(x, y)) return true;
+    if (this.world.isLethal(x, y, self.layer)) return true;
+    if (this.barricadeAt(x, y, self.layer)) return true;
+    if (this.boss && this.boss.layer === self.layer && this.boss.cellAt(x, y)) return true;
+    const list = [this.player, this.phantom, ...this.ai.rivals, ...this.ai.minis];
+    for (const s of list) {
+      if (!s || !s.alive || s.layer !== self.layer) continue;
+      const ignoreTail = s === self;
+      if (s.contains(x, y, ignoreTail)) return true;
+    }
+    return false;
+  }
+
+  /** Anything trapped outside the shrinking arena is vaporised. */
+  purgeOutsidePlayfield() {
+    this.food.items = this.food.items.filter(f => this.world.playable(f.x, f.y));
+    this.barricades = this.barricades.filter(b => this.world.playable(b.x, b.y));
+    for (const s of this.ai.all) {
+      if (s.cells.some(c => !this.world.playable(c.x, c.y))) this.killSnake(s, 'hazard');
+    }
+    this.ai.rivals = this.ai.rivals.filter(r => r.alive);
+    this.ai.minis = this.ai.minis.filter(m => m.alive);
+  }
+
+  /* ───────── the simulation tick ───────── */
+
+  step() {
+    this.tick++;
+
+    if (this.invuln > 0) this.invuln--;
+    if (this.shiftCooldown > 0) this.shiftCooldown--;
+    if (this.abilityCooldown > 0) this.abilityCooldown--;
+
+    // Combo decay
+    if (this.comboTimer > 0) {
+      this.comboTimer -= 1;
+      if (this.comboTimer <= 0 && this.chain > 0) {
+        this.chain = 0;
+        FX.text('COMBO LOST', this.player.head.x * CELL + CELL / 2, this.player.head.y * CELL, '#94a3b8',
+          { size: 12, layer: this.player.layer, decay: 0.03 });
+      }
+    }
+
+    this.movePlayer();
+    if (this.state !== 'PLAYING') return;
+
+    this.movePhantom();
+    this.food.update(this);
+    this.ai.update(this);
+    this.updateProjectiles();
+    this.updateTurrets();
+    this.updateAcid();
+    this.updateGravityWell();
+
+    if (this.boss) {
+      this.boss.update(this);
+      this.boss.prune();
+      if (this.boss.hp <= 0) this.defeatBoss();
+    }
+
+    this.maintainSpawns();
+    this.recordHistory();
+
+    if (this.state === 'PLAYING') UI.sync(this);
+  }
+
+  /* ───────── player movement & collisions ───────── */
+
+  movePlayer() {
+    const p = this.player;
+    if (!p.alive) return;
+    p.snapshotPrev();
+
+    const onIce = this.world.at(p.head.x, p.head.y, p.layer) === TILE.ICE;
+    if (!onIce && this.inputQueue.length) {
+      const d = this.inputQueue.shift();
+      if (!(d.x === -p.dir.x && d.y === -p.dir.y)) p.dir = d;
+    } else if (onIce && this.inputQueue.length && this.tick % 2 === 0) {
+      // Frictionless: only every other input bites while sliding.
+      const d = this.inputQueue.shift();
+      if (!(d.x === -p.dir.x && d.y === -p.dir.y)) p.dir = d;
+    }
+
+    if (!this.advancePlayer(p.dir, false)) return;
+
+    // Conveyor belts give a free extra shove in the belt's vector.
+    const t = this.world.at(p.head.x, p.head.y, p.layer);
+    if (t === TILE.CONVEYOR) {
+      const d = this.world.convDir(p.head.x, p.head.y, p.layer);
+      FX.trail(p.head.x * CELL + CELL / 2, p.head.y * CELL + CELL / 2, COLOR.conveyor, p.layer);
+      this.advancePlayer(d, true);
+    }
+  }
+
+  /**
+   * Move the player one cell in direction `d`.
+   * Returns false when the run ended during this movement.
+   */
+  advancePlayer(d, fromConveyor) {
+    const p = this.player;
+    let nx = p.head.x + d.x;
+    let ny = p.head.y + d.y;
+
+    // ── walls / arena edge ──
+    const outside = !inBounds(nx, ny) || !this.world.playable(nx, ny);
+    if (outside) {
+      if (this.consumeArmor()) {
+        // Diamond Scales: smash clean through the wall and re-enter opposite.
+        const p0 = this.world.perimeter;
+        const lo = p0, hi = COLS - 1 - p0;
+        if (nx < lo) nx = hi; else if (nx > hi) nx = lo;
+        if (ny < lo) ny = hi; else if (ny > hi) ny = lo;
+        FX.ring(nx * CELL + CELL / 2, ny * CELL + CELL / 2, '#93c5fd', 70, { layer: p.layer });
+        FX.text('SMASH', nx * CELL + CELL / 2, ny * CELL, '#93c5fd', { layer: p.layer, size: 14 });
+        this.shake(10);
+        Sound.hit();
+      } else {
+        this.gameOver('You slammed into the arena wall.');
+        return false;
+      }
+    }
+
+    // ── lethal floor ──
+    if (this.world.isLethal(nx, ny, p.layer)) {
+      if (this.consumeArmor()) {
+        this.world.set(nx, ny, p.layer, TILE.FLOOR);
+        FX.burst(nx * CELL + CELL / 2, ny * CELL + CELL / 2, COLOR.lava, 18, { layer: p.layer });
+        Sound.hit();
+      } else {
+        this.gameOver('You melted in the lava field.');
+        return false;
+      }
+    }
+
+    // ── self collision ──
+    const selfHit = p.contains(nx, ny, true);
+    if (selfHit && !this.dna.has('ghost')) {
+      if (this.consumeArmor()) {
+        FX.burst(nx * CELL + CELL / 2, ny * CELL + CELL / 2, this.skin.light, 16, { layer: p.layer });
+      } else {
+        this.gameOver('You bit through your own coils.');
+        return false;
+      }
+    }
+
+    // ── enemy snakes ──
+    const enemy = this.snakeOccupied(nx, ny, p.layer, p);
+    if (enemy && enemy !== this.phantom) {
+      const ghostThrough = this.dna.rank('ghost') >= 2;
+      const venom = this.dna.rank('venom');
+      if (venom > 0) {
+        this.damageSnake(enemy, 2 + venom, 'venom');
+        FX.text('VENOM', nx * CELL + CELL / 2, ny * CELL, COLOR.scarab, { layer: p.layer, size: 13 });
+        FX.burst(nx * CELL + CELL / 2, ny * CELL + CELL / 2, COLOR.scarab, 16, { layer: p.layer });
+        Sound.hit();
+      } else if (!ghostThrough) {
+        if (this.consumeArmor()) {
+          this.killSnake(enemy, 'rammed');
+        } else {
+          this.gameOver(enemy.kind === 'mini' ? 'A mimic spawn devoured you.' : 'A rival snake ended your run.');
+          return false;
+        }
+      }
+    }
+
+    // ── boss body ──
+    if (this.boss && this.boss.layer === p.layer) {
+      const bc = this.boss.cellAt(nx, ny);
+      if (bc) {
+        const venom = this.dna.rank('venom');
+        if (venom > 0 || this.armor > 0) {
+          const dmg = venom > 0 ? 3 + venom * 2 : 3;
+          this.damageBoss(dmg, bc, 'ram');
+          if (venom === 0) this.consumeArmor();
+          this.shake(12);
+        } else if (!this.damagePlayer('The boss crushed you.', bc)) {
+          return false;
+        }
+      }
+    }
+
+    // ── movement commit ──
+    p.advance(nx, ny);
+
+    // Acid Trail lays down behind the body.
+    if (this.dna.has('acid') && (this.tick % 2 === 0 || this.dna.rank('acid') >= 2)) {
+      this.dropAcid(p.tail.x, p.tail.y, p.layer);
+    }
+
+    // ── consume prey ──
+    const f = this.food.at(nx, ny, p.layer);
+    if (f) this.eat(f, nx, ny);
+
+    // Hydra Head: the tail mouth grazes too.
+    if (this.dna.has('hydra')) {
+      const t = p.tail;
+      const tf = this.food.at(t.x, t.y, p.layer);
+      if (tf) this.eat(tf, t.x, t.y, true);
+      if (this.dna.rank('hydra') >= 2) {
+        const bitten = this.snakeOccupied(t.x, t.y, p.layer, p);
+        if (bitten && bitten !== this.phantom) {
+          this.damageSnake(bitten, 2, 'hydra');
+          FX.burst(t.x * CELL + CELL / 2, t.y * CELL + CELL / 2, this.skin.light, 12, { layer: p.layer });
+        }
+      }
+    }
+
+    // Barricade pickup: your own structures dissolve back into you.
+    const bar = this.barricadeAt(nx, ny, p.layer);
+    if (bar) {
+      this.barricades = this.barricades.filter(b => b !== bar);
+      p.grow(1);
+      this.addScore(5, nx, ny, '#94a3b8');
+      FX.burst(nx * CELL + CELL / 2, ny * CELL + CELL / 2, bar.type === 'turret' ? COLOR.turret : COLOR.wall, 12, { layer: p.layer });
+    }
+
+    if (this.acidAt(nx, ny, p.layer)) {
+      // Your own acid is harmless to you — it just sizzles.
+      FX.trail(nx * CELL + CELL / 2, ny * CELL + CELL / 2, COLOR.acid, p.layer);
+    }
+
+    if (p.length > Store.data.totals.bestLength) {
+      Store.data.totals.bestLength = p.length;
+    }
+    if (p.length >= 40) this.unlock('leviathan');
+    return true;
+  }
+
+  consumeArmor() {
+    if (this.armor <= 0) return false;
+    this.armor--;
+    this.invuln = 4;
+    this.shake(9);
+    FX.ring(this.player.head.x * CELL + CELL / 2, this.player.head.y * CELL + CELL / 2, '#93c5fd', 64, { layer: this.player.layer });
+    return true;
+  }
+
+  damagePlayer(reason, cell) {
+    if (this.invuln > 0) return true;
+    if (this.consumeArmor()) {
+      FX.text('BLOCKED', (cell ? cell.x : this.player.head.x) * CELL + CELL / 2,
+        (cell ? cell.y : this.player.head.y) * CELL, '#93c5fd', { layer: this.player.layer, size: 13 });
+      Sound.hit();
+      return true;
+    }
+    this.gameOver(reason);
+    return false;
+  }
+
+  /* ───────── eating & scoring ───────── */
+
+  eat(f, x, y, viaTail = false) {
+    const p = this.player;
+    this.food.removeAt(f.x, f.y, f.layer);
+    this.eaten++;
+    Store.data.totals.apples++;
+
+    this.chain++;
+    this.comboTimer = this.comboMax + this.dna.rank('metabolism') * 14;
+    const mult = this.multiplier;
+    if (mult > this.maxCombo) this.maxCombo = mult;
+
+    const gained = Math.round(f.value * mult);
+    this.addScore(gained, x, y, f.color);
+    p.grow(f.grow);
+
+    const leveled = this.dna.gainXp(f.xp);
+    Sound.eat(mult);
+    FX.burst(x * CELL + CELL / 2, y * CELL + CELL / 2, f.color, 14 + f.cluster * 3, { layer: p.layer, speed: 2.6 });
+    FX.ring(x * CELL + CELL / 2, y * CELL + CELL / 2, f.color, 40 + f.cluster * 8, { layer: p.layer });
+    if (viaTail) FX.text('TAIL BITE', x * CELL + CELL / 2, y * CELL - 6, this.skin.light, { layer: p.layer, size: 11 });
+
+    this.unlock('genesis');
+    if (mult >= 4) this.unlock('chain');
+
+    // Special prey behaviours
+    if (f.type === 'mimic') {
+      Sound.special('mimic');
+      this.ai.spawnMini(x, y, p.layer, 2);
+      this.flashText('MIMIC HATCH', COLOR.mimic);
+    } else if (f.type === 'golden') {
+      Sound.special('golden');
+    } else if (f.type === 'scarab') {
+      Sound.special('scarab');
+    } else if (f.type === 'quantum') {
+      Sound.special('quantum');
+      this.spawnPhantom();
+    }
+
+    if (this.plasmaMax > 0 && this.plasmaAmmo < this.plasmaMax && this.eaten % 2 === 0) {
+      this.plasmaAmmo++;
+    }
+
+    this.food.spawn();
+    if (leveled) this.openLevelUp();
+    if (this.score >= this.nextBossScore && !this.boss) this.spawnBoss();
+    if (this.score >= 500) this.unlock('century');
+  }
+
+  get multiplier() {
+    return Math.min(4, 1 + Math.min(15, this.chain) * 0.2);
+  }
+
+  addScore(n, x, y, color) {
+    this.score += n;
+    if (this.score > (Store.data.high[this.mode] || 0)) {
+      Store.data.high[this.mode] = this.score;
+    }
+    if (typeof x === 'number') {
+      FX.text(`+${n}`, x * CELL + CELL / 2, y * CELL + CELL / 2, color || this.skin.light,
+        { layer: this.player.layer, size: 14 });
+    }
+  }
+}
+
+/* ═════════ 13. GAME — ABILITIES, QUANTUM, COMBAT, PROGRESSION ═════════ */
+
+Object.assign(Game.prototype, {
+
+  /* ───────── quantum entanglement ───────── */
+
+  spawnPhantom() {
+    if (this.phantom) return;
+    const p = this.player;
+    const mx = clamp(COLS - 1 - p.head.x, this.world.perimeter, COLS - 1 - this.world.perimeter);
+    const my = p.head.y;
+    this.phantom = new SnakeEntity({
+      kind: 'phantom', x: mx, y: my, len: 3, layer: p.layer,
+      dir: { x: -p.dir.x, y: p.dir.y }, color: COLOR.quantum, accent: '#cffafe'
+    });
+    this.phantom.harvest = 0;
+    this.collapseItem = null;
+    this.collapseTimer = 34;
+    this.flashText('QUANTUM SUPERPOSITION', COLOR.quantum);
+    FX.ring(mx * CELL + CELL / 2, my * CELL + CELL / 2, COLOR.quantum, 90, { layer: p.layer });
+    this.shake(8);
+  },
+
+  /** Mirrored twin steps every tick; the collapse item ends the entanglement. */
+  movePhantom() {
+    if (!this.phantom) return;
+    const ph = this.phantom;
+    const p = this.player;
+
+    // Spawn the state-collapse item once the superposition stabilises.
+    if (this.collapseTimer > 0) {
+      this.collapseTimer--;
+      if (this.collapseTimer === 0 && !this.collapseItem) {
+        const spot = this.freeCell(p.layer, 4);
+        if (spot) this.collapseItem = { x: spot.x, y: spot.y, layer: spot.layer, born: this.tick };
+      }
+    }
+
+    ph.snapshotPrev();
+    ph.layer = p.layer;
+    ph.dir = { x: -p.dir.x, y: p.dir.y };
+    const nx = ph.head.x + ph.dir.x, ny = ph.head.y + ph.dir.y;
+
+    const fatal = !inBounds(nx, ny) || !this.world.playable(nx, ny) ||
+      this.world.isLethal(nx, ny, ph.layer) || ph.contains(nx, ny, true) ||
+      !!this.barricadeAt(nx, ny, ph.layer);
+
+    if (fatal) { this.collapse(false); return; }
+
+    const enemy = this.snakeOccupied(nx, ny, ph.layer, ph);
+    if (enemy && enemy !== p) { this.damageSnake(enemy, 2, 'quantum'); this.collapse(false); return; }
+    if (enemy === p) { this.collapse(false); return; }
+
+    ph.advance(nx, ny);
+    if (this.tick % 2 === 0) FX.trail(nx * CELL + CELL / 2, ny * CELL + CELL / 2, COLOR.quantum, ph.layer);
+
+    const f = this.food.at(nx, ny, ph.layer);
+    if (f) {
+      this.food.removeAt(nx, ny, ph.layer);
+      ph.grow(1); ph.harvest++;
+      this.addScore(Math.round(f.value * 0.5), nx, ny, COLOR.quantum);
+      FX.burst(nx * CELL + CELL / 2, ny * CELL + CELL / 2, COLOR.quantum, 10, { layer: ph.layer });
+      this.food.spawn();
+      Sound.eat(1);
+    }
+
+    // Either body may claim the collapse item.
+    if (this.collapseItem) {
+      const ci = this.collapseItem;
+      const grabbed = (p.alive && p.layer === ci.layer && p.head.x === ci.x && p.head.y === ci.y) ||
+                      (ph.layer === ci.layer && ph.head.x === ci.x && ph.head.y === ci.y);
+      if (grabbed) this.collapse(true);
+    }
+  },
+
+  collapse(success) {
+    const ph = this.phantom;
+    if (!ph) return;
+    const cx = ph.head.x * CELL + CELL / 2, cy = ph.head.y * CELL + CELL / 2;
+    if (success) {
+      const bonus = 60 + ph.harvest * 30;
+      this.addScore(bonus, ph.head.x, ph.head.y, COLOR.collapse);
+      this.player.grow(Math.min(6, 2 + ph.harvest));
+      this.quantumCollected++;
+      this.flashText('WAVEFUNCTION COLLAPSED', COLOR.collapse);
+      FX.ring(cx, cy, COLOR.collapse, 120, { layer: ph.layer });
+      FX.burst(cx, cy, COLOR.collapse, 34, { layer: ph.layer, speed: 3.4 });
+      Sound.powerup();
+      this.unlock('quantum');
+    } else {
+      this.player.shrink(Math.max(1, Math.floor(this.player.length * 0.2)));
+      this.flashText('SUPERPOSITION LOST', '#94a3b8');
+      FX.burst(cx, cy, COLOR.quantum, 22, { layer: ph.layer });
+      Sound.hit();
+    }
+    this.shake(10);
+    this.phantom = null;
+    this.collapseItem = null;
+    this.collapseTimer = 0;
+  },
+
+  /* ───────── projectiles ───────── */
+
+  updateProjectiles() {
+    for (let i = this.projectiles.length - 1; i >= 0; i--) {
+      const pr = this.projectiles[i];
+      pr.life--;
+      let dead = pr.life <= 0;
+
+      for (let s = 0; s < pr.speed && !dead; s++) {
+        pr.x += pr.dir.x; pr.y += pr.dir.y;
+        if (!inBounds(pr.x, pr.y) || !this.world.playable(pr.x, pr.y)) { dead = true; break; }
+
+        FX.trail(pr.x * CELL + CELL / 2, pr.y * CELL + CELL / 2, pr.trail, pr.layer);
+
+        if (pr.kind === 'plasma') {
+          const enemy = this.snakeOccupied(pr.x, pr.y, pr.layer, this.player);
+          if (enemy && enemy !== this.phantom) {
+            this.damageSnake(enemy, pr.power, 'plasma');
+            FX.burst(pr.x * CELL + CELL / 2, pr.y * CELL + CELL / 2, COLOR.plasma, 16, { layer: pr.layer });
+            if (pr.pierce > 0) pr.pierce--; else dead = true;
+          }
+          if (this.boss && this.boss.layer === pr.layer) {
+            const bc = this.boss.cellAt(pr.x, pr.y);
+            if (bc) {
+              this.damageBoss(pr.power * (bc.weak ? 2 : 1), bc, 'plasma');
+              if (pr.pierce > 0) pr.pierce--; else dead = true;
+            }
+          }
+        } else if (pr.kind === 'debris') {
+          if (this.player.alive && this.player.layer === pr.layer && this.player.contains(pr.x, pr.y)) {
+            if (!this.damagePlayer('A Grid-Eater shard tore through you.', { x: pr.x, y: pr.y })) return;
+            dead = true;
+          }
+          const bar = this.barricadeAt(pr.x, pr.y, pr.layer);
+          if (bar) {
+            bar.hp -= 2;
+            if (bar.hp <= 0) this.barricades = this.barricades.filter(b => b !== bar);
+            FX.burst(pr.x * CELL + CELL / 2, pr.y * CELL + CELL / 2, COLOR.wall, 10, { layer: pr.layer });
+            dead = true;
+          }
+        }
+      }
+      if (dead) {
+        FX.burst(pr.x * CELL + CELL / 2, pr.y * CELL + CELL / 2, pr.trail, 8, { layer: pr.layer, speed: 1.6 });
+        this.projectiles.splice(i, 1);
+      }
+    }
+  },
+
+  firePlasma() {
+    if (this.state !== 'PLAYING') return;
+    const rank = this.dna.rank('plasma');
+    if (rank <= 0) { UI.toast('🔥 No offensive mutation spliced', 'dim'); return; }
+    if (this.plasmaAmmo <= 0) { UI.toast('🔥 Plasma reserves empty', 'dim'); return; }
+    if (this.abilityCooldown > 0) return;
+
+    const p = this.player;
+    this.plasmaAmmo--;
+    this.abilityCooldown = 3;
+    this.projectiles.push({
+      x: p.head.x, y: p.head.y, layer: p.layer,
+      dir: { x: p.dir.x, y: p.dir.y }, kind: 'plasma',
+      life: 26, power: 2 + rank, speed: 2, pierce: rank >= 3 ? 2 : (rank >= 2 ? 1 : 0),
+      trail: COLOR.plasma
+    });
+    FX.burst(p.head.x * CELL + CELL / 2, p.head.y * CELL + CELL / 2, COLOR.plasma, 12,
+      { layer: p.layer, angle: Math.atan2(p.dir.y, p.dir.x), spread: 1.1, speed: 3 });
+    this.shake(5);
+    Sound.plasma();
+  },
+
+  /* ───────── tail amputation & turrets ───────── */
+
+  amputate() {
+    if (this.state !== 'PLAYING') return;
+    const p = this.player;
+    if (p.length < 8) { UI.toast('✂️ Need 8+ segments to shed', 'dim'); return; }
+
+    const shed = Math.max(2, Math.floor(p.length * 0.3));
+    const isTurret = this.dna.has('turret');
+    const rank = this.dna.rank('turret');
+    for (let i = 0; i < shed; i++) {
+      const c = p.cells.pop();
+      if (!c) break;
+      if (this.barricadeAt(c.x, c.y, p.layer)) continue;
+      this.barricades.push({
+        x: c.x, y: c.y, layer: p.layer,
+        type: isTurret ? 'turret' : 'wall',
+        hp: isTurret ? 4 : 6,
+        cooldown: rndInt(8),
+        range: 5 + rank * 2,
+        power: 1 + rank,
+        beam: null, born: this.tick
+      });
+      FX.burst(c.x * CELL + CELL / 2, c.y * CELL + CELL / 2, isTurret ? COLOR.turret : COLOR.wall, 9, { layer: p.layer, speed: 1.6 });
+    }
+    while (this.barricades.length > 46) this.barricades.shift();
+
+    this.addScore(10 + shed * 3, p.head.x, p.head.y, isTurret ? COLOR.turret : COLOR.wall);
+    this.flashText(isTurret ? 'TURRETS DEPLOYED' : 'BARRICADE RAISED', isTurret ? COLOR.turret : COLOR.wall);
+    this.shake(11);
+    Sound.amputate();
+    this.unlock('sacrifice');
+  },
+
+  updateTurrets() {
+    const enemies = this.ai.all.filter(e => e.alive);
+    for (const b of this.barricades) {
+      if (b.beam) { b.beam.life--; if (b.beam.life <= 0) b.beam = null; }
+      if (b.type !== 'turret') continue;
+      if (b.cooldown > 0) { b.cooldown--; continue; }
+
+      let target = null, bd = Infinity;
+      for (const e of enemies) {
+        if (e.layer !== b.layer) continue;
+        const d = Math.abs(e.head.x - b.x) + Math.abs(e.head.y - b.y);
+        if (d <= b.range && d < bd) { bd = d; target = e; }
+      }
+      if (!target && this.boss && this.boss.layer === b.layer) {
+        for (const c of this.boss.bodyCells()) {
+          const d = Math.abs(c.x - b.x) + Math.abs(c.y - b.y);
+          if (d <= b.range && d < bd) { bd = d; target = { head: c, boss: true, cell: c }; }
+        }
+      }
+      if (!target) continue;
+
+      b.cooldown = Math.max(5, 15 - this.dna.rank('turret') * 3);
+      b.beam = { tx: target.head.x, ty: target.head.y, life: 5 };
+      if (target.boss) {
+        this.damageBoss(b.power * (target.cell.weak ? 2 : 1), target.cell, 'laser');
+      } else {
+        this.damageSnake(target, b.power, 'laser');
+      }
+      FX.burst(target.head.x * CELL + CELL / 2, target.head.y * CELL + CELL / 2, COLOR.turret, 7, { layer: b.layer, speed: 1.8 });
+      Sound.laser();
+    }
+  },
+
+  /* ───────── acid, gravity, layers ───────── */
+
+  dropAcid(x, y, layer) {
+    if (this.acidAt(x, y, layer)) return;
+    const life = 16 + this.dna.rank('acid') * 12;
+    this.acid.push({ x, y, layer, life, max: life });
+    if (this.acid.length > 140) this.acid.shift();
+  },
+
+  updateAcid() {
+    for (let i = this.acid.length - 1; i >= 0; i--) {
+      const a = this.acid[i];
+      a.life--;
+      if (a.life <= 0) { this.acid.splice(i, 1); continue; }
+      if (a.life % 6 === 0) {
+        // Acid dissolves the arena's hazards.
+        if (this.world.cleanse(a.x, a.y, a.layer)) {
+          FX.burst(a.x * CELL + CELL / 2, a.y * CELL + CELL / 2, COLOR.acid, 6, { layer: a.layer, speed: 1.2 });
+        }
+        const bar = this.barricadeAt(a.x, a.y, a.layer);
+        if (bar && bar.born < this.tick - 30) {
+          bar.hp -= 1;
+          if (bar.hp <= 0) this.barricades = this.barricades.filter(b => b !== bar);
+        }
+      }
+      if (this.boss && this.boss.layer === a.layer && this.tick % 8 === 0) {
+        const bc = this.boss.cellAt(a.x, a.y);
+        if (bc) this.damageBoss(1 + this.dna.rank('acid'), bc, 'acid');
+      }
+      if (Math.random() < 0.12) FX.trail(a.x * CELL + rnd(CELL), a.y * CELL + rnd(CELL), COLOR.acid, a.layer);
+    }
+  },
+
+  updateGravityWell() {
+    const rank = this.dna.rank('gravity');
+    if (rank <= 0 || this.tick % 3 !== 0) return;
+    const p = this.player;
+    const radius = 3 + rank * 2;
+    for (const f of this.food.items) {
+      if (f.layer !== p.layer) continue;
+      const d = manhattan(f, p.head);
+      if (d > radius || d === 0) continue;
+      const dx = Math.sign(p.head.x - f.x), dy = Math.sign(p.head.y - f.y);
+      const tryOrder = Math.abs(p.head.x - f.x) > Math.abs(p.head.y - f.y)
+        ? [{ x: dx, y: 0 }, { x: 0, y: dy }] : [{ x: 0, y: dy }, { x: dx, y: 0 }];
+      for (const t of tryOrder) {
+        if (!t.x && !t.y) continue;
+        const nx = f.x + t.x, ny = f.y + t.y;
+        if (this.cellFreeForFood(nx, ny, f.layer)) {
+          f.x = nx; f.y = ny;
+          FX.trail(nx * CELL + CELL / 2, ny * CELL + CELL / 2, '#a78bfa', f.layer);
+          break;
+        }
+      }
+    }
+  },
+
+  shiftLayer() {
+    if (this.state !== 'PLAYING') return;
+    if (this.cfg.layers < 2) { UI.toast('🌀 This arena has a single floor', 'dim'); return; }
+    if (this.shiftCooldown > 0) return;
+    const p = this.player;
+    const target = 1 - p.layer;
+    if (this.world.isLethal(p.head.x, p.head.y, target)) { UI.toast('🌀 That floor is molten here', 'dim'); return; }
+    const blocker = this.snakeOccupied(p.head.x, p.head.y, target, p);
+    if (blocker) { UI.toast('🌀 Something is already there', 'dim'); return; }
+
+    const cx = p.head.x * CELL + CELL / 2, cy = p.head.y * CELL + CELL / 2;
+    FX.ring(cx, cy, COLOR.quantum, 100, { layer: p.layer });
+    FX.burst(cx, cy, COLOR.quantum, 20, { layer: p.layer, speed: 2.6 });
+    p.layer = target;
+    if (this.phantom) this.phantom.layer = target;
+    this.shiftCooldown = 8;
+    this.shifts++;
+    FX.ring(cx, cy, COLOR.quantum, 100, { layer: target });
+    this.flashText(`FLOOR ${target + 1}`, COLOR.quantum);
+    Sound.shift();
+    if (this.shifts >= 10) this.unlock('drifter');
+  },
+
+  /* ───────── time rewind ───────── */
+
+  recordHistory() {
+    this.history.push({
+      tick: this.tick,
+      player: this.player.serialize(),
+      phantom: this.phantom ? this.phantom.serialize() : null,
+      foods: this.food.serialize(),
+      score: this.score, chain: this.chain, comboTimer: this.comboTimer,
+      armor: this.armor, plasmaAmmo: this.plasmaAmmo,
+      bossHp: this.boss ? this.boss.hp : null
+    });
+    if (this.history.length > 90) this.history.shift();
+  },
+
+  rewind() {
+    if (this.state !== 'PLAYING') return;
+    if (this.dna.rank('chronos') <= 0) { UI.toast('⏳ Chronos Core not spliced', 'dim'); return; }
+    if (this.rewinds <= 0) { UI.toast('⏳ No rewind charges left', 'dim'); return; }
+    const back = 18 + this.dna.rank('chronos') * 6;
+    const idx = Math.max(0, this.history.length - back);
+    const snap = this.history[idx];
+    if (!snap) { UI.toast('⏳ Not enough recorded time', 'dim'); return; }
+
+    this.rewinds--;
+    this.player.restore(snap.player);
+    this.player.alive = true;
+    if (snap.phantom && this.phantom) this.phantom.restore(snap.phantom);
+    this.food.restore(snap.foods);
+    this.score = snap.score;
+    this.chain = snap.chain;
+    this.comboTimer = snap.comboTimer;
+    this.armor = snap.armor;
+    this.plasmaAmmo = snap.plasmaAmmo;
+    if (this.boss && snap.bossHp !== null) this.boss.hp = snap.bossHp;
+    this.history = this.history.slice(0, idx + 1);
+    this.invuln = 8;
+    this.inputQueue.length = 0;
+
+    for (const c of this.player.cells) {
+      FX.ring(c.x * CELL + CELL / 2, c.y * CELL + CELL / 2, COLOR.golden, 34, { layer: this.player.layer, decay: 0.08 });
+    }
+    this.flashText('TIME REWOUND', COLOR.golden);
+    this.shake(14);
+    Sound.rewind();
+    this.unlock('chrono');
+    UI.sync(this);
+  },
+
+  /* ───────── combat resolution ───────── */
+
+  damageSnake(s, n, source) {
+    if (!s || !s.alive) return;
+    s.hp -= n;
+    FX.burst(s.head.x * CELL + CELL / 2, s.head.y * CELL + CELL / 2, s.color, 8, { layer: s.layer, speed: 2 });
+    if (s.hp <= 0) this.killSnake(s, source);
+  },
+
+  killSnake(s, reason) {
+    if (!s || !s.alive) return;
+    s.alive = false;
+    const playerKill = ['venom', 'plasma', 'laser', 'hydra', 'rammed', 'acid', 'quantum'].includes(reason);
+    for (const c of s.cells) {
+      FX.burst(c.x * CELL + CELL / 2, c.y * CELL + CELL / 2, s.color, 5, { layer: s.layer, speed: 2.2 });
+    }
+    if (playerKill) {
+      this.kills++;
+      Store.data.totals.kills++;
+      const value = s.kind === 'rival' ? 45 : 20;
+      this.addScore(value, s.head.x, s.head.y, s.color);
+      if (reason === 'laser') { this.turretKill = true; this.unlock('gunner'); }
+      if (s.kind === 'rival' && Math.random() < 0.7) {
+        const spot = { x: s.head.x, y: s.head.y, layer: s.layer };
+        if (this.cellFreeForFood(spot.x, spot.y, spot.layer)) {
+          const f = this.food.spawn('golden', spot.layer);
+          if (f) { f.x = spot.x; f.y = spot.y; }
+        }
+      }
+      Sound.hit();
+    }
+    this.shake(6);
+  },
+
+  /* ───────── boss flow ───────── */
+
+  spawnBoss() {
+    this.bossWave++;
+    const type = BOSS_TYPES[(this.bossWave - 1) % BOSS_TYPES.length];
+    this.boss = new Boss(type, this.bossWave, this);
+    this.flashText(this.boss.name.toUpperCase(), COLOR.boss);
+    this.shake(20);
+    Sound.explosion();
+    UI.onBossSpawn(this);
+  },
+
+  damageBoss(n, cell, source) {
+    if (!this.boss) return;
+    const boss = this.boss;
+    let dmg = n;
+    if (cell && cell.weak) {
+      if (boss.type === 'hydraCentipede' && boss.splitAt(cell)) {
+        dmg += 4;
+        this.flashText('WEAK SPOT SPLIT', COLOR.boss);
+        FX.burst(cell.x * CELL + CELL / 2, cell.y * CELL + CELL / 2, COLOR.boss, 26, { layer: boss.layer, speed: 3 });
+      }
+    }
+    boss.hp -= dmg;
+    boss.flash = 1;
+    FX.text(`-${dmg}`, cell ? cell.x * CELL + CELL / 2 : VIEW / 2, cell ? cell.y * CELL : VIEW / 2, COLOR.boss,
+      { layer: boss.layer, size: 13 });
+    FX.burst((cell ? cell.x : 0) * CELL + CELL / 2, (cell ? cell.y : 0) * CELL + CELL / 2, COLOR.boss, 10, { layer: boss.layer });
+    this.shake(5);
+    Sound.bossHit();
+    UI.syncBoss(this);
+  },
+
+  defeatBoss() {
+    const boss = this.boss;
+    if (!boss) return;
+    this.boss = null;
+    this.bossKills++;
+    Store.data.totals.bosses++;
+    const reward = 120 + boss.wave * 60;
+    this.addScore(reward, this.player.head.x, this.player.head.y, COLOR.golden);
+    this.flashText(`${boss.name.toUpperCase()} DOWN  +${reward}`, COLOR.golden);
+
+    for (const c of boss.bodyCells()) {
+      FX.burst(c.x * CELL + CELL / 2, c.y * CELL + CELL / 2, COLOR.boss, 10, { layer: boss.layer, speed: 3.2 });
+      FX.ring(c.x * CELL + CELL / 2, c.y * CELL + CELL / 2, COLOR.golden, 50, { layer: boss.layer, decay: 0.06 });
+    }
+
+    // Felling The Grid-Eater restores a devoured ring of arena.
+    if (boss.type === 'gridEater' && this.world.perimeter > 0) {
+      this.world.perimeter--;
+      const r = this.world.perimeter;
+      for (let l = 0; l < LAYERS; l++) {
+        for (let x = r; x < COLS - r; x++) {
+          if (this.world.at(x, r, l) === TILE.LAVA) this.world.set(x, r, l, TILE.FLOOR);
+          if (this.world.at(x, ROWS - 1 - r, l) === TILE.LAVA) this.world.set(x, ROWS - 1 - r, l, TILE.FLOOR);
+        }
+        for (let y = r; y < ROWS - r; y++) {
+          if (this.world.at(r, y, l) === TILE.LAVA) this.world.set(r, y, l, TILE.FLOOR);
+          if (this.world.at(COLS - 1 - r, y, l) === TILE.LAVA) this.world.set(COLS - 1 - r, y, l, TILE.FLOOR);
+        }
+      }
+      this.flashText('ARENA RESTORED', '#34d399');
+    }
+
+    this.armor += 1;
+    this.plasmaAmmo = this.plasmaMax;
+    this.nextBossScore = this.score + 100;
+    this.shake(26);
+    Sound.explosion();
+    this.unlock('slayer');
+    if (this.bossKills >= 3) this.unlock('apex');
+    UI.onBossEnd(this);
+    Store.save();
+  },
+
+  /* ───────── spawning cadence ───────── */
+
+  maintainSpawns() {
+    const want = Math.min(7, this.cfg.spawn + Math.floor(this.dna.level / 3));
+    if (this.food.items.length < want && this.tick % 3 === 0) this.food.spawn();
+
+    if (this.cfg.rivals > 0 && this.ai.rivals.length < this.cfg.rivals && this.tick % 170 === 0) {
+      this.ai.spawnRival(this.dna.level);
+    }
+    if (this.tick % 420 === 0 && Math.random() < this.cfg.hazardRate) {
+      const layer = rndInt(this.cfg.layers);
+      const patch = this.world.seedPatch(layer);
+      if (patch) {
+        const label = patch.kind === TILE.ICE ? 'ICE SHEET' : patch.kind === TILE.CONVEYOR ? 'CONVEYOR ONLINE' : 'LAVA VENT';
+        FX.text(label, patch.x * CELL, patch.y * CELL, patch.kind === TILE.LAVA ? COLOR.lava : COLOR.ice,
+          { layer, size: 12, decay: 0.015 });
+      }
+    }
+    if (this.score >= this.nextBossScore && !this.boss) this.spawnBoss();
+
+    // Difficulty ramp: the world accelerates as your genome grows.
+    const target = Math.max(52, this.cfg.tick - this.dna.level * 2.4);
+    this.tickRate = lerp(this.tickRate, target, 0.25);
+  },
+
+  /* ───────── progression ───────── */
+
+  openLevelUp() {
+    const offer = this.dna.roll();
+    if (!offer.length) {
+      // Genome fully saturated — convert the splice into raw score.
+      this.dna.pending = 0;
+      this.addScore(150, this.player.head.x, this.player.head.y, COLOR.golden);
+      this.flashText('GENOME SATURATED +150', COLOR.golden);
+      return;
+    }
+    this.state = 'LEVELUP';
+    this.alpha = 0;
+    Sound.levelUp();
+    if (this.dna.level >= 5) this.unlock('splice');
+    UI.showLevelUp(this, offer);
+  },
+
+  chooseMutation(id) {
+    if (this.state !== 'LEVELUP') return;
+    const def = this.dna.take(id);
+    if (!def) return;
+    if (this.dna.pending > 0) {
+      const next = this.dna.roll();
+      if (next.length) { UI.showLevelUp(this, next); return; }
+      this.dna.pending = 0;
+    }
+    this.state = 'PLAYING';
+    this.lastTime = performance.now();
+    this.acc = 0;
+    UI.showOverlay(null);
+    UI.sync(this);
+  },
+
+  onMutationGained(def, rank) {
+    if (def.id === 'scales') { this.armor += 2; }
+    if (def.id === 'plasma') { this.plasmaMax = 2 + rank * 2; this.plasmaAmmo = this.plasmaMax; }
+    if (def.id === 'chronos') { this.rewindMax = 1 + rank; this.rewinds = this.rewindMax; }
+    if (def.id === 'metabolism') { this.comboTimer = Math.max(this.comboTimer, 20); }
+    const p = this.player;
+    FX.ring(p.head.x * CELL + CELL / 2, p.head.y * CELL + CELL / 2, this.skin.light, 110, { layer: p.layer });
+    FX.burst(p.head.x * CELL + CELL / 2, p.head.y * CELL + CELL / 2, this.skin.light, 26, { layer: p.layer, speed: 3 });
+    UI.toast(`${def.icon} ${def.name} ${rank > 1 ? 'RANK ' + rank : 'spliced'}`);
+    Sound.powerup();
+  },
+
+  unlock(id) {
+    if (Store.data.achievements[id]) return;
+    const def = ACHIEVEMENTS.find(a => a.id === id);
+    if (!def) return;
+    Store.data.achievements[id] = Date.now();
+    Store.save();
+    this.runAchievements.push(id);
+    UI.toast(`${def.icon} ${def.name} unlocked`);
+    Sound.achieve();
+  },
+
+  /* ───────── input ───────── */
+
+  queueDir(d) {
+    if (this.state !== 'PLAYING') return;
+    const last = this.inputQueue.length ? this.inputQueue[this.inputQueue.length - 1] : this.player.dir;
+    if (d.x === last.x && d.y === last.y) return;
+    if (d.x === -last.x && d.y === -last.y) return;
+    if (this.inputQueue.length >= 3) this.inputQueue.shift();
+    this.inputQueue.push(d);
+  },
+
+  /* ───────── end of run ───────── */
+
+  gameOver(reason) {
+    if (this.state === 'DYING' || this.state === 'GAMEOVER') return;
+    this.overReason = reason;
+    this.state = 'DYING';
+    this.deathTimer = 900;
+    this.player.alive = false;
+
+    for (const c of this.player.cells) {
+      FX.burst(c.x * CELL + CELL / 2, c.y * CELL + CELL / 2, this.skin.head, 9, { layer: this.player.layer, speed: 3, decay: 0.7 });
+    }
+    FX.ring(this.player.head.x * CELL + CELL / 2, this.player.head.y * CELL + CELL / 2, this.skin.head, 160, { layer: this.player.layer, decay: 0.03 });
+    this.shake(26);
+    Sound.die();
+
+    const t = Store.data.totals;
+    t.score += this.score;
+    if (this.maxCombo > t.bestCombo) t.bestCombo = this.maxCombo;
+    if (this.score > (Store.data.high[this.mode] || 0)) Store.data.high[this.mode] = this.score;
+    Store.save();
+  },
+
+  finishGameOver() {
+    this.state = 'GAMEOVER';
+    UI.showGameOver(this);
+  }
+});
+
+/* ═══════════════════ 14. CANVAS RENDERER (graphics engine) ═══════════════════ */
+
+const Renderer = {
+  canvas: null,
+  ctx: null,
+  scale: 1,
+  dpr: 1,
+
+  init() {
+    this.canvas = document.getElementById('game');
+    this.ctx = this.canvas.getContext('2d', { alpha: false });
+    this.resize();
+    window.addEventListener('resize', () => this.resize());
+    if (window.ResizeObserver) {
+      const ro = new ResizeObserver(() => this.resize());
+      ro.observe(document.getElementById('stage'));
+    }
+  },
+
+  resize() {
+    const stage = document.getElementById('stage');
+    const rect = stage.getBoundingClientRect();
+    const size = Math.max(120, Math.min(rect.width, rect.height) || 480);
+    this.dpr = Math.min(2, window.devicePixelRatio || 1);
+    this.canvas.width = Math.round(size * this.dpr);
+    this.canvas.height = Math.round(size * this.dpr);
+    this.scale = this.canvas.width / VIEW;
+    this.buildStatic();
+  },
+
+  /** Bake the arena gradient, the grid and the vignette into blittable layers. */
+  buildStatic() {
+    const px = Math.max(1, Math.round(VIEW * this.scale));
+
+    const floor = document.createElement('canvas');
+    floor.width = floor.height = px;
+    const f = floor.getContext('2d');
+    f.setTransform(this.scale, 0, 0, this.scale, 0, 0);
+    const g = f.createRadialGradient(VIEW / 2, VIEW / 2, 40, VIEW / 2, VIEW / 2, VIEW * 0.78);
+    g.addColorStop(0, '#0d1421');
+    g.addColorStop(1, '#070a11');
+    f.fillStyle = g;
+    f.fillRect(0, 0, VIEW, VIEW);
+    f.strokeStyle = 'rgba(148,163,184,0.055)';
+    f.lineWidth = 1;
+    f.beginPath();
+    for (let i = 0; i <= COLS; i++) {
+      const v = i * CELL;
+      f.moveTo(v, 0); f.lineTo(v, VIEW);
+      f.moveTo(0, v); f.lineTo(VIEW, v);
+    }
+    f.stroke();
+    this._floor = floor;
+
+    const vig = document.createElement('canvas');
+    vig.width = vig.height = px;
+    const v = vig.getContext('2d');
+    v.setTransform(this.scale, 0, 0, this.scale, 0, 0);
+    const vg = v.createRadialGradient(VIEW / 2, VIEW / 2, VIEW * 0.34, VIEW / 2, VIEW / 2, VIEW * 0.78);
+    vg.addColorStop(0, 'rgba(0,0,0,0)');
+    vg.addColorStop(1, 'rgba(0,0,0,0.5)');
+    v.fillStyle = vg;
+    v.fillRect(0, 0, VIEW, VIEW);
+    this._vignette = vig;
+  },
+
+  /* ── low-level helpers ── */
+
+  roundRect(ctx, x, y, w, h, r) {
+    const rr = Math.min(r, w / 2, h / 2);
+    ctx.beginPath();
+    if (ctx.roundRect) { ctx.roundRect(x, y, w, h, rr); return; }
+    ctx.moveTo(x + rr, y);
+    ctx.arcTo(x + w, y, x + w, y + h, rr);
+    ctx.arcTo(x + w, y + h, x, y + h, rr);
+    ctx.arcTo(x, y + h, x, y, rr);
+    ctx.arcTo(x, y, x + w, y, rr);
+    ctx.closePath();
+  },
+
+  _sprites: new Map(),
+
+  /** Pre-rendered radial falloff, tinted per colour and cached. */
+  glowSprite(color) {
+    let sp = this._sprites.get(color);
+    if (!sp) {
+      const size = 64;
+      sp = document.createElement('canvas');
+      sp.width = sp.height = size;
+      const c = sp.getContext('2d');
+      const g = c.createRadialGradient(size / 2, size / 2, 0, size / 2, size / 2, size / 2);
+      g.addColorStop(0, rgba(color, 1));
+      g.addColorStop(0.45, rgba(color, 0.32));
+      g.addColorStop(1, rgba(color, 0));
+      c.fillStyle = g;
+      c.fillRect(0, 0, size, size);
+      this._sprites.set(color, sp);
+    }
+    return sp;
+  },
+
+  glow(ctx, x, y, radius, color, intensity = 0.55) {
+    const sp = this.glowSprite(color);
+    const prev = ctx.globalAlpha;
+    ctx.globalAlpha = prev * clamp(intensity, 0, 1);
+    ctx.drawImage(sp, x - radius, y - radius, radius * 2, radius * 2);
+    ctx.globalAlpha = prev;
+  },
+
+  /** Interpolated pixel centre of a snake segment. */
+  segPos(s, i, alpha) {
+    const cur = s.cells[i];
+    const prev = s.prev[i] || cur;
+    const dx = Math.abs(cur.x - prev.x), dy = Math.abs(cur.y - prev.y);
+    const jump = dx > 1.5 || dy > 1.5;          // wrapped — snap instead of sliding
+    const t = jump ? 1 : alpha;
+    return {
+      x: lerp(prev.x, cur.x, t) * CELL + CELL / 2,
+      y: lerp(prev.y, cur.y, t) * CELL + CELL / 2
+    };
+  },
+
+  /* ── main frame ── */
+
+  draw(game, now) {
+    const ctx = this.ctx;
+    ctx.setTransform(this.scale, 0, 0, this.scale, 0, 0);
+
+    // Base plate
+    ctx.fillStyle = '#05070c';
+    ctx.fillRect(0, 0, VIEW, VIEW);
+
+    ctx.save();
+    ctx.translate(game.shakeX, game.shakeY);
+
+    this.drawFloor(ctx, game, now);
+
+    const cur = game.player.layer;
+    const layers = game.cfg.layers;
+    if (layers > 1) {
+      const other = 1 - cur;
+      ctx.save();
+      ctx.globalAlpha = 0.24;
+      ctx.translate(VIEW / 2, VIEW / 2); ctx.scale(0.965, 0.965); ctx.translate(-VIEW / 2, -VIEW / 2);
+      this.drawLayer(ctx, game, other, now, true);
+      ctx.restore();
+    }
+    this.drawLayer(ctx, game, cur, now, false);
+
+    this.drawLightPass(ctx, game, now);
+    ctx.restore();
+
+    this.drawVignette(ctx, game, now);
+  },
+
+  /* ── arena floor: grid, hazards, boundary ── */
+
+  drawFloor(ctx, game, now) {
+    const p = game.world.perimeter;
+
+    if (this._floor) ctx.drawImage(this._floor, 0, 0, VIEW, VIEW);
+
+    // Playfield boundary (shrinks as the Grid-Eater feeds)
+    const x0 = p * CELL, size = VIEW - p * CELL * 2;
+    ctx.strokeStyle = p > 0 ? rgba(COLOR.lava, 0.55) : 'rgba(148,163,184,0.18)';
+    ctx.lineWidth = 2;
+    this.roundRect(ctx, x0 + 1, x0 + 1, size - 2, size - 2, 10);
+    ctx.stroke();
+  },
+
+  /* ── everything that lives on one sub-grid ── */
+
+  drawLayer(ctx, game, layer, now, dim) {
+    this.drawTiles(ctx, game, layer, now);
+    this.drawAcid(ctx, game, layer, now);
+    this.drawBarricades(ctx, game, layer, now);
+    this.drawFood(ctx, game, layer, now);
+    if (game.collapseItem && game.collapseItem.layer === layer) this.drawCollapse(ctx, game, now);
+    if (game.boss && game.boss.layer === layer) this.drawBoss(ctx, game, now, dim);
+    this.drawProjectiles(ctx, game, layer, now);
+
+    for (const s of game.ai.rivals) if (s.layer === layer) this.drawSnake(ctx, game, s, now, { rival: true });
+    for (const s of game.ai.minis) if (s.layer === layer) this.drawSnake(ctx, game, s, now, { mini: true });
+    if (game.phantom && game.phantom.layer === layer) this.drawSnake(ctx, game, game.phantom, now, { phantom: true });
+    if (game.player.cells.length && game.player.layer === layer && game.state !== 'GAMEOVER') {
+      this.drawSnake(ctx, game, game.player, now, { player: true });
+    }
+    this.drawParticles(ctx, game, layer, now);
+  },
+
+  drawTiles(ctx, game, layer, now) {
+    const tiles = game.world.tiles[layer];
+    for (let y = 0; y < ROWS; y++) {
+      for (let x = 0; x < COLS; x++) {
+        const t = tiles[y * COLS + x];
+        if (t === TILE.FLOOR) continue;
+        const px = x * CELL, py = y * CELL;
+        if (t === TILE.ICE) {
+          ctx.fillStyle = 'rgba(125,211,252,0.13)';
+          this.roundRect(ctx, px + 1, py + 1, CELL - 2, CELL - 2, 4); ctx.fill();
+          ctx.strokeStyle = 'rgba(186,230,253,0.28)';
+          ctx.lineWidth = 1;
+          ctx.beginPath();
+          ctx.moveTo(px + 4, py + CELL - 5); ctx.lineTo(px + CELL - 5, py + 4);
+          ctx.moveTo(px + 9, py + CELL - 4); ctx.lineTo(px + CELL - 4, py + 9);
+          ctx.stroke();
+        } else if (t === TILE.CONVEYOR) {
+          const d = game.world.convDir(x, y, layer);
+          ctx.fillStyle = 'rgba(129,140,248,0.14)';
+          this.roundRect(ctx, px + 1, py + 1, CELL - 2, CELL - 2, 4); ctx.fill();
+          const phase = ((now / 260) + (x * d.x + y * d.y) * 0.4) % 1;
+          ctx.strokeStyle = 'rgba(165,180,252,0.62)';
+          ctx.lineWidth = 1.8;
+          ctx.lineCap = 'round';
+          for (let k = 0; k < 2; k++) {
+            const off = ((phase + k * 0.5) % 1) * CELL - CELL / 2;
+            const cx = px + CELL / 2 + d.x * off, cy = py + CELL / 2 + d.y * off;
+            ctx.beginPath();
+            ctx.moveTo(cx - d.y * 4 - d.x * 3, cy - d.x * 4 - d.y * 3);
+            ctx.lineTo(cx + d.x * 3, cy + d.y * 3);
+            ctx.lineTo(cx + d.y * 4 - d.x * 3, cy + d.x * 4 - d.y * 3);
+            ctx.stroke();
+          }
+          ctx.lineCap = 'butt';
+        } else if (t === TILE.LAVA) {
+          const pulse = 0.5 + 0.5 * Math.sin(now / 420 + (x + y) * 0.7);
+          ctx.fillStyle = `rgba(249,115,22,${0.2 + pulse * 0.24})`;
+          this.roundRect(ctx, px + 1, py + 1, CELL - 2, CELL - 2, 4); ctx.fill();
+          ctx.fillStyle = `rgba(254,215,170,${0.16 + pulse * 0.2})`;
+          ctx.beginPath();
+          ctx.arc(px + CELL / 2, py + CELL / 2, 2.6 + pulse * 1.6, 0, Math.PI * 2);
+          ctx.fill();
+        }
+      }
+    }
+  },
+
+  drawAcid(ctx, game, layer, now) {
+    for (const a of game.acid) {
+      if (a.layer !== layer) continue;
+      const t = a.life / a.max;
+      const px = a.x * CELL, py = a.y * CELL;
+      const wob = Math.sin(now / 200 + a.x * 1.7 + a.y) * 1.2;
+      ctx.fillStyle = rgba(COLOR.acid, 0.12 + t * 0.26);
+      this.roundRect(ctx, px + 2 - wob * 0.3, py + 2, CELL - 4, CELL - 4, 6);
+      ctx.fill();
+      ctx.fillStyle = rgba('#d9f99d', 0.1 + t * 0.2);
+      ctx.beginPath();
+      ctx.arc(px + CELL / 2 + wob, py + CELL / 2 - wob, 2 + t * 2, 0, Math.PI * 2);
+      ctx.fill();
+    }
+  },
+
+  drawBarricades(ctx, game, layer, now) {
+    for (const b of game.barricades) {
+      if (b.layer !== layer) continue;
+      const px = b.x * CELL, py = b.y * CELL;
+      const turret = b.type === 'turret';
+      const c = turret ? COLOR.turret : COLOR.wall;
+
+      ctx.fillStyle = rgba(c, turret ? 0.26 : 0.32);
+      this.roundRect(ctx, px + 2, py + 2, CELL - 4, CELL - 4, turret ? 7 : 4);
+      ctx.fill();
+      ctx.strokeStyle = rgba(c, 0.75);
+      ctx.lineWidth = 1.4;
+      ctx.stroke();
+
+      if (turret) {
+        const ang = now / 900 + b.x + b.y;
+        ctx.save();
+        ctx.translate(px + CELL / 2, py + CELL / 2);
+        ctx.rotate(b.beam ? Math.atan2(b.beam.ty - b.y, b.beam.tx - b.x) : ang);
+        ctx.fillStyle = rgba('#e0f2fe', 0.9);
+        this.roundRect(ctx, -1.6, -1.6, CELL * 0.45, 3.2, 1.6);
+        ctx.fill();
+        ctx.restore();
+        ctx.fillStyle = rgba(c, 0.9);
+        ctx.beginPath();
+        ctx.arc(px + CELL / 2, py + CELL / 2, 2.6, 0, Math.PI * 2);
+        ctx.fill();
+      } else {
+        ctx.strokeStyle = rgba('#cbd5e1', 0.32);
+        ctx.lineWidth = 1;
+        ctx.beginPath();
+        ctx.moveTo(px + 5, py + CELL / 2); ctx.lineTo(px + CELL - 5, py + CELL / 2);
+        ctx.stroke();
+      }
+
+      if (b.beam) {
+        const t = b.beam.life / 5;
+        ctx.strokeStyle = rgba(COLOR.turret, 0.28 + t * 0.55);
+        ctx.lineWidth = 1 + t * 2.4;
+        ctx.lineCap = 'round';
+        ctx.beginPath();
+        ctx.moveTo(px + CELL / 2, py + CELL / 2);
+        ctx.lineTo(b.beam.tx * CELL + CELL / 2, b.beam.ty * CELL + CELL / 2);
+        ctx.stroke();
+        ctx.lineCap = 'butt';
+      }
+    }
+  },
+
+  drawFood(ctx, game, layer, now) {
+    for (const f of game.food.items) {
+      if (f.layer !== layer) continue;
+      const cx = f.x * CELL + CELL / 2, cy = f.y * CELL + CELL / 2;
+      const pulse = 0.5 + 0.5 * Math.sin(now / 300 + f.wobble);
+      const r = (CELL * 0.3) * f.size + pulse * 1.3;
+
+      this.glow(ctx, cx, cy, r * 3.4, f.color, 0.3);
+
+      if (f.type === 'apple') {
+        ctx.fillStyle = f.color;
+        ctx.beginPath(); ctx.arc(cx, cy + 0.5, r, 0, Math.PI * 2); ctx.fill();
+        ctx.fillStyle = rgba('#fecaca', 0.65);
+        ctx.beginPath(); ctx.arc(cx - r * 0.3, cy - r * 0.35, r * 0.3, 0, Math.PI * 2); ctx.fill();
+        ctx.strokeStyle = '#34d399'; ctx.lineWidth = 1.6; ctx.lineCap = 'round';
+        ctx.beginPath(); ctx.moveTo(cx, cy - r); ctx.quadraticCurveTo(cx + 2, cy - r - 3.5, cx + 5, cy - r - 3); ctx.stroke();
+        ctx.lineCap = 'butt';
+      } else if (f.type === 'scarab') {
+        ctx.save();
+        ctx.translate(cx, cy);
+        ctx.rotate(Math.sin(now / 200 + f.wobble) * 0.4);
+        ctx.fillStyle = f.color;
+        ctx.beginPath(); ctx.ellipse(0, 0, r * 1.05, r * 0.82, 0, 0, Math.PI * 2); ctx.fill();
+        ctx.strokeStyle = rgba('#052e16', 0.75); ctx.lineWidth = 1.2;
+        ctx.beginPath(); ctx.moveTo(0, -r * 0.8); ctx.lineTo(0, r * 0.8); ctx.stroke();
+        ctx.fillStyle = rgba('#bbf7d0', 0.9);
+        ctx.beginPath(); ctx.arc(-r * 0.45, -r * 0.4, 1.3, 0, Math.PI * 2);
+        ctx.arc(r * 0.45, -r * 0.4, 1.3, 0, Math.PI * 2); ctx.fill();
+        ctx.restore();
+      } else if (f.type === 'mimic') {
+        ctx.fillStyle = f.color;
+        this.roundRect(ctx, cx - r, cy - r, r * 2, r * 2, r * 0.55); ctx.fill();
+        ctx.fillStyle = '#1e1b4b';
+        const blink = Math.sin(now / 520 + f.wobble) > 0.86 ? 0.25 : 1;
+        ctx.beginPath();
+        ctx.ellipse(cx - r * 0.35, cy - r * 0.1, 1.5, 2.1 * blink, 0, 0, Math.PI * 2);
+        ctx.ellipse(cx + r * 0.35, cy - r * 0.1, 1.5, 2.1 * blink, 0, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.strokeStyle = rgba('#1e1b4b', 0.8); ctx.lineWidth = 1;
+        ctx.beginPath(); ctx.moveTo(cx - r * 0.4, cy + r * 0.45); ctx.lineTo(cx + r * 0.4, cy + r * 0.45); ctx.stroke();
+      } else if (f.type === 'golden') {
+        ctx.save();
+        ctx.translate(cx, cy);
+        ctx.rotate(now / 1400);
+        const spikes = 5 + f.cluster;
+        ctx.fillStyle = f.color;
+        ctx.beginPath();
+        for (let i = 0; i < spikes * 2; i++) {
+          const rad = i % 2 === 0 ? r * 1.15 : r * 0.58;
+          const a = (i / (spikes * 2)) * Math.PI * 2;
+          i === 0 ? ctx.moveTo(Math.cos(a) * rad, Math.sin(a) * rad) : ctx.lineTo(Math.cos(a) * rad, Math.sin(a) * rad);
+        }
+        ctx.closePath(); ctx.fill();
+        ctx.fillStyle = rgba('#fffbeb', 0.85);
+        ctx.beginPath(); ctx.arc(0, 0, r * 0.32, 0, Math.PI * 2); ctx.fill();
+        ctx.restore();
+        if (f.cluster > 1) {
+          ctx.fillStyle = rgba('#fffbeb', 0.9);
+          ctx.font = '800 9px "Plus Jakarta Sans", sans-serif';
+          ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+          ctx.fillText('×' + f.cluster, cx, cy + r * 1.9);
+        }
+      } else if (f.type === 'quantum') {
+        ctx.save();
+        ctx.translate(cx, cy);
+        const spin = now / 700;
+        ctx.strokeStyle = rgba(f.color, 0.9); ctx.lineWidth = 1.4;
+        for (let i = 0; i < 3; i++) {
+          ctx.save();
+          ctx.rotate(spin + (i * Math.PI) / 3);
+          ctx.beginPath(); ctx.ellipse(0, 0, r * 1.25, r * 0.48, 0, 0, Math.PI * 2); ctx.stroke();
+          ctx.restore();
+        }
+        ctx.fillStyle = '#ecfeff';
+        ctx.beginPath(); ctx.arc(0, 0, r * 0.42, 0, Math.PI * 2); ctx.fill();
+        ctx.restore();
+      }
+    }
+  },
+
+  drawCollapse(ctx, game, now) {
+    const c = game.collapseItem;
+    const cx = c.x * CELL + CELL / 2, cy = c.y * CELL + CELL / 2;
+    const pulse = 0.5 + 0.5 * Math.sin(now / 160);
+    this.glow(ctx, cx, cy, 26 + pulse * 8, COLOR.collapse, 0.5);
+    ctx.save();
+    ctx.translate(cx, cy);
+    ctx.rotate(now / 500);
+    ctx.fillStyle = COLOR.collapse;
+    ctx.beginPath();
+    for (let i = 0; i < 4; i++) {
+      const a = (i / 4) * Math.PI * 2;
+      ctx.lineTo(Math.cos(a) * (CELL * 0.38 + pulse * 2), Math.sin(a) * (CELL * 0.16));
+      const b = ((i + 0.5) / 4) * Math.PI * 2;
+      ctx.lineTo(Math.cos(b) * (CELL * 0.16), Math.sin(b) * (CELL * 0.38 + pulse * 2));
+    }
+    ctx.closePath(); ctx.fill();
+    ctx.restore();
+  },
+
+  drawProjectiles(ctx, game, layer, now) {
+    for (const pr of game.projectiles) {
+      if (pr.layer !== layer) continue;
+      const cx = pr.x * CELL + CELL / 2, cy = pr.y * CELL + CELL / 2;
+      const color = pr.kind === 'plasma' ? COLOR.plasma : COLOR.lava;
+      this.glow(ctx, cx, cy, 22, color, 0.6);
+      ctx.save();
+      ctx.translate(cx, cy);
+      ctx.rotate(Math.atan2(pr.dir.y, pr.dir.x));
+      ctx.fillStyle = color;
+      this.roundRect(ctx, -CELL * 0.42, -2.6, CELL * 0.84, 5.2, 2.6);
+      ctx.fill();
+      ctx.fillStyle = '#ffffff';
+      this.roundRect(ctx, -CELL * 0.1, -1.4, CELL * 0.4, 2.8, 1.4);
+      ctx.fill();
+      ctx.restore();
+    }
+  },
+
+  /* ── snakes ── */
+
+  drawSnake(ctx, game, s, now, opt = {}) {
+    if (!s.cells.length) return;
+    const alpha = game.alpha;
+    const pts = s.cells.map((c, i) => this.segPos(s, i, alpha));
+
+    let bodyColor, headColor, deepColor, lightColor;
+    if (opt.player) {
+      const skin = game.skin;
+      bodyColor = skin.body; headColor = skin.head; deepColor = skin.deep; lightColor = skin.light;
+    } else if (opt.phantom) {
+      bodyColor = COLOR.quantum; headColor = '#a5f3fc'; deepColor = '#0e7490'; lightColor = '#cffafe';
+    } else {
+      bodyColor = s.color; headColor = s.accent; deepColor = mixHex(s.color, '#0f172a', 0.55); lightColor = s.accent;
+    }
+
+    const ghosting = opt.player && game.dna.has('ghost');
+    const invulnBlink = opt.player && game.invuln > 0 && Math.floor(now / 70) % 2 === 0;
+
+    ctx.save();
+    if (opt.phantom) ctx.globalAlpha = 0.72;
+    else if (ghosting) ctx.globalAlpha = 0.86;
+    if (invulnBlink) ctx.globalAlpha *= 0.55;
+
+    const width = (opt.mini ? CELL * 0.62 : CELL * 0.8);
+
+    // Split the body into unbroken runs so wraps don't draw a line across the arena.
+    const runs = [[pts[0]]];
+    for (let i = 1; i < pts.length; i++) {
+      const a = pts[i - 1], b = pts[i];
+      if (Math.abs(a.x - b.x) > CELL * 1.8 || Math.abs(a.y - b.y) > CELL * 1.8) runs.push([b]);
+      else runs[runs.length - 1].push(b);
+    }
+
+    // Outer light bloom
+    ctx.lineJoin = 'round'; ctx.lineCap = 'round';
+    ctx.globalCompositeOperation = 'lighter';
+    ctx.strokeStyle = rgba(headColor, opt.player ? 0.13 : 0.07);
+    ctx.lineWidth = width * 1.55;
+    for (const run of runs) {
+      if (run.length < 2) continue;
+      ctx.beginPath();
+      ctx.moveTo(run[0].x, run[0].y);
+      for (let i = 1; i < run.length; i++) ctx.lineTo(run[i].x, run[i].y);
+      ctx.stroke();
+    }
+    ctx.globalCompositeOperation = 'source-over';
+
+    // Body stroke with a head→tail gradient
+    const tailPt = pts[pts.length - 1];
+    const grad = ctx.createLinearGradient(pts[0].x, pts[0].y, tailPt.x, tailPt.y);
+    grad.addColorStop(0, bodyColor);
+    grad.addColorStop(1, deepColor);
+    ctx.strokeStyle = grad;
+    ctx.lineWidth = width;
+    for (const run of runs) {
+      ctx.beginPath();
+      if (run.length < 2) { ctx.moveTo(run[0].x, run[0].y); ctx.lineTo(run[0].x + 0.01, run[0].y); }
+      else {
+        ctx.moveTo(run[0].x, run[0].y);
+        for (let i = 1; i < run.length; i++) ctx.lineTo(run[i].x, run[i].y);
+      }
+      ctx.stroke();
+    }
+
+    // Scale plates along the body
+    ctx.strokeStyle = rgba(lightColor, opt.player ? 0.3 : 0.18);
+    ctx.lineWidth = 1.3;
+    ctx.beginPath();
+    for (let i = 1; i < pts.length; i += 1) {
+      const a = pts[i - 1], b = pts[i];
+      const ang = Math.atan2(b.y - a.y, b.x - a.x);
+      const r = width * 0.34;
+      ctx.moveTo(b.x + Math.cos(ang - 2.1) * r, b.y + Math.sin(ang - 2.1) * r);
+      ctx.arc(b.x, b.y, r, ang - 2.1, ang + 2.1);
+    }
+    ctx.stroke();
+
+    // Hydra tail mouth
+    if (opt.player && game.dna.has('hydra')) {
+      const t = pts[pts.length - 1];
+      const prevPt = pts[pts.length - 2] || pts[0];
+      const ang = Math.atan2(t.y - prevPt.y, t.x - prevPt.x);
+      ctx.save();
+      ctx.translate(t.x, t.y); ctx.rotate(ang);
+      ctx.fillStyle = headColor;
+      this.roundRect(ctx, -width * 0.45, -width * 0.42, width * 0.9, width * 0.84, width * 0.34);
+      ctx.fill();
+      ctx.fillStyle = '#0b1220';
+      ctx.beginPath();
+      ctx.moveTo(width * 0.42, 0); ctx.lineTo(width * 0.05, -width * 0.24); ctx.lineTo(width * 0.05, width * 0.24);
+      ctx.closePath(); ctx.fill();
+      ctx.fillStyle = '#fff';
+      ctx.beginPath();
+      ctx.arc(-width * 0.05, -width * 0.2, 1.5, 0, Math.PI * 2);
+      ctx.arc(-width * 0.05, width * 0.2, 1.5, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.restore();
+    }
+
+    // Head
+    const h = pts[0];
+    const dir = s.dir;
+    const ang = Math.atan2(dir.y, dir.x);
+    ctx.save();
+    ctx.translate(h.x, h.y);
+    ctx.rotate(ang);
+    const hw = width * 1.12, hh = width * 1.0;
+    ctx.fillStyle = headColor;
+    this.roundRect(ctx, -hw / 2, -hh / 2, hw, hh, hh * 0.42);
+    ctx.fill();
+    ctx.fillStyle = rgba(lightColor, 0.45);
+    this.roundRect(ctx, -hw / 2 + 1.5, -hh / 2 + 1.5, hw - 3, hh * 0.34, hh * 0.2);
+    ctx.fill();
+    ctx.restore();
+
+    // Eyes that track the nearest prey
+    const target = game.food.nearest(s.cells[0].x, s.cells[0].y, s.layer);
+    let lookX = dir.x, lookY = dir.y;
+    if (target) {
+      const tx = target.x * CELL + CELL / 2 - h.x, ty = target.y * CELL + CELL / 2 - h.y;
+      const len = Math.hypot(tx, ty) || 1;
+      lookX = tx / len; lookY = ty / len;
+    }
+    const perpX = -dir.y, perpY = dir.x;
+    const eyeFwd = width * 0.2, eyeSide = width * 0.26, eyeR = width * (opt.mini ? 0.14 : 0.17);
+    for (const sgn of [-1, 1]) {
+      const ex = h.x + dir.x * eyeFwd + perpX * eyeSide * sgn;
+      const ey = h.y + dir.y * eyeFwd + perpY * eyeSide * sgn;
+      ctx.fillStyle = '#f8fafc';
+      ctx.beginPath(); ctx.arc(ex, ey, eyeR, 0, Math.PI * 2); ctx.fill();
+      ctx.fillStyle = '#0b1220';
+      ctx.beginPath();
+      ctx.arc(ex + lookX * eyeR * 0.42, ey + lookY * eyeR * 0.42, eyeR * 0.52, 0, Math.PI * 2);
+      ctx.fill();
+    }
+
+    // Armor plating indicator
+    if (opt.player && game.armor > 0) {
+      ctx.strokeStyle = rgba('#93c5fd', 0.55 + 0.25 * Math.sin(now / 240));
+      ctx.lineWidth = 1.6;
+      ctx.beginPath();
+      ctx.arc(h.x, h.y, width * 0.92, 0, Math.PI * 2);
+      ctx.stroke();
+    }
+    ctx.restore();
+  },
+
+  /* ── bosses ── */
+
+  drawBoss(ctx, game, now, dim) {
+    const boss = game.boss;
+    const flash = clamp(boss.flash, 0, 1);
+
+    if (boss.type === 'gridEater') {
+      const size = CELL * boss.size;
+      const px = boss.x * CELL, py = boss.y * CELL;
+      const cx = px + size / 2, cy = py + size / 2;
+      this.glow(ctx, cx, cy, size * 1.2, COLOR.lava, 0.38);
+
+      ctx.save();
+      ctx.translate(cx, cy);
+      ctx.rotate(Math.sin(now / 600) * 0.05);
+
+      // Armoured chassis
+      ctx.fillStyle = flash > 0.05 ? '#fee2e2' : '#151b27';
+      this.roundRect(ctx, -size / 2, -size / 2, size, size, 12); ctx.fill();
+      ctx.strokeStyle = rgba(COLOR.boss, 0.85); ctx.lineWidth = 2.4;
+      this.roundRect(ctx, -size / 2 + 2, -size / 2 + 2, size - 4, size - 4, 10); ctx.stroke();
+
+      // Corner rivets
+      ctx.fillStyle = rgba('#475569', 0.9);
+      for (const sx of [-1, 1]) for (const sy of [-1, 1]) {
+        ctx.beginPath();
+        ctx.arc(sx * (size / 2 - 7), sy * (size / 2 - 7), 2.4, 0, Math.PI * 2);
+        ctx.fill();
+      }
+
+      // Intake maw
+      ctx.save();
+      ctx.rotate(now / 1100);
+      const teeth = 10;
+      ctx.fillStyle = rgba(COLOR.lava, 0.9);
+      ctx.beginPath();
+      for (let i = 0; i < teeth * 2; i++) {
+        const rr = i % 2 === 0 ? size * 0.33 : size * 0.17;
+        const a = (i / (teeth * 2)) * Math.PI * 2;
+        i === 0 ? ctx.moveTo(Math.cos(a) * rr, Math.sin(a) * rr) : ctx.lineTo(Math.cos(a) * rr, Math.sin(a) * rr);
+      }
+      ctx.closePath(); ctx.fill();
+      ctx.restore();
+
+      // Exposed core — the weak spot doubles incoming damage
+      const corePulse = 0.5 + 0.5 * Math.sin(now / 190);
+      this.glow(ctx, 0, 0, size * 0.34 + corePulse * 5, COLOR.golden, 0.55);
+      ctx.fillStyle = rgba('#fffbeb', 0.75 + corePulse * 0.25);
+      ctx.beginPath(); ctx.arc(0, 0, size * 0.11 + corePulse * 1.8, 0, Math.PI * 2); ctx.fill();
+      ctx.restore();
+      return;
+    }
+
+    // Hydra Centipede
+    for (const w of boss.worms) {
+      const pts = w.cells.map(c => ({ x: c.x * CELL + CELL / 2, y: c.y * CELL + CELL / 2 }));
+      ctx.lineJoin = 'round'; ctx.lineCap = 'round';
+      ctx.globalCompositeOperation = 'lighter';
+      ctx.strokeStyle = rgba(COLOR.boss, 0.1);
+      ctx.lineWidth = CELL * 1.25;
+      ctx.beginPath();
+      ctx.moveTo(pts[0].x, pts[0].y);
+      for (let i = 1; i < pts.length; i++) ctx.lineTo(pts[i].x, pts[i].y);
+      ctx.stroke();
+      ctx.globalCompositeOperation = 'source-over';
+
+      ctx.strokeStyle = flash > 0.05 ? '#fee2e2' : '#7f1d1d';
+      ctx.lineWidth = CELL * 0.82;
+      ctx.beginPath();
+      ctx.moveTo(pts[0].x, pts[0].y);
+      for (let i = 1; i < pts.length; i++) ctx.lineTo(pts[i].x, pts[i].y);
+      ctx.stroke();
+
+      w.cells.forEach((c, i) => {
+        const cx = c.x * CELL + CELL / 2, cy = c.y * CELL + CELL / 2;
+        const weak = i > 0 && i % 3 === 0;
+        if (weak) {
+          const pulse = 0.5 + 0.5 * Math.sin(now / 180 + i + w.phase);
+          this.glow(ctx, cx, cy, 16 + pulse * 5, COLOR.golden, 0.45);
+          ctx.fillStyle = rgba('#fbbf24', 0.75 + pulse * 0.25);
+          ctx.beginPath(); ctx.arc(cx, cy, CELL * 0.22 + pulse * 1.4, 0, Math.PI * 2); ctx.fill();
+        } else {
+          ctx.fillStyle = rgba('#fb7185', 0.5);
+          ctx.beginPath(); ctx.arc(cx, cy, CELL * 0.17, 0, Math.PI * 2); ctx.fill();
+        }
+        // Legs
+        if (i % 2 === 0 && i > 0) {
+          const prev = w.cells[i - 1];
+          const ang = Math.atan2(c.y - prev.y, c.x - prev.x) + Math.PI / 2;
+          ctx.strokeStyle = rgba('#fda4af', 0.45);
+          ctx.lineWidth = 1.4;
+          const swing = Math.sin(now / 130 + i) * 2.2;
+          ctx.beginPath();
+          ctx.moveTo(cx, cy);
+          ctx.lineTo(cx + Math.cos(ang) * (CELL * 0.5) + swing, cy + Math.sin(ang) * (CELL * 0.5));
+          ctx.moveTo(cx, cy);
+          ctx.lineTo(cx - Math.cos(ang) * (CELL * 0.5) - swing, cy - Math.sin(ang) * (CELL * 0.5));
+          ctx.stroke();
+        }
+      });
+
+      // Mandibles
+      const head = pts[0];
+      const ang = Math.atan2(w.dir.y, w.dir.x);
+      ctx.save();
+      ctx.translate(head.x, head.y); ctx.rotate(ang);
+      ctx.fillStyle = flash > 0.05 ? '#fff' : '#450a0a';
+      this.roundRect(ctx, -CELL * 0.5, -CELL * 0.46, CELL * 1.0, CELL * 0.92, CELL * 0.32); ctx.fill();
+      ctx.strokeStyle = rgba('#fca5a5', 0.9); ctx.lineWidth = 2; ctx.lineCap = 'round';
+      const chomp = Math.abs(Math.sin(now / 220)) * 3;
+      ctx.beginPath();
+      ctx.moveTo(CELL * 0.3, -CELL * 0.2); ctx.lineTo(CELL * 0.62, -CELL * 0.1 - chomp);
+      ctx.moveTo(CELL * 0.3, CELL * 0.2); ctx.lineTo(CELL * 0.62, CELL * 0.1 + chomp);
+      ctx.stroke();
+      ctx.fillStyle = '#fbbf24';
+      ctx.beginPath();
+      ctx.arc(-CELL * 0.05, -CELL * 0.18, 2.2, 0, Math.PI * 2);
+      ctx.arc(-CELL * 0.05, CELL * 0.18, 2.2, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.restore();
+    }
+  },
+
+  /* ── particles, light pass, vignette ── */
+
+  drawParticles(ctx, game, layer, now) {
+    for (const r of FX.rings) {
+      if (r.layer !== layer) continue;
+      ctx.strokeStyle = rgba(r.color, clamp(r.life, 0, 1) * 0.6);
+      ctx.lineWidth = r.width * clamp(r.life, 0, 1);
+      ctx.beginPath();
+      ctx.arc(r.x, r.y, r.r, 0, Math.PI * 2);
+      ctx.stroke();
+    }
+    let lastColor = null;
+    for (const p of FX.parts) {
+      if (p.layer !== layer) continue;
+      const a = clamp(p.life, 0, 1);
+      ctx.globalAlpha = a;
+      if (p.color !== lastColor) { ctx.fillStyle = p.color; lastColor = p.color; }
+      const sz = p.size * (0.4 + a * 0.6);
+      ctx.fillRect(p.x - sz / 2, p.y - sz / 2, sz, sz);
+    }
+    ctx.globalAlpha = 1;
+    for (const t of FX.texts) {
+      if (t.layer !== layer) continue;
+      const a = clamp(t.life, 0, 1);
+      ctx.save();
+      ctx.globalAlpha = a;
+      ctx.font = `${t.weight} ${t.size}px "Plus Jakarta Sans", system-ui, sans-serif`;
+      ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+      ctx.lineWidth = 3;
+      ctx.strokeStyle = 'rgba(5,7,12,0.75)';
+      ctx.strokeText(t.str, t.x, t.y);
+      ctx.fillStyle = t.color;
+      ctx.fillText(t.str, t.x, t.y);
+      ctx.restore();
+    }
+  },
+
+  drawLightPass(ctx, game, now) {
+    ctx.save();
+    ctx.globalCompositeOperation = 'lighter';
+    const layer = game.player.layer;
+    let budget = 150;
+    for (const p of FX.parts) {
+      if (budget <= 0) break;
+      if (p.layer !== layer || !p.glow) continue;
+      const a = clamp(p.life, 0, 1) * 0.16;
+      if (a < 0.045) continue;
+      this.glow(ctx, p.x, p.y, p.size * 3.2, p.color, a);
+      budget--;
+    }
+    if (game.player.alive && game.state === 'PLAYING') {
+      const h = this.segPos(game.player, 0, game.alpha);
+      this.glow(ctx, h.x, h.y, CELL * 3.2, game.skin.head, 0.12);
+    }
+    ctx.restore();
+  },
+
+  drawVignette(ctx, game, now) {
+    ctx.setTransform(this.scale, 0, 0, this.scale, 0, 0);
+    if (this._vignette) ctx.drawImage(this._vignette, 0, 0, VIEW, VIEW);
+
+    if (game.state === 'DYING') {
+      const t = clamp(1 - game.deathTimer / 900, 0, 1);
+      ctx.fillStyle = `rgba(190,18,60,${0.18 * (1 - t) + 0.05})`;
+      ctx.fillRect(0, 0, VIEW, VIEW);
+    }
+  }
+};
+
+/* ═════════════════════════ 15. UI / HUD BINDING ═════════════════════════ */
+
+const UI = {
+  el: {},
+  _statusSig: null,
+  _mutSig: null,
+  _keySig: null,
+  toastTimers: [],
+
+  init(game) {
+    this.game = game;
+    const ids = ['uiScore', 'uiHigh', 'uiCombo', 'uiComboBar', 'uiComboNote', 'uiLevel', 'uiXp', 'uiXpBar',
+      'uiLength', 'uiArmor', 'uiEaten', 'uiBosses', 'uiKills', 'uiFloor', 'uiMutCount', 'mutList',
+      'statusLine', 'bossBar', 'bossName', 'bossFill', 'bossHp', 'modeTag', 'mutCards', 'levelTitle',
+      'resultGrid', 'overReason', 'overEyebrow', 'overAch', 'helpGrid', 'achGrid', 'careerGrid',
+      'abilityKeys', 'skinRow', 'toasts', 'touchDeck', 'btnSound'];
+    for (const id of ids) this.el[id] = document.getElementById(id);
+
+    this.buildSkins();
+    this.buildHelp();
+    this.bindButtons();
+
+    if ('ontouchstart' in window || (navigator.maxTouchPoints || 0) > 0) {
+      this.el.touchDeck.classList.add('on');
+    }
+    this.setMuteIcon();
+  },
+
+  /* ── construction ── */
+
+  buildSkins() {
+    const row = this.el.skinRow;
+    row.innerHTML = '';
+    for (const k of Object.keys(SKINS)) {
+      const s = SKINS[k];
+      const b = document.createElement('button');
+      b.className = 'pill' + (Store.data.skin === k ? ' on' : '');
+      b.textContent = s.name;
+      b.style.borderColor = Store.data.skin === k ? s.head : '';
+      b.addEventListener('click', () => {
+        Store.data.skin = k; Store.save();
+        this.game.skin = s;
+        this.buildSkins();
+        Sound.init(); Sound.laser();
+      });
+      row.appendChild(b);
+    }
+  },
+
+  buildHelp() {
+    this.el.helpGrid.innerHTML = `
+      <div class="help-box">
+        <h3>Movement</h3>
+        <p><b>WASD</b> or <b>arrow keys</b> steer. Inputs are buffered, so fast double-turns land.</p>
+        <p>On <b>ice</b> you keep sliding — only every other input bites. <b>Conveyors</b> shove you an extra cell.</p>
+      </div>
+      <div class="help-box">
+        <h3>Tactical keys</h3>
+        <p><b>Space</b> — Plasma Breath (needs the mutation).</p>
+        <p><b>Shift</b> — amputate 30% of your tail into barricades or turrets.</p>
+        <p><b>E</b> — shift between Floor 1 and Floor 2 in Dimensional Shift.</p>
+        <p><b>Q</b> — rewind time with a Chronos charge. <b>P</b> pauses, <b>M</b> mutes.</p>
+      </div>
+      <div class="help-box">
+        <h3>The DNA engine</h3>
+        <p>Biomass grants XP. Every level triggers a splice: pick 1 of 3 mutations from a pool of ten, each stacking up to rank 2–3.</p>
+      </div>
+      <div class="help-box">
+        <h3>Living prey</h3>
+        <p><b>Scarab</b> flees your head. <b>Mimic</b> hatches hostile spawns. <b>Golden clusters</b> merge with nearby food into fat targets. <b>Quantum</b> fruit splits you into a mirrored twin until you grab the collapse shard.</p>
+      </div>
+      <div class="help-box">
+        <h3>Bosses</h3>
+        <p>Every 100 points wakes one. <b>The Grid-Eater</b> devours the arena perimeter — kill it to win the space back. <b>The Hydra Centipede</b> splits when you strike a glowing weak spot.</p>
+      </div>
+      <div class="help-box">
+        <h3>Staying alive</h3>
+        <p>Diamond Scales convert a fatal hit into a wall smash. Ghost Phase lets you cross your own coils. Venom Fangs turn a head-on ram into a kill.</p>
+      </div>`;
+  },
+
+  bindButtons() {
+    const g = this.game;
+    document.querySelectorAll('.mode-btn').forEach(b => {
+      b.addEventListener('click', () => { Sound.init(); g.start(b.dataset.mode); });
+    });
+    document.getElementById('btnResume').addEventListener('click', () => g.togglePause());
+    document.getElementById('btnQuit').addEventListener('click', () => g.quitToMenu());
+    document.getElementById('btnRetry').addEventListener('click', () => g.start(g.mode));
+    document.getElementById('btnMenu').addEventListener('click', () => g.quitToMenu());
+    document.getElementById('btnPause').addEventListener('click', () => g.togglePause());
+    document.getElementById('btnSound').addEventListener('click', () => this.toggleMute());
+    document.getElementById('btnHelp').addEventListener('click', () => this.openHelp());
+    document.getElementById('btnCodex').addEventListener('click', () => this.openHelp());
+    document.getElementById('btnCloseHelp').addEventListener('click', () => this.closeSubOverlay());
+    document.getElementById('btnAchv').addEventListener('click', () => this.openAchievements());
+    document.getElementById('btnCloseAch').addEventListener('click', () => this.closeSubOverlay());
+    document.getElementById('btnWipe').addEventListener('click', () => {
+      Store.wipe();
+      this.buildSkins();
+      this.openAchievements();
+      this.toast('🧹 Save data cleared');
+    });
+
+    this.el.touchDeck.querySelectorAll('.tbtn').forEach(b => {
+      b.addEventListener('click', (e) => {
+        e.preventDefault();
+        Sound.init();
+        const act = b.dataset.act;
+        if (act === 'ability') g.firePlasma();
+        else if (act === 'shed') g.amputate();
+        else if (act === 'shift') g.shiftLayer();
+        else if (act === 'rewind') g.rewind();
+      });
+    });
+  },
+
+  /* ── overlays ── */
+
+  showOverlay(id) {
+    document.querySelectorAll('.overlay').forEach(o => o.classList.toggle('on', o.id === id));
+  },
+
+  openHelp() {
+    if (this.game.state === 'PLAYING') this.game.togglePause();
+    this.showOverlay('ovHelp');
+  },
+
+  openAchievements() {
+    const a = Store.data.achievements;
+    const t = Store.data.totals;
+    this.el.careerGrid.innerHTML = [
+      ['Runs', t.runs], ['Total score', t.score], ['Biomass', t.apples],
+      ['Bosses', t.bosses], ['Rivals', t.kills], ['Longest', t.bestLength]
+    ].map(([l, v]) => `<div class="res"><div class="v">${v}</div><div class="l">${l}</div></div>`).join('');
+    this.el.achGrid.innerHTML = ACHIEVEMENTS.map(x =>
+      `<span class="ach ${a[x.id] ? '' : 'locked'}" title="${x.desc}">${x.icon} ${x.name}</span>`).join('');
+    this.showOverlay('ovAch');
+  },
+
+  closeSubOverlay() {
+    const s = this.game.state;
+    if (s === 'PAUSED') this.showOverlay('ovPause');
+    else if (s === 'GAMEOVER') this.showOverlay('ovOver');
+    else if (s === 'LEVELUP') this.showOverlay('ovLevel');
+    else if (s === 'MENU') this.showOverlay('ovMenu');
+    else this.showOverlay(null);
+  },
+
+  resetPanels(game) {
+    this._statusSig = null; this._mutSig = null; this._keySig = null;
+    this.el.statusLine.innerHTML = '';
+    this.el.bossBar.classList.remove('on');
+    this.el.mutList.innerHTML = '<p class="empty-note">No mutations spliced yet. Eat biomass to trigger a DNA splice.</p>';
+    this.el.uiMutCount.textContent = '0';
+    this._statusSig = ''; this._mutSig = '';
+    for (const [id, v] of [['uiScore', '0'], ['uiEaten', '0'], ['uiBosses', '0'], ['uiKills', '0'],
+                           ['uiLength', '0'], ['uiArmor', '0'], ['uiFloor', '1'], ['uiLevel', 'LV 1'],
+                           ['uiXp', '0/4'], ['uiCombo', '1.0×'], ['uiComboNote', 'build a chain']]) {
+      if (this.el[id]) this.el[id].textContent = v;
+    }
+    this.el.uiXpBar.style.width = '0%';
+    this.el.uiComboBar.style.width = '0%';
+    this.el.uiHigh.textContent = Store.data.high[game.mode] || 0;
+    this.el.modeTag.textContent = MODES[game.mode].label.split(' ')[0];
+    this.syncKeys(game);
+  },
+
+  onRunStart(game) {
+    this.showOverlay(null);
+    this.el.modeTag.textContent = MODES[game.mode].label.split(' ')[0];
+    this.el.bossBar.classList.remove('on');
+    this._statusSig = null; this._mutSig = null; this._keySig = null;
+    this.syncKeys(game);
+  },
+
+  showLevelUp(game, offer) {
+    this.el.levelTitle.textContent = `LEVEL ${game.dna.level}`;
+    this.el.mutCards.innerHTML = '';
+    offer.forEach((m, i) => {
+      const rank = game.dna.rank(m.id);
+      const card = document.createElement('button');
+      card.className = 'mut-card';
+      card.style.setProperty('--tint', m.tint);
+      card.innerHTML = `
+        <span class="num">${i + 1}</span>
+        <div class="ic">${m.icon}</div>
+        <div class="nm">${m.name}</div>
+        <div class="tg">${m.tag} · ${rank > 0 ? 'rank ' + (rank + 1) + '/' + m.max : 'new'}</div>
+        <div class="ds">${m.desc(rank)}</div>`;
+      card.addEventListener('click', () => game.chooseMutation(m.id));
+      this.el.mutCards.appendChild(card);
+    });
+    this.showOverlay('ovLevel');
+  },
+
+  showGameOver(game) {
+    this.el.overReason.textContent = game.overReason;
+    this.el.overEyebrow.textContent = `${MODES[game.mode].label} · DNA level ${game.dna.level}`;
+    const best = Store.data.high[game.mode] || 0;
+    const isRecord = game.score >= best && game.score > 0;
+    this.el.resultGrid.innerHTML = [
+      ['Score', game.score], ['Biomass', game.eaten], ['Best combo', game.maxCombo.toFixed(1) + '×'],
+      ['Mutations', game.dna.count], ['Bosses', game.bossKills], ['Rivals', game.kills]
+    ].map(([l, v]) => `<div class="res"><div class="v">${v}</div><div class="l">${l}</div></div>`).join('');
+    const ach = game.runAchievements.map(id => ACHIEVEMENTS.find(a => a.id === id)).filter(Boolean);
+    this.el.overAch.innerHTML =
+      (isRecord ? `<span class="ach">🏆 New personal best</span>` : '') +
+      ach.map(a => `<span class="ach">${a.icon} ${a.name}</span>`).join('');
+    this.el.bossBar.classList.remove('on');
+    this.showOverlay('ovOver');
+    this.sync(game);
+  },
+
+  onBossSpawn(game) { this.syncBoss(game); },
+  onBossEnd(game) { this.el.bossBar.classList.remove('on'); },
+
+  syncBoss(game) {
+    const b = game.boss;
+    if (!b) { this.el.bossBar.classList.remove('on'); return; }
+    this.el.bossBar.classList.add('on');
+    this.el.bossName.textContent = b.name;
+    const pct = clamp(b.hp / b.maxHp, 0, 1) * 100;
+    this.el.bossFill.style.width = pct + '%';
+    this.el.bossHp.textContent = `${Math.max(0, Math.ceil(b.hp))}/${b.maxHp}`;
+  },
+
+  /* ── per-tick HUD ── */
+
+  sync(game) {
+    const e = this.el;
+    e.uiScore.textContent = game.score;
+    e.uiHigh.textContent = Store.data.high[game.mode] || 0;
+
+    const mult = game.multiplier;
+    e.uiCombo.textContent = mult.toFixed(1) + '×';
+    e.uiCombo.classList.toggle('pump', mult > 1.01);
+    e.uiComboBar.style.width = clamp(game.comboTimer / (game.comboMax + game.dna.rank('metabolism') * 14), 0, 1) * 100 + '%';
+    e.uiComboNote.textContent = game.chain > 0 ? `${game.chain} chain` : 'build a chain';
+
+    e.uiLevel.textContent = 'LV ' + game.dna.level;
+    e.uiXp.textContent = `${Math.floor(game.dna.xp)}/${game.dna.need}`;
+    e.uiXpBar.style.width = clamp(game.dna.xp / game.dna.need, 0, 1) * 100 + '%';
+    e.uiLength.textContent = game.player.length;
+    e.uiArmor.textContent = game.armor;
+    e.uiEaten.textContent = game.eaten;
+    e.uiBosses.textContent = game.bossKills;
+    e.uiKills.textContent = game.kills;
+    e.uiFloor.textContent = game.player.layer + 1;
+
+    if (game.boss) this.syncBoss(game);
+    this.syncMutations(game);
+    this.syncStatus(game);
+    this.syncKeys(game);
+  },
+
+  syncMutations(game) {
+    const sig = game.dna.list.map(m => m.def.id + m.rank).join(',');
+    if (sig === this._mutSig) return;
+    this._mutSig = sig;
+    const list = game.dna.list;
+    if (!list.length) {
+      this.el.mutList.innerHTML = '<p class="empty-note">No mutations spliced yet. Eat biomass to trigger a DNA splice.</p>';
+    } else {
+      this.el.mutList.innerHTML = list.map(m =>
+        `<div class="mut-row"><span class="ic">${m.def.icon}</span><span class="nm">${m.def.name}</span><span class="tier">R${m.rank}</span></div>`
+      ).join('');
+    }
+    this.el.uiMutCount.textContent = game.dna.count;
+  },
+
+  syncStatus(game) {
+    const badges = [];
+    if (game.cfg.layers > 1) badges.push(['🌀', `FLOOR ${game.player.layer + 1}`, 'var(--cyan)']);
+    if (game.armor > 0) badges.push(['💎', `ARMOR ${game.armor}`, 'var(--blue)']);
+    if (game.plasmaMax > 0) badges.push(['🔥', `PLASMA ${game.plasmaAmmo}/${game.plasmaMax}`, 'var(--cyan)']);
+    if (game.rewindMax > 0) badges.push(['⏳', `REWIND ${game.rewinds}`, 'var(--amber)']);
+    if (game.dna.has('ghost')) badges.push(['👻', 'PHASED', 'var(--violet)']);
+    if (game.dna.has('acid')) badges.push(['🧪', 'ACID TRAIL', '#a3e635']);
+    if (game.dna.has('gravity')) badges.push(['🌌', 'GRAVITY WELL', 'var(--violet)']);
+    if (game.phantom) badges.push(['🔮', 'ENTANGLED', 'var(--cyan)']);
+    if (game.barricades.length) badges.push(['🧱', `${game.barricades.length} STRUCTURES`, 'var(--text-2)']);
+    if (game.world.perimeter > 0) badges.push(['🔥', `ARENA -${game.world.perimeter}`, 'var(--rose)']);
+
+    const sig = badges.map(b => b[1]).join('|');
+    if (sig === this._statusSig) return;
+    this._statusSig = sig;
+    this.el.statusLine.innerHTML = badges.map(([ic, label, color]) =>
+      `<span class="badge" style="color:${color}"><span class="dot"></span>${ic} ${label}</span>`).join('');
+  },
+
+  syncKeys(game) {
+    const rows = [
+      ['Space', 'Plasma Breath', game.dna.has('plasma')],
+      ['Shift', 'Amputate tail', game.player.length >= 8],
+      ['E', 'Shift floor', game.cfg.layers > 1],
+      ['Q', 'Rewind time', game.rewinds > 0],
+      ['P', 'Pause', true],
+      ['M', 'Mute', true]
+    ];
+    const sig = rows.map(r => r[0] + (r[2] ? 1 : 0)).join(',');
+    if (sig === this._keySig) return;
+    this._keySig = sig;
+    this.el.abilityKeys.innerHTML = rows.map(([k, d, on]) =>
+      `<div class="key-row ${on ? '' : 'locked'}"><kbd>${k}</kbd><span class="desc">${d}</span></div>`).join('');
+
+    this.el.touchDeck.querySelectorAll('.tbtn').forEach(b => {
+      const act = b.dataset.act;
+      const on = act === 'ability' ? game.dna.has('plasma')
+        : act === 'shed' ? game.player.length >= 8
+        : act === 'shift' ? game.cfg.layers > 1
+        : game.rewinds > 0;
+      b.toggleAttribute('disabled', !on);
+    });
+  },
+
+  /* ── toasts & audio ── */
+
+  toast(msg, kind) {
+    // Collapse repeats so spammed hints do not stack up.
+    const last = this.el.toasts.lastElementChild;
+    if (last && last.textContent === msg && !last.classList.contains('out')) return;
+    const t = document.createElement('div');
+    t.className = 'toast';
+    if (kind === 'dim') { t.style.borderColor = 'rgba(148,163,184,.3)'; t.style.color = 'var(--text-2)'; }
+    t.textContent = msg;
+    this.el.toasts.appendChild(t);
+    while (this.el.toasts.children.length > 3) this.el.toasts.removeChild(this.el.toasts.firstChild);
+    setTimeout(() => {
+      t.classList.add('out');
+      setTimeout(() => t.remove(), 400);
+    }, 1900);
+  },
+
+  toggleMute() {
+    Sound.muted = !Sound.muted;
+    Store.data.muted = Sound.muted;
+    Store.save();
+    this.setMuteIcon();
+    if (!Sound.muted) { Sound.init(); Sound.laser(); }
+  },
+
+  setMuteIcon() {
+    const b = this.el.btnSound || document.getElementById('btnSound');
+    if (!b) return;
+    b.classList.toggle('off', Sound.muted);
+    b.innerHTML = Sound.muted
+      ? `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 5 6 9H2v6h4l5 4V5z"/><line x1="23" y1="9" x2="17" y2="15"/><line x1="17" y1="9" x2="23" y2="15"/></svg>`
+      : `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 5 6 9H2v6h4l5 4V5z"/><path d="M15.5 8.5a5 5 0 0 1 0 7"/><path d="M19 5a9 9 0 0 1 0 14"/></svg>`;
+  }
+};
+
+/* ══════════════════════════ 16. INPUT HANDLING ══════════════════════════ */
+
+const Input = {
+  init(game) {
+    this.game = game;
+
+    const dirFor = (k) => {
+      switch (k) {
+        case 'ArrowUp': case 'w': case 'W': return { x: 0, y: -1 };
+        case 'ArrowDown': case 's': case 'S': return { x: 0, y: 1 };
+        case 'ArrowLeft': case 'a': case 'A': return { x: -1, y: 0 };
+        case 'ArrowRight': case 'd': case 'D': return { x: 1, y: 0 };
+        default: return null;
+      }
+    };
+
+    window.addEventListener('keydown', (e) => {
+      if (e.repeat && !['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'w', 'a', 's', 'd', 'W', 'A', 'S', 'D'].includes(e.key)) return;
+      const k = e.key;
+
+      if ([' ', 'ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight'].includes(k)) e.preventDefault();
+
+      // Level-up picker
+      if (game.state === 'LEVELUP' && ['1', '2', '3'].includes(k)) {
+        const m = game.dna.offer[Number(k) - 1];
+        if (m) game.chooseMutation(m.id);
+        return;
+      }
+
+      if (k === 'p' || k === 'P' || k === 'Escape') {
+        if (document.getElementById('ovHelp').classList.contains('on') ||
+            document.getElementById('ovAch').classList.contains('on')) { UI.closeSubOverlay(); return; }
+        game.togglePause();
+        return;
+      }
+      if (k === 'm' || k === 'M') { UI.toggleMute(); return; }
+      if (k === 'h' || k === 'H') {
+        if (document.getElementById('ovHelp').classList.contains('on')) UI.closeSubOverlay();
+        else UI.openHelp();
+        return;
+      }
+      if (k === 'Enter') {
+        Sound.init();
+        if (game.state === 'MENU') game.start('classic');
+        else if (game.state === 'GAMEOVER') game.start(game.mode);
+        return;
+      }
+
+      const d = dirFor(k);
+      if (d) { Sound.init(); game.queueDir(d); return; }
+
+      if (k === ' ') { Sound.init(); game.firePlasma(); return; }
+      if (k === 'Shift') { game.amputate(); return; }
+      if (k === 'e' || k === 'E') { game.shiftLayer(); return; }
+      if (k === 'q' || k === 'Q') { game.rewind(); return; }
+    }, { passive: false });
+
+    // Swipe controls
+    const stage = document.getElementById('stage');
+    let sx = 0, sy = 0, st = 0, tracking = false;
+
+    stage.addEventListener('touchstart', (e) => {
+      const t = e.changedTouches[0];
+      sx = t.clientX; sy = t.clientY; st = performance.now(); tracking = true;
+      Sound.init();
+    }, { passive: true });
+
+    stage.addEventListener('touchmove', (e) => {
+      if (!tracking || game.state !== 'PLAYING') return;
+      const t = e.changedTouches[0];
+      const dx = t.clientX - sx, dy = t.clientY - sy;
+      const dist = Math.hypot(dx, dy);
+      if (dist < 24) return;
+      if (Math.abs(dx) > Math.abs(dy)) game.queueDir({ x: Math.sign(dx), y: 0 });
+      else game.queueDir({ x: 0, y: Math.sign(dy) });
+      sx = t.clientX; sy = t.clientY;   // continuous swipe steering
+    }, { passive: true });
+
+    stage.addEventListener('touchend', (e) => {
+      if (!tracking) return;
+      tracking = false;
+      const t = e.changedTouches[0];
+      const dx = t.clientX - sx, dy = t.clientY - sy;
+      if (Math.hypot(dx, dy) < 18 && performance.now() - st < 260) {
+        // Tap = fire ability when available.
+        if (game.state === 'PLAYING' && game.dna.has('plasma')) game.firePlasma();
+      }
+    }, { passive: true });
+
+    window.addEventListener('blur', () => {
+      if (game.state === 'PLAYING') game.togglePause();
+    });
+    document.addEventListener('visibilitychange', () => {
+      if (document.hidden && game.state === 'PLAYING') game.togglePause();
+    });
+  }
+};
+
+/* ═══════════════════════════ 17. BOOT ═══════════════════════════ */
+
+(function boot() {
+  Store.load();
+  Sound.muted = !!Store.data.muted;
+
+  const game = new Game();
+  Renderer.init();
+  UI.init(game);
+  Input.init(game);
+  UI.sync(game);
+  UI.showOverlay('ovMenu');
+
+  game.lastTime = performance.now();
+  function loop(now) {
+    game.frame(now);
+    requestAnimationFrame(loop);
+  }
+  requestAnimationFrame(loop);
+
+  // Expose a small surface for debugging and automated smoke tests.
+  window.SnakeUnbound = { game, Store, Sound, FX, Renderer, UI, MUTATIONS, MODES };
+})();
+</script>
+</body>
+</html>
