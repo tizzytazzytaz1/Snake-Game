@@ -11,467 +11,468 @@
 <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap" rel="stylesheet">
 <style>
 :root{
-  --bg:#070a10;
-  --bg-2:#0b1018;
-  --surface:rgba(20,26,38,0.92);
-  --surface-solid:#141a26;
-  --surface-hi:rgba(32,41,58,0.96);
-  --line:rgba(148,163,184,0.14);
-  --line-hi:rgba(148,163,184,0.28);
-
-  --emerald:#34d399;
-  --cyan:#22d3ee;
-  --amber:#fbbf24;
-  --violet:#a78bfa;
-  --rose:#fb7185;
-  --blue:#60a5fa;
-
-  --text:#eef2f7;
-  --text-2:#a3adbd;
-  --text-3:#6b7689;
-
-  --r-lg:20px;
-  --r-md:14px;
-  --r-sm:10px;
-  --shadow:0 24px 60px rgba(0,0,0,.55);
+  --bg:#070809;
+  --panel:#0d0f13;
+  --panel-2:#12151b;
+  --panel-3:#171b22;
+  --line:#1d222b;
+  --line-2:#2b323d;
+  --ink:#e9edf2;
+  --ink-2:#939ca9;
+  --ink-3:#5a6370;
+  --green:#3fcf8e;
+  --green-dim:#1c7d56;
+  --amber:#d9a441;
+  --red:#dd5563;
+  --r:8px;
+  --mono:ui-monospace,SFMono-Regular,"SF Mono",Menlo,Consolas,"Liberation Mono",monospace;
 }
 
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
 html,body{height:100%}
 body{
   font-family:'Plus Jakarta Sans',system-ui,-apple-system,'Segoe UI',sans-serif;
-  background:
-    radial-gradient(1200px 700px at 50% -15%, #16203200 0%, #0000 70%),
-    radial-gradient(900px 600px at 12% 8%, rgba(52,211,153,.07), transparent 60%),
-    radial-gradient(900px 600px at 88% 92%, rgba(96,165,250,.07), transparent 60%),
-    var(--bg);
-  color:var(--text);
+  background:var(--bg);
+  color:var(--ink);
   min-height:100vh;
   display:flex;
   align-items:flex-start;
   justify-content:center;
-  padding:16px;
+  padding:18px;
   overflow-x:hidden;
   user-select:none;-webkit-user-select:none;
   touch-action:manipulation;
+  font-size:14px;
+  line-height:1.4;
 }
 
-.app{width:100%;max-width:1220px;display:flex;flex-direction:column;gap:14px;margin:auto}
+.app{width:100%;max-width:1180px;margin:auto;display:flex;flex-direction:column}
 
-/* ---------- Top bar ---------- */
-.topbar{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
-.brand{display:flex;align-items:center;gap:12px;min-width:0}
-.brand-mark{
-  width:42px;height:42px;border-radius:13px;flex:none;
-  background:linear-gradient(145deg,#34d399,#0ea5e9);
-  display:grid;place-items:center;
-  box-shadow:0 10px 26px rgba(52,211,153,.3), inset 0 1px 0 rgba(255,255,255,.35);
+.ico{width:1em;height:1em;flex:none;display:block}
+
+/* ── masthead ─────────────────────────────────────────────── */
+.masthead{
+  display:flex;align-items:center;justify-content:space-between;gap:16px;
+  padding-bottom:13px;margin-bottom:16px;border-bottom:1px solid var(--line);
 }
-.brand-mark svg{width:24px;height:24px}
-.brand-text{min-width:0}
-.brand-title{font-size:1.02rem;font-weight:800;letter-spacing:-.02em;line-height:1.15;white-space:nowrap}
-.brand-sub{font-size:.66rem;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:var(--text-3)}
-.topbar-actions{display:flex;gap:8px;align-items:center}
-
-.icon-btn{
-  width:38px;height:38px;border-radius:12px;display:grid;place-items:center;cursor:pointer;
-  background:var(--surface);border:1px solid var(--line);color:var(--text-2);
-  transition:.16s ease;font-size:.95rem;
+.wordmark{display:flex;align-items:baseline;gap:10px;min-width:0}
+.wordmark .name{
+  font-size:15px;font-weight:800;letter-spacing:-.01em;white-space:nowrap;
 }
-.icon-btn:hover{border-color:var(--line-hi);color:var(--text);transform:translateY(-1px)}
-.icon-btn svg{width:18px;height:18px}
-.icon-btn.off{color:var(--text-3)}
-
-/* ---------- Layout ---------- */
-.layout{display:grid;grid-template-columns:230px minmax(0,1fr) 230px;gap:14px;align-items:start}
-@media (max-width:980px){
-  .layout{grid-template-columns:minmax(0,1fr)}
-  .rail{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px;align-items:start}
-  .rail-left{order:1}
-  .stage-col{order:2}
-  .rail-right{order:3}
-  .rail-left .card{padding:10px 12px}
-  .rail-left .stat-val.big{font-size:1.5rem}
-  .mut-list{max-height:150px}
+.wordmark .name em{font-style:normal;color:var(--green)}
+.wordmark .tag{
+  font-family:var(--mono);font-size:9.5px;letter-spacing:.14em;text-transform:uppercase;
+  color:var(--ink-3);white-space:nowrap;
 }
-@media (max-width:520px){
-  body{padding:10px}
-  .rail-left{grid-template-columns:1fr 1fr}
-  .rail-left .card:nth-child(3){grid-column:1/-1}
-  .brand-title{font-size:.94rem}
+.tools{display:flex;gap:6px}
+.tool{
+  width:30px;height:30px;border-radius:6px;display:grid;place-items:center;cursor:pointer;
+  background:transparent;border:1px solid var(--line);color:var(--ink-2);
+  transition:color .12s,border-color .12s,background .12s;font-size:15px;
 }
+.tool:hover{color:var(--ink);border-color:var(--line-2);background:var(--panel-2)}
+.tool.off{color:var(--ink-3)}
 
-.card{
-  background:var(--surface);border:1px solid var(--line);border-radius:var(--r-md);
-  padding:13px 14px;box-shadow:0 10px 30px rgba(0,0,0,.28);
+/* ── frame ────────────────────────────────────────────────── */
+.frame{display:grid;grid-template-columns:196px minmax(0,1fr) 196px;gap:16px;align-items:start}
+
+.col{display:flex;flex-direction:column;gap:14px;min-width:0}
+
+.block{border:1px solid var(--line);border-radius:var(--r);background:var(--panel);overflow:hidden}
+.block > h2{
+  font-family:var(--mono);font-size:9.5px;font-weight:500;letter-spacing:.16em;text-transform:uppercase;
+  color:var(--ink-3);padding:9px 11px;border-bottom:1px solid var(--line);
+  display:flex;align-items:center;justify-content:space-between;gap:8px;
 }
-.card + .card{margin-top:10px}
-@media (max-width:980px){.card + .card{margin-top:0}}
+.block > h2 b{color:var(--ink-2);font-weight:500}
+.block .body{padding:11px}
 
-.card-label{font-size:.6rem;font-weight:800;letter-spacing:.16em;text-transform:uppercase;color:var(--text-3);margin-bottom:8px;display:flex;align-items:center;justify-content:space-between;gap:6px}
-
-.stat-row{display:flex;align-items:baseline;justify-content:space-between;gap:10px}
-.stat-row + .stat-row{margin-top:7px}
-.stat-name{font-size:.74rem;font-weight:700;color:var(--text-2)}
-.stat-val{font-size:1.02rem;font-weight:800;letter-spacing:-.02em;font-variant-numeric:tabular-nums}
-.stat-val.big{font-size:1.9rem;line-height:1.05}
-.stat-val.em{color:var(--emerald)}
-.stat-val.am{color:var(--amber)}
-
-.meter{height:6px;border-radius:99px;background:rgba(148,163,184,.14);overflow:hidden;margin-top:8px}
-.meter > i{display:block;height:100%;width:0%;border-radius:99px;transition:width .12s linear}
-.meter.xp > i{background:linear-gradient(90deg,#22d3ee,#60a5fa)}
-.meter.combo > i{background:linear-gradient(90deg,#fbbf24,#fb7185)}
-
-.combo-head{display:flex;align-items:baseline;justify-content:space-between}
-.combo-x{font-size:1.25rem;font-weight:800;color:var(--amber);transition:transform .12s ease;transform-origin:left center}
-.combo-x.pump{transform:scale(1.18)}
-
-/* Mutation list */
-.mut-list{display:flex;flex-direction:column;gap:6px;max-height:260px;overflow:auto}
-.mut-row{display:flex;align-items:center;gap:8px;padding:6px 8px;border-radius:var(--r-sm);background:rgba(148,163,184,.06);border:1px solid var(--line)}
-.mut-row .ic{width:22px;height:22px;border-radius:7px;display:grid;place-items:center;font-size:.8rem;flex:none;background:rgba(255,255,255,.06)}
-.mut-row .nm{font-size:.68rem;font-weight:800;letter-spacing:.02em;line-height:1.2;flex:1;min-width:0;text-overflow:ellipsis;overflow:hidden;white-space:nowrap}
-.mut-row .tier{font-size:.6rem;font-weight:800;color:var(--text-3);letter-spacing:.06em}
-.empty-note{font-size:.7rem;font-weight:600;color:var(--text-3);line-height:1.5}
-
-/* Key legend */
-.keys{display:flex;flex-direction:column;gap:6px}
-.key-row{display:flex;align-items:center;gap:8px;font-size:.68rem;font-weight:700;color:var(--text-2)}
-kbd{
-  font-family:inherit;font-size:.62rem;font-weight:800;padding:3px 6px;border-radius:6px;
-  background:rgba(148,163,184,.12);border:1px solid var(--line-hi);color:var(--text);min-width:24px;text-align:center;
+/* readout rows */
+.readout{display:flex;flex-direction:column}
+.readout .row{
+  display:flex;align-items:baseline;justify-content:space-between;gap:10px;
+  padding:8px 11px;border-bottom:1px solid var(--line);
 }
-.key-row .desc{flex:1}
-.key-row.locked{opacity:.4}
+.readout .row:last-child{border-bottom:0}
+.readout .k{font-size:11.5px;color:var(--ink-2)}
+.readout .v{font-family:var(--mono);font-size:13px;font-variant-numeric:tabular-nums;letter-spacing:-.02em}
+.readout .v.accent{color:var(--green)}
+.readout .v.warn{color:var(--amber)}
+.readout .row.headline{padding:12px 11px 11px}
+.readout .row.headline .v{font-size:28px;font-weight:500;letter-spacing:-.04em;line-height:1}
 
-/* ---------- Stage ---------- */
-.stage-col{display:flex;flex-direction:column;gap:10px;min-width:0}
+.gauge{height:3px;background:var(--line);border-radius:2px;overflow:hidden;margin:0 11px 10px}
+.gauge > i{display:block;height:100%;width:0;background:var(--green);transition:width .1s linear}
+.gauge.heat > i{background:var(--amber)}
 
-.statusline{display:flex;gap:8px;align-items:center;flex-wrap:wrap;min-height:30px}
-.statusline:empty{min-height:0;display:none}
-.badge{
-  display:inline-flex;align-items:center;gap:6px;padding:5px 10px;border-radius:99px;
-  font-size:.66rem;font-weight:800;letter-spacing:.04em;
-  background:var(--surface);border:1px solid var(--line);
-  animation:pop .18s cubic-bezier(.18,.89,.32,1.28);
+/* status strip above the board */
+.strip{
+  display:flex;align-items:stretch;flex-wrap:wrap;
+  border:1px solid var(--line);border-radius:var(--r);background:var(--panel);
+  min-height:31px;overflow:hidden;
 }
-@keyframes pop{from{transform:scale(.82);opacity:0}to{transform:scale(1);opacity:1}}
-.badge .dot{width:6px;height:6px;border-radius:99px;background:currentColor;box-shadow:0 0 8px currentColor}
-
-.boss-bar{
-  display:none;align-items:center;gap:10px;padding:9px 12px;border-radius:var(--r-md);
-  background:var(--surface);border:1px solid rgba(251,113,133,.3);
+.strip:empty{display:none}
+.strip .cell{
+  display:flex;align-items:center;gap:6px;padding:0 11px;height:29px;
+  font-family:var(--mono);font-size:10.5px;letter-spacing:.06em;text-transform:uppercase;
+  color:var(--ink-2);border-right:1px solid var(--line);
 }
-.boss-bar.on{display:flex;animation:pop .25s ease}
-.boss-bar .nm{font-size:.68rem;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:var(--rose);white-space:nowrap}
-.boss-bar .track{flex:1;height:8px;border-radius:99px;background:rgba(148,163,184,.14);overflow:hidden}
-.boss-bar .track > i{display:block;height:100%;width:100%;border-radius:99px;background:linear-gradient(90deg,#fb7185,#f59e0b);transition:width .2s ease}
-.boss-bar .hp{font-size:.66rem;font-weight:800;font-variant-numeric:tabular-nums;color:var(--text-2);min-width:52px;text-align:right}
+.strip .cell:last-child{border-right:0}
+.strip .cell .ico{width:12px;height:12px;color:var(--ink-3)}
+.strip .cell b{color:var(--ink);font-weight:500}
+.strip .cell.live .ico{color:var(--green)}
+.strip .cell.hot .ico,.strip .cell.hot b{color:var(--red)}
 
-.stage{
-  position:relative;width:100%;aspect-ratio:1/1;border-radius:var(--r-lg);overflow:hidden;
-  background:#05070c;border:1px solid var(--line);box-shadow:var(--shadow);
+/* boss meter */
+.bossmeter{display:none;align-items:center;gap:11px;padding:8px 12px;border:1px solid var(--line);border-left:2px solid var(--red);border-radius:var(--r);background:var(--panel)}
+.bossmeter.on{display:flex}
+.bossmeter .nm{font-family:var(--mono);font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--red);white-space:nowrap}
+.bossmeter .track{flex:1;height:3px;background:var(--line);border-radius:2px;overflow:hidden}
+.bossmeter .track > i{display:block;height:100%;width:100%;background:var(--red);transition:width .18s}
+.bossmeter .hp{font-family:var(--mono);font-size:10.5px;color:var(--ink-2);font-variant-numeric:tabular-nums}
+
+/* ── board ────────────────────────────────────────────────── */
+.board{
+  position:relative;width:100%;aspect-ratio:1/1;border:1px solid var(--line);
+  border-radius:var(--r);overflow:hidden;background:#05060a;
 }
-.stage canvas{display:block;width:100%;height:100%}
+.board canvas{display:block;width:100%;height:100%}
 
-/* ---------- Overlays ---------- */
-.overlay{
-  position:absolute;inset:0;z-index:12;display:flex;flex-direction:column;align-items:center;justify-content:center;
-  gap:14px;padding:clamp(16px,4vw,34px);text-align:center;
-  background:linear-gradient(180deg,rgba(7,10,16,.9),rgba(7,10,16,.96));
+/* ── overlays ─────────────────────────────────────────────── */
+.sheet{
+  position:absolute;inset:0;z-index:10;display:flex;flex-direction:column;
+  align-items:center;justify-content:flex-start;gap:16px;padding:clamp(16px,3.5vw,34px);
+  text-align:center;background:rgba(7,8,9,.93);
   opacity:0;visibility:hidden;pointer-events:none;
-  transition:opacity .2s ease, visibility 0s linear .2s;overflow:auto;
+  transition:opacity .16s ease,visibility 0s linear .16s;overflow:auto;
 }
-.overlay.on{
+.sheet.on{
   opacity:1;visibility:visible;pointer-events:auto;
-  backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);
-  transition:opacity .2s ease, visibility 0s linear 0s;
+  backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);
+  transition:opacity .16s ease,visibility 0s linear 0s;
 }
-.overlay h1{
-  font-size:clamp(1.5rem,4.6vw,2.15rem);font-weight:800;letter-spacing:-.03em;line-height:1.05;
-  background:linear-gradient(140deg,#fff 20%,var(--emerald));-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;
+.sheet > *{flex:none;max-width:100%}
+.sheet::before,.sheet::after{content:'';display:block;flex:1 0 0;min-height:0}
+.sheet .kicker{
+  font-family:var(--mono);font-size:10px;letter-spacing:.2em;text-transform:uppercase;color:var(--ink-3);
 }
-.overlay h1.warn{background:linear-gradient(140deg,#fff 20%,var(--rose));-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
-.overlay h2{font-size:1.02rem;font-weight:800;letter-spacing:-.01em}
-.eyebrow{font-size:.64rem;font-weight:800;letter-spacing:.24em;text-transform:uppercase;color:var(--text-3)}
-.lede{font-size:.8rem;font-weight:600;color:var(--text-2);max-width:44ch;line-height:1.55}
+.sheet h1{
+  font-size:clamp(26px,5vw,38px);font-weight:800;letter-spacing:-.045em;line-height:.98;color:var(--ink);
+}
+.sheet h1 .rule{display:block;width:34px;height:2px;background:var(--green);margin:13px auto 0}
+.sheet h1.bad .rule{background:var(--red)}
+.sheet p.note{font-size:12.5px;color:var(--ink-2);max-width:42ch;line-height:1.55}
 
-.modes{display:flex;flex-direction:column;gap:9px;width:100%;max-width:330px}
-.mode-btn{
-  display:flex;align-items:center;gap:12px;width:100%;padding:12px 14px;border-radius:var(--r-md);cursor:pointer;text-align:left;
-  background:var(--surface-hi);border:1px solid var(--line);color:var(--text);transition:.16s ease;font-family:inherit;
+/* mode list */
+.modes{display:flex;flex-direction:column;width:100%;max-width:340px;border:1px solid var(--line);border-radius:var(--r);overflow:hidden}
+.mode{
+  display:flex;align-items:center;gap:12px;padding:13px 14px;cursor:pointer;text-align:left;
+  background:var(--panel);border:0;border-bottom:1px solid var(--line);color:var(--ink);
+  font-family:inherit;transition:background .12s;width:100%;
 }
-.mode-btn:hover{transform:translateY(-2px);border-color:var(--line-hi);background:rgba(44,56,78,.9)}
-.mode-btn .ic{width:36px;height:36px;border-radius:11px;display:grid;place-items:center;font-size:1.05rem;flex:none;background:rgba(255,255,255,.07)}
-.mode-btn .tt{display:block;font-size:.82rem;font-weight:800;letter-spacing:-.01em}
-.mode-btn .ds{display:block;font-size:.66rem;font-weight:600;color:var(--text-3);margin-top:2px;line-height:1.35}
-.mode-btn.primary{background:linear-gradient(135deg,#34d399,#10b981);border-color:transparent;color:#04110c;box-shadow:0 12px 30px rgba(52,211,153,.25)}
-.mode-btn.primary .ds{color:rgba(4,17,12,.7)}
-.mode-btn.primary .ic{background:rgba(0,0,0,.14)}
+.mode:last-child{border-bottom:0}
+.mode:hover{background:var(--panel-3)}
+.mode .ico{width:17px;height:17px;color:var(--ink-3)}
+.mode:hover .ico,.mode.lead .ico{color:var(--green)}
+.mode .txt{flex:1;min-width:0}
+.mode .t{display:block;font-size:13px;font-weight:700;letter-spacing:-.01em}
+.mode .d{display:block;font-size:11px;color:var(--ink-3);margin-top:2px;line-height:1.35}
+.mode .go{
+  font-family:var(--mono);font-size:9.5px;color:var(--ink-3);min-width:20px;text-align:center;
+  padding:3px 0;border:1px solid var(--line);border-radius:4px;
+}
+.mode:hover .go{color:var(--ink-2);border-color:var(--line-2)}
 
+/* buttons */
 .btn{
-  padding:11px 20px;border-radius:12px;font-family:inherit;font-size:.78rem;font-weight:800;letter-spacing:.02em;
-  cursor:pointer;border:1px solid transparent;transition:.16s ease;display:inline-flex;align-items:center;gap:8px;justify-content:center;
+  font-family:inherit;font-size:12px;font-weight:700;letter-spacing:.01em;padding:9px 18px;
+  border-radius:6px;cursor:pointer;border:1px solid var(--line-2);background:var(--panel-2);color:var(--ink);
+  transition:background .12s,border-color .12s;display:inline-flex;align-items:center;gap:7px;
 }
-.btn-primary{background:var(--emerald);color:#04110c;box-shadow:0 10px 26px rgba(52,211,153,.24)}
-.btn-primary:hover{filter:brightness(1.07);transform:translateY(-2px)}
-.btn-ghost{background:var(--surface-hi);border-color:var(--line);color:var(--text)}
-.btn-ghost:hover{border-color:var(--line-hi);transform:translateY(-2px)}
-.btn-row{display:flex;gap:9px;flex-wrap:wrap;justify-content:center}
+.btn:hover{background:var(--panel-3);border-color:var(--ink-3)}
+.btn.key{background:var(--green);border-color:var(--green);color:#04150e}
+.btn.key:hover{background:#4ade9c;border-color:#4ade9c}
+.btns{display:flex;gap:8px;flex-wrap:wrap;justify-content:center}
 
-.pill-row{display:flex;gap:7px;flex-wrap:wrap;justify-content:center}
-.pill{
-  padding:6px 12px;border-radius:99px;font-size:.66rem;font-weight:800;cursor:pointer;
-  background:var(--surface-hi);border:1px solid var(--line);color:var(--text-3);transition:.15s ease;font-family:inherit;
+.swatches{display:flex;gap:6px;flex-wrap:wrap;justify-content:center}
+.swatch{
+  display:flex;align-items:center;gap:6px;padding:5px 10px;border-radius:5px;cursor:pointer;
+  font-family:var(--mono);font-size:10px;letter-spacing:.08em;text-transform:uppercase;
+  background:transparent;border:1px solid var(--line);color:var(--ink-3);transition:.12s;
 }
-.pill:hover{color:var(--text)}
-.pill.on{background:var(--text);color:#0b1018;border-color:var(--text)}
+.swatch:hover{color:var(--ink-2);border-color:var(--line-2)}
+.swatch.on{color:var(--ink);border-color:var(--ink-3)}
+.swatch i{width:8px;height:8px;border-radius:2px;display:block}
 
-/* Level-up cards */
-.mut-cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px;width:100%;max-width:620px}
-.mut-card{
-  position:relative;padding:14px 13px;border-radius:var(--r-md);cursor:pointer;text-align:left;font-family:inherit;color:var(--text);
-  background:var(--surface-hi);border:1px solid var(--line);transition:.16s ease;overflow:hidden;
+/* mutation offer */
+.offer{display:grid;grid-template-columns:repeat(auto-fit,minmax(158px,1fr));gap:10px;width:100%;max-width:600px}
+.card{
+  position:relative;padding:14px;border:1px solid var(--line);border-radius:var(--r);
+  background:var(--panel);cursor:pointer;text-align:left;color:var(--ink);font-family:inherit;
+  transition:border-color .12s,background .12s;
 }
-.mut-card:hover{transform:translateY(-3px);border-color:var(--line-hi)}
-.mut-card::after{content:"";position:absolute;inset:0;background:radial-gradient(120px 80px at 80% 0%,var(--tint,transparent),transparent 70%);opacity:.5;pointer-events:none}
-.mut-card .ic{width:34px;height:34px;border-radius:11px;display:grid;place-items:center;font-size:1rem;background:rgba(255,255,255,.07);margin-bottom:9px}
-.mut-card .nm{font-size:.78rem;font-weight:800;letter-spacing:-.01em;line-height:1.2}
-.mut-card .tg{font-size:.58rem;font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:var(--text-3);margin-top:3px}
-.mut-card .ds{font-size:.68rem;font-weight:600;color:var(--text-2);line-height:1.45;margin-top:7px}
-.mut-card .num{position:absolute;top:10px;right:11px;font-size:.6rem;font-weight:800;color:var(--text-3);border:1px solid var(--line);border-radius:6px;padding:2px 6px}
+.card:hover{border-color:var(--green-dim);background:var(--panel-2)}
+.card .top{display:flex;align-items:center;justify-content:space-between;margin-bottom:11px}
+.card .ico{width:19px;height:19px;color:var(--green)}
+.card .slot{font-family:var(--mono);font-size:10px;color:var(--ink-3);border:1px solid var(--line);border-radius:4px;padding:1px 5px}
+.card .nm{font-size:13px;font-weight:700;letter-spacing:-.01em}
+.card .meta{display:flex;align-items:center;gap:7px;margin-top:4px}
+.card .cat{font-family:var(--mono);font-size:9.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-3)}
+.card .pips{display:flex;gap:3px}
+.card .pips i{width:11px;height:2px;background:var(--line-2);border-radius:1px;display:block}
+.card .pips i.fill{background:var(--green)}
+.card .ds{font-size:11.5px;color:var(--ink-2);line-height:1.5;margin-top:9px}
 
-/* Result stats */
-.result-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(104px,1fr));gap:9px;width:100%;max-width:440px}
-.res{background:var(--surface-hi);border:1px solid var(--line);border-radius:var(--r-md);padding:11px 8px}
-.res .v{font-size:1.18rem;font-weight:800;color:var(--emerald);font-variant-numeric:tabular-nums}
-.res .l{font-size:.58rem;font-weight:800;letter-spacing:.11em;text-transform:uppercase;color:var(--text-3);margin-top:3px}
+/* genome list */
+.genome{display:flex;flex-direction:column}
+.genome .g{display:flex;align-items:center;gap:8px;padding:7px 11px;border-bottom:1px solid var(--line)}
+.genome .g:last-child{border-bottom:0}
+.genome .g .ico{width:13px;height:13px;color:var(--green)}
+.genome .g .n{flex:1;min-width:0;font-size:11.5px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.genome .g .pips{display:flex;gap:2px}
+.genome .g .pips i{width:8px;height:2px;background:var(--line-2);border-radius:1px;display:block}
+.genome .g .pips i.fill{background:var(--green)}
+.hint-empty{padding:11px;font-size:11.5px;color:var(--ink-3);line-height:1.5}
 
-.ach-strip{display:flex;gap:7px;flex-wrap:wrap;justify-content:center;max-width:520px}
-.ach{display:inline-flex;align-items:center;gap:6px;padding:5px 10px;border-radius:99px;font-size:.64rem;font-weight:800;background:rgba(251,191,36,.12);border:1px solid rgba(251,191,36,.35);color:var(--amber)}
-.ach.locked{background:rgba(148,163,184,.07);border-color:var(--line);color:var(--text-3)}
-
-.help-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(215px,1fr));gap:10px;width:100%;max-width:660px;text-align:left}
-.help-box{background:var(--surface-hi);border:1px solid var(--line);border-radius:var(--r-md);padding:11px 12px}
-.help-box h3{font-size:.66rem;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:var(--text-3);margin-bottom:7px}
-.help-box p{font-size:.68rem;font-weight:600;color:var(--text-2);line-height:1.5}
-.help-box p + p{margin-top:5px}
-.help-box b{color:var(--text);font-weight:800}
-
-/* Mobile controls */
-.touch-deck{display:none;gap:8px;justify-content:center;flex-wrap:wrap}
-.touch-deck.on{display:flex}
-.tbtn{
-  flex:1;min-width:66px;max-width:120px;padding:11px 8px;border-radius:var(--r-md);font-family:inherit;cursor:pointer;
-  background:var(--surface);border:1px solid var(--line);color:var(--text);
-  display:flex;flex-direction:column;align-items:center;gap:3px;transition:.12s ease;
+/* key legend */
+.keys{display:flex;flex-direction:column}
+.keys .k{display:flex;align-items:center;gap:9px;padding:6px 11px;border-bottom:1px solid var(--line);font-size:11.5px;color:var(--ink-2)}
+.keys .k:last-child{border-bottom:0}
+.keys .k.off{color:var(--ink-3)}
+.keys .k.off kbd{color:var(--ink-3);border-color:var(--line)}
+kbd{
+  font-family:var(--mono);font-size:9.5px;min-width:38px;text-align:center;padding:3px 5px;
+  border:1px solid var(--line-2);border-radius:4px;color:var(--ink);background:var(--panel-2);
 }
-.tbtn:active{transform:scale(.95);background:var(--surface-hi)}
-.tbtn .ti{font-size:1rem;line-height:1}
-.tbtn .tl{font-size:.55rem;font-weight:800;letter-spacing:.09em;text-transform:uppercase;color:var(--text-3)}
-.tbtn[disabled]{opacity:.35}
 
-.hint{font-size:.66rem;font-weight:700;color:var(--text-3);text-align:center;line-height:1.5}
-.hint b{color:var(--text-2)}
+/* results */
+.results{display:grid;grid-template-columns:repeat(3,minmax(78px,1fr));gap:1px;background:var(--line);border:1px solid var(--line);border-radius:var(--r);overflow:hidden;width:100%;max-width:430px}
+.results .r{background:var(--panel);padding:11px 9px;text-align:center}
+.results .r .v{font-family:var(--mono);font-size:17px;font-variant-numeric:tabular-nums;letter-spacing:-.03em}
+.results .r .l{font-family:var(--mono);font-size:9px;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-3);margin-top:4px}
 
-/* Toasts */
-.toasts{position:fixed;left:50%;transform:translateX(-50%);bottom:18px;z-index:60;display:flex;flex-direction:column;gap:7px;align-items:center;pointer-events:none}
+.medals{display:flex;gap:6px;flex-wrap:wrap;justify-content:center;max-width:540px}
+.medal{
+  display:inline-flex;align-items:center;gap:6px;padding:5px 10px;border-radius:5px;
+  border:1px solid var(--line-2);font-size:11px;color:var(--ink);background:var(--panel)
+}
+.medal .ico{width:12px;height:12px;color:var(--amber)}
+.medal.locked{border-color:var(--line);color:var(--ink-3)}
+.medal.locked .ico{color:var(--ink-3)}
+
+/* codex */
+.codex{display:grid;grid-template-columns:repeat(auto-fit,minmax(224px,1fr));gap:1px;background:var(--line);border:1px solid var(--line);border-radius:var(--r);overflow:hidden;width:100%;max-width:680px;text-align:left}
+.codex section{background:var(--panel);padding:13px}
+.codex h3{font-family:var(--mono);font-size:9.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-3);margin-bottom:8px;font-weight:500}
+.codex p{font-size:11.5px;color:var(--ink-2);line-height:1.55}
+.codex p+p{margin-top:5px}
+.codex b{color:var(--ink);font-weight:700}
+
+/* touch deck */
+.deck{display:none;gap:8px}
+.deck.on{display:grid;grid-template-columns:repeat(4,1fr)}
+.pad{
+  padding:11px 6px;border:1px solid var(--line);border-radius:var(--r);background:var(--panel);
+  color:var(--ink);font-family:inherit;cursor:pointer;display:flex;flex-direction:column;
+  align-items:center;gap:5px;transition:background .1s;
+}
+.pad:active{background:var(--panel-3)}
+.pad .ico{width:17px;height:17px;color:var(--ink-2)}
+.pad span{font-family:var(--mono);font-size:9px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-3)}
+.pad[disabled]{opacity:.34}
+
+.footnote{
+  font-family:var(--mono);font-size:10px;letter-spacing:.05em;color:var(--ink-3);
+  text-align:center;line-height:1.7;
+}
+.footnote b{color:var(--ink-2);font-weight:500}
+
+/* toasts */
+.toasts{position:fixed;left:50%;transform:translateX(-50%);bottom:20px;z-index:50;display:flex;flex-direction:column;gap:6px;align-items:center;pointer-events:none}
 .toast{
-  padding:9px 15px;border-radius:99px;font-size:.7rem;font-weight:800;letter-spacing:.02em;
-  background:rgba(20,26,38,.95);border:1px solid rgba(251,191,36,.4);color:var(--amber);
-  box-shadow:0 12px 30px rgba(0,0,0,.45);animation:toastIn .3s cubic-bezier(.18,.89,.32,1.28);
-  display:flex;align-items:center;gap:8px;
+  display:flex;align-items:center;gap:8px;padding:8px 13px;border-radius:6px;
+  background:var(--panel-2);border:1px solid var(--line-2);color:var(--ink);
+  font-size:11.5px;animation:rise .18s ease-out;
 }
-@keyframes toastIn{from{transform:translateY(14px);opacity:0}to{transform:translateY(0);opacity:1}}
-.toast.out{opacity:0;transform:translateY(-8px);transition:.35s ease}
+.toast .ico{width:13px;height:13px;color:var(--green)}
+.toast.mute{color:var(--ink-2)}
+.toast.mute .ico{color:var(--ink-3)}
+.toast.out{opacity:0;transition:opacity .3s}
+@keyframes rise{from{transform:translateY(8px);opacity:0}to{transform:translateY(0);opacity:1}}
 
-::-webkit-scrollbar{width:7px;height:7px}
-::-webkit-scrollbar-thumb{background:rgba(148,163,184,.22);border-radius:99px}
+/* ── responsive ───────────────────────────────────────────── */
+@media (max-width:940px){
+  .frame{grid-template-columns:minmax(0,1fr)}
+  .col-left{order:1;display:grid;grid-template-columns:1fr 1fr;gap:10px;align-items:start}
+  .col-board{order:2}
+  .col-right{order:3;display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:10px;align-items:start}
+  .readout .row.headline .v{font-size:23px}
+  .genome{max-height:170px;overflow:auto}
+}
+@media (max-width:560px){
+  body{padding:12px;font-size:13px}
+  .toasts{bottom:auto;top:14px}
+  .col-left{grid-template-columns:1fr 1fr}
+  .col-left .block:nth-child(3){grid-column:1/-1}
+  .strip .cell{padding:0 9px;font-size:9.5px}
+}
+
+::-webkit-scrollbar{width:6px;height:6px}
+::-webkit-scrollbar-thumb{background:var(--line-2);border-radius:3px}
 ::-webkit-scrollbar-track{background:transparent}
-
 @media (prefers-reduced-motion:reduce){*{animation-duration:.01ms!important;transition-duration:.01ms!important}}
 </style>
 </head>
 <body>
+
 <div class="app">
 
-  <!-- ===== Top bar ===== -->
-  <header class="topbar">
-    <div class="brand">
-      <div class="brand-mark">
-        <svg viewBox="0 0 24 24" fill="none" stroke="#04110c" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-          <path d="M4 17c4 0 4-5 8-5s4 5 8 5"/><path d="M4 12c4 0 4-5 8-5s4 5 8 5"/>
-        </svg>
-      </div>
-      <div class="brand-text">
-        <div class="brand-title">Snake Unbound</div>
-        <div class="brand-sub">Ultra Evolution</div>
-      </div>
+  <header class="masthead">
+    <div class="wordmark">
+      <span class="name">SNAKE <em>UNBOUND</em></span>
+      <span class="tag">Ultra Evolution</span>
     </div>
-    <div class="topbar-actions">
-      <button class="icon-btn" id="btnHelp" title="Codex (H)">?</button>
-      <button class="icon-btn" id="btnSound" title="Sound (M)">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 5 6 9H2v6h4l5 4V5z"/><path d="M15.5 8.5a5 5 0 0 1 0 7"/><path d="M19 5a9 9 0 0 1 0 14"/></svg>
-      </button>
-      <button class="icon-btn" id="btnPause" title="Pause (P)">
-        <svg viewBox="0 0 24 24" fill="currentColor"><rect x="6" y="5" width="4" height="14" rx="1"/><rect x="14" y="5" width="4" height="14" rx="1"/></svg>
-      </button>
+    <div class="tools">
+      <button class="tool" id="btnHelp" title="Codex (H)" aria-label="Codex"></button>
+      <button class="tool" id="btnSound" title="Sound (M)" aria-label="Sound"></button>
+      <button class="tool" id="btnPause" title="Pause (P)" aria-label="Pause"></button>
     </div>
   </header>
 
-  <!-- ===== Layout ===== -->
-  <div class="layout">
+  <div class="frame">
 
-    <!-- Left rail -->
-    <div class="rail rail-left">
-      <div class="card">
-        <div class="card-label">Score <span id="modeTag" style="color:var(--text-2)">Classic</span></div>
-        <div class="stat-val big" id="uiScore">0</div>
-        <div class="stat-row" style="margin-top:9px">
-          <span class="stat-name">Personal best</span><span class="stat-val am" id="uiHigh">0</span>
+    <!-- readout -->
+    <div class="col col-left">
+      <div class="block">
+        <h2>Score <b id="modeTag">Classic</b></h2>
+        <div class="readout">
+          <div class="row headline"><span class="k">Run</span><span class="v" id="uiScore">0</span></div>
+          <div class="row"><span class="k">Best</span><span class="v warn" id="uiHigh">0</span></div>
         </div>
       </div>
 
-      <div class="card">
-        <div class="card-label">Combo</div>
-        <div class="combo-head">
-          <span class="combo-x" id="uiCombo">1.0×</span>
-          <span class="stat-name" id="uiComboNote">build a chain</span>
+      <div class="block">
+        <h2>Combo <b id="uiComboNote">idle</b></h2>
+        <div class="readout">
+          <div class="row"><span class="k">Multiplier</span><span class="v warn" id="uiCombo">1.0×</span></div>
         </div>
-        <div class="meter combo"><i id="uiComboBar"></i></div>
+        <div class="gauge heat"><i id="uiComboBar"></i></div>
       </div>
 
-      <div class="card">
-        <div class="card-label">Biomass <span id="uiLevel" style="color:var(--cyan)">LV 1</span></div>
-        <div class="stat-row"><span class="stat-name">DNA progress</span><span class="stat-val" id="uiXp">0/4</span></div>
-        <div class="meter xp"><i id="uiXpBar"></i></div>
-        <div class="stat-row" style="margin-top:10px"><span class="stat-name">Length</span><span class="stat-val" id="uiLength">3</span></div>
-        <div class="stat-row"><span class="stat-name">Armor</span><span class="stat-val em" id="uiArmor">0</span></div>
+      <div class="block">
+        <h2>Biomass <b id="uiLevel">LV 1</b></h2>
+        <div class="readout">
+          <div class="row"><span class="k">DNA</span><span class="v" id="uiXp">0/4</span></div>
+        </div>
+        <div class="gauge"><i id="uiXpBar"></i></div>
+        <div class="readout">
+          <div class="row"><span class="k">Length</span><span class="v" id="uiLength">3</span></div>
+          <div class="row"><span class="k">Armor</span><span class="v accent" id="uiArmor">0</span></div>
+        </div>
       </div>
     </div>
 
-    <!-- Stage -->
-    <div class="stage-col">
-      <div class="statusline" id="statusLine"></div>
+    <!-- board -->
+    <div class="col col-board">
+      <div class="strip" id="statusLine"></div>
 
-      <div class="boss-bar" id="bossBar">
-        <span class="nm" id="bossName">BOSS</span>
+      <div class="bossmeter" id="bossBar">
+        <span class="nm" id="bossName">Boss</span>
         <span class="track"><i id="bossFill"></i></span>
         <span class="hp" id="bossHp">0/0</span>
       </div>
 
-      <div class="stage" id="stage">
+      <div class="board" id="stage">
         <canvas id="game"></canvas>
 
-        <!-- Menu -->
-        <div class="overlay on" id="ovMenu">
-          <div class="eyebrow">Rogue-lite arcade</div>
-          <h1>SNAKE UNBOUND</h1>
-          <p class="lede">Evolve mid-run. Mutate your DNA, shed your tail into turrets, phase between dimensional floors and break the bosses that eat the arena.</p>
-          <div class="modes">
-            <button class="mode-btn primary" data-mode="classic">
-              <span class="ic">🧬</span>
-              <span><span class="tt">Classic Evolution</span><span class="ds">Pure snake core loop plus in-run DNA mutations</span></span>
-            </button>
-            <button class="mode-btn" data-mode="frenzy">
-              <span class="ic">⚡</span>
-              <span><span class="tt">Frenzy Run</span><span class="ds">High speed, dense spawns, rival AI snakes hunting you</span></span>
-            </button>
-            <button class="mode-btn" data-mode="dimensional">
-              <span class="ic">🌀</span>
-              <span><span class="tt">Dimensional Shift</span><span class="ds">Two stacked sub-grids — shift floors to escape any trap</span></span>
-            </button>
+        <!-- menu -->
+        <div class="sheet on" id="ovMenu">
+          <h1>SNAKE<br>UNBOUND<span class="rule"></span></h1>
+          <p class="note">Evolve mid-run. Splice DNA, shed your tail into turrets, slip between floors, and break the things that eat the arena.</p>
+          <div class="modes" id="modeList"></div>
+          <div class="swatches" id="skinRow"></div>
+          <div class="btns">
+            <button class="btn" id="btnCodex">Codex</button>
+            <button class="btn" id="btnAchv">Records</button>
           </div>
-          <div>
-            <div class="eyebrow" style="margin-bottom:7px">Scale pattern</div>
-            <div class="pill-row" id="skinRow"></div>
-          </div>
-          <div class="pill-row" style="margin-top:2px">
-            <button class="pill" id="btnCodex">Codex &amp; controls</button>
-            <button class="pill" id="btnAchv">Achievements</button>
-          </div>
-          <p class="hint">Move with <b>WASD</b> or <b>arrows</b> · <b>Space</b> ability · <b>Shift</b> shed tail · <b>E</b> shift floor · <b>Q</b> rewind</p>
+          <p class="footnote"><b>WASD</b> move &nbsp;·&nbsp; <b>SPACE</b> ability &nbsp;·&nbsp; <b>SHIFT</b> shed &nbsp;·&nbsp; <b>E</b> floor &nbsp;·&nbsp; <b>Q</b> rewind</p>
         </div>
 
-        <!-- Level up -->
-        <div class="overlay" id="ovLevel">
-          <div class="eyebrow">DNA Splice</div>
+        <!-- splice -->
+        <div class="sheet" id="ovLevel">
+          <div class="kicker">DNA Splice</div>
           <h1 id="levelTitle">LEVEL 2</h1>
-          <p class="lede">Biomass threshold reached. Integrate one mutation into your genome.</p>
-          <div class="mut-cards" id="mutCards"></div>
-          <p class="hint">Press <b>1</b>, <b>2</b> or <b>3</b> to splice</p>
+          <p class="note">Biomass threshold reached. Integrate one mutation.</p>
+          <div class="offer" id="mutCards"></div>
+          <p class="footnote">Press <b>1</b> · <b>2</b> · <b>3</b></p>
         </div>
 
-        <!-- Pause -->
-        <div class="overlay" id="ovPause">
-          <div class="eyebrow">Suspended</div>
-          <h1>PAUSED</h1>
-          <div class="btn-row">
-            <button class="btn btn-primary" id="btnResume">Resume</button>
-            <button class="btn btn-ghost" id="btnQuit">Quit to menu</button>
+        <!-- pause -->
+        <div class="sheet" id="ovPause">
+          <div class="kicker">Suspended</div>
+          <h1>PAUSED<span class="rule"></span></h1>
+          <div class="btns">
+            <button class="btn key" id="btnResume">Resume</button>
+            <button class="btn" id="btnQuit">Quit to menu</button>
           </div>
-          <p class="hint">Press <b>P</b> or <b>Esc</b> to resume</p>
+          <p class="footnote">Press <b>P</b> or <b>ESC</b></p>
         </div>
 
-        <!-- Game over -->
-        <div class="overlay" id="ovOver">
-          <div class="eyebrow" id="overEyebrow">Run terminated</div>
-          <h1 class="warn">GAME OVER</h1>
-          <p class="lede" id="overReason">You crashed.</p>
-          <div class="result-grid" id="resultGrid"></div>
-          <div class="ach-strip" id="overAch"></div>
-          <div class="btn-row">
-            <button class="btn btn-primary" id="btnRetry">Run it back</button>
-            <button class="btn btn-ghost" id="btnMenu">Main menu</button>
+        <!-- results -->
+        <div class="sheet" id="ovOver">
+          <div class="kicker" id="overEyebrow">Run ended</div>
+          <h1 class="bad">GAME OVER<span class="rule"></span></h1>
+          <p class="note" id="overReason">You crashed.</p>
+          <div class="results" id="resultGrid"></div>
+          <div class="medals" id="overAch"></div>
+          <div class="btns">
+            <button class="btn key" id="btnRetry">Run it back</button>
+            <button class="btn" id="btnMenu">Main menu</button>
           </div>
         </div>
 
-        <!-- Codex -->
-        <div class="overlay" id="ovHelp">
-          <div class="eyebrow">Codex</div>
-          <h1>FIELD MANUAL</h1>
-          <div class="help-grid" id="helpGrid"></div>
-          <button class="btn btn-primary" id="btnCloseHelp">Back</button>
+        <!-- codex -->
+        <div class="sheet" id="ovHelp">
+          <div class="kicker">Field manual</div>
+          <h1>CODEX<span class="rule"></span></h1>
+          <div class="codex" id="helpGrid"></div>
+          <button class="btn key" id="btnCloseHelp">Back</button>
         </div>
 
-        <!-- Achievements -->
-        <div class="overlay" id="ovAch">
-          <div class="eyebrow">Career</div>
-          <h1>ACHIEVEMENTS</h1>
-          <div class="result-grid" id="careerGrid"></div>
-          <div class="ach-strip" id="achGrid"></div>
-          <div class="btn-row">
-            <button class="btn btn-primary" id="btnCloseAch">Back</button>
-            <button class="btn btn-ghost" id="btnWipe">Reset save</button>
+        <!-- records -->
+        <div class="sheet" id="ovAch">
+          <div class="kicker">Career</div>
+          <h1>RECORDS<span class="rule"></span></h1>
+          <div class="results" id="careerGrid"></div>
+          <div class="medals" id="achGrid"></div>
+          <div class="btns">
+            <button class="btn key" id="btnCloseAch">Back</button>
+            <button class="btn" id="btnWipe">Reset save</button>
           </div>
         </div>
       </div>
 
-      <div class="touch-deck" id="touchDeck">
-        <button class="tbtn" data-act="ability"><span class="ti">🔥</span><span class="tl">Ability</span></button>
-        <button class="tbtn" data-act="shed"><span class="ti">✂️</span><span class="tl">Shed</span></button>
-        <button class="tbtn" data-act="shift"><span class="ti">🌀</span><span class="tl">Floor</span></button>
-        <button class="tbtn" data-act="rewind"><span class="ti">⏪</span><span class="tl">Rewind</span></button>
-      </div>
+      <div class="deck" id="touchDeck"></div>
     </div>
 
-    <!-- Right rail -->
-    <div class="rail rail-right">
-      <div class="card">
-        <div class="card-label">Genome <span id="uiMutCount" style="color:var(--text-2)">0</span></div>
-        <div class="mut-list" id="mutList"><p class="empty-note">No mutations spliced yet. Eat biomass to trigger a DNA splice.</p></div>
+    <!-- genome + keys -->
+    <div class="col col-right">
+      <div class="block">
+        <h2>Genome <b id="uiMutCount">0</b></h2>
+        <div class="genome" id="mutList"><p class="hint-empty">No mutations spliced.</p></div>
       </div>
-      <div class="card">
-        <div class="card-label">Abilities</div>
+      <div class="block">
+        <h2>Controls</h2>
         <div class="keys" id="abilityKeys"></div>
       </div>
-      <div class="card">
-        <div class="card-label">Run telemetry</div>
-        <div class="stat-row"><span class="stat-name">Biomass eaten</span><span class="stat-val" id="uiEaten">0</span></div>
-        <div class="stat-row"><span class="stat-name">Bosses felled</span><span class="stat-val" id="uiBosses">0</span></div>
-        <div class="stat-row"><span class="stat-name">Rivals culled</span><span class="stat-val" id="uiKills">0</span></div>
-        <div class="stat-row"><span class="stat-name">Floor</span><span class="stat-val" id="uiFloor">1</span></div>
+      <div class="block">
+        <h2>Telemetry</h2>
+        <div class="readout">
+          <div class="row"><span class="k">Eaten</span><span class="v" id="uiEaten">0</span></div>
+          <div class="row"><span class="k">Bosses</span><span class="v" id="uiBosses">0</span></div>
+          <div class="row"><span class="k">Rivals</span><span class="v" id="uiKills">0</span></div>
+          <div class="row"><span class="k">Floor</span><span class="v" id="uiFloor">1</span></div>
+        </div>
       </div>
     </div>
   </div>
@@ -506,9 +507,21 @@ const DIRS = [
 ];
 
 const MODES = {
-  classic:     { label: 'Classic Evolution', tick: 112, rivals: 0, layers: 1, spawn: 1, hazardRate: 0.35 },
-  frenzy:      { label: 'Frenzy Run',        tick: 78,  rivals: 3, layers: 1, spawn: 3, hazardRate: 0.75 },
-  dimensional: { label: 'Dimensional Shift', tick: 104, rivals: 1, layers: 2, spawn: 2, hazardRate: 0.6 }
+  classic: {
+    label: 'Classic Evolution', short: 'Classic', icon: 'helix',
+    blurb: 'The plain snake loop, with DNA splices layered on top',
+    tick: 112, rivals: 0, layers: 1, spawn: 1, hazardRate: 0.35
+  },
+  frenzy: {
+    label: 'Frenzy Run', short: 'Frenzy', icon: 'bolt',
+    blurb: 'Faster ticks, denser spawns, rival snakes hunting you',
+    tick: 78, rivals: 3, layers: 1, spawn: 3, hazardRate: 0.75
+  },
+  dimensional: {
+    label: 'Dimensional Shift', short: 'Shift', icon: 'layers',
+    blurb: 'Two stacked floors — shift between them to break a trap',
+    tick: 104, rivals: 1, layers: 2, spawn: 2, hazardRate: 0.6
+  }
 };
 
 const SKINS = {
@@ -519,8 +532,12 @@ const SKINS = {
   ember:   { id: 'ember',   name: 'Ember',    head: '#fb7185', body: '#f43f5e', deep: '#881337', light: '#fecdd3' }
 };
 
+const MONO_STACK = 'ui-monospace, SFMono-Regular, Menlo, Consolas, monospace';
+
+const RIVAL_COLORS = ['#94a3b8', '#7f8ea3', '#a8b4c4', '#6f7d90'];
+
 const COLOR = {
-  apple: '#f87171', scarab: '#4ade80', mimic: '#c084fc', golden: '#fbbf24',
+  apple: '#ef5350', scarab: '#4ade80', mimic: '#c084fc', golden: '#fbbf24',
   quantum: '#22d3ee', collapse: '#e879f9', rival: '#94a3b8', mini: '#f472b6',
   boss: '#fb7185', plasma: '#67e8f9', acid: '#a3e635', turret: '#38bdf8',
   wall: '#64748b', ice: '#7dd3fc', conveyor: '#818cf8', lava: '#f97316'
@@ -599,19 +616,62 @@ const Store = {
 };
 
 const ACHIEVEMENTS = [
-  { id: 'genesis',   icon: '🌱', name: 'Biogenesis',       desc: 'Eat your first biomass.' },
-  { id: 'chain',     icon: '🔗', name: 'Chain Reaction',   desc: 'Reach a 4× combo.' },
-  { id: 'splice',    icon: '🧬', name: 'Spliced',          desc: 'Reach DNA level 5.' },
-  { id: 'slayer',    icon: '⚔️', name: 'Giant Slayer',     desc: 'Defeat a boss.' },
-  { id: 'apex',      icon: '👑', name: 'Apex Predator',    desc: 'Defeat 3 bosses in one run.' },
-  { id: 'chrono',    icon: '⏪', name: 'Chronomancer',     desc: 'Rewind time mid-run.' },
-  { id: 'sacrifice', icon: '✂️', name: 'Tactical Sacrifice', desc: 'Amputate your tail.' },
-  { id: 'quantum',   icon: '🔮', name: 'Superposition',    desc: 'Collapse a quantum twin.' },
-  { id: 'century',   icon: '💯', name: 'Five Hundred',     desc: 'Score 500 in a single run.' },
-  { id: 'leviathan', icon: '🐉', name: 'Leviathan',        desc: 'Grow to 40 segments.' },
-  { id: 'drifter',   icon: '🌀', name: 'Dimensional Drifter', desc: 'Shift floors 10 times in a run.' },
-  { id: 'gunner',    icon: '🔫', name: 'Living Artillery', desc: 'Kill an enemy with a tail turret.' }
+  { id: 'genesis',   icon: 'sprout', name: 'Biogenesis',       desc: 'Eat your first biomass.' },
+  { id: 'chain',     icon: 'link', name: 'Chain Reaction',   desc: 'Reach a 4× combo.' },
+  { id: 'splice',    icon: 'helix', name: 'Spliced',          desc: 'Reach DNA level 5.' },
+  { id: 'slayer',    icon: 'blade', name: 'Giant Slayer',     desc: 'Defeat a boss.' },
+  { id: 'apex',      icon: 'crown', name: 'Apex Predator',    desc: 'Defeat 3 bosses in one run.' },
+  { id: 'chrono',    icon: 'rewind', name: 'Chronomancer',     desc: 'Rewind time mid-run.' },
+  { id: 'sacrifice', icon: 'scissors', name: 'Tactical Sacrifice', desc: 'Amputate your tail.' },
+  { id: 'quantum',   icon: 'atom', name: 'Superposition',    desc: 'Collapse a quantum twin.' },
+  { id: 'century',   icon: 'hash', name: 'Five Hundred',     desc: 'Score 500 in a single run.' },
+  { id: 'leviathan', icon: 'expand', name: 'Leviathan',        desc: 'Grow to 40 segments.' },
+  { id: 'drifter',   icon: 'layers', name: 'Dimensional Drifter', desc: 'Shift floors 10 times in a run.' },
+  { id: 'gunner',    icon: 'target', name: 'Living Artillery', desc: 'Kill an enemy with a tail turret.' }
 ];
+
+/* ─────────────────── 3b. ICON SET (inline, stroked, 24px grid) ─────────────────── */
+
+const ICONS = {
+  helix:    '<path d="M4 17c4 0 4-5 8-5s4 5 8 5"/><path d="M4 12c4 0 4-5 8-5s4 5 8 5"/>',
+  bolt:     '<path d="M13 2.5 5.5 13.5H11l-.5 8L18 10.5h-5.5l.5-8Z"/>',
+  layers:   '<path d="M12 3 3.5 7.5 12 12l8.5-4.5L12 3Z"/><path d="m3.5 12.5 8.5 4.5 8.5-4.5"/>',
+  fork:     '<path d="M3.5 12h4.5"/><path d="M8 12l5-5h7.5"/><path d="M8 12l5 5h7.5"/>',
+  shield:   '<path d="M12 3 5 6v5.5C5 16 8 19.8 12 21c4-1.2 7-5 7-9.5V6l-7-3Z"/>',
+  beam:     '<path d="M2.5 12h8"/><path d="m10.5 8 5.5 4-5.5 4Z"/><path d="M19.5 6.5v11"/>',
+  droplet:  '<path d="M12 3.5c3.5 4 6 7.2 6 9.7a6 6 0 0 1-12 0c0-2.5 2.5-5.7 6-9.7Z"/>',
+  orbit:    '<circle cx="12" cy="12" r="2.6"/><ellipse cx="12" cy="12" rx="9.4" ry="4.3" transform="rotate(-27 12 12)"/>',
+  target:   '<circle cx="12" cy="12" r="7.2"/><circle cx="12" cy="12" r="2"/><path d="M12 1.8v3M12 19.2v3M1.8 12h3M19.2 12h3"/>',
+  clock:    '<circle cx="12" cy="12" r="8"/><path d="M12 7.4V12l3.2 2"/>',
+  phase:    '<circle cx="12" cy="12" r="7.4" stroke-dasharray="2.6 3.4"/><circle cx="12" cy="12" r="2"/>',
+  spark:    '<path d="M12 3v3.6M12 17.4V21M3 12h3.6M17.4 12H21M5.8 5.8l2.5 2.5M15.7 15.7l2.5 2.5M5.8 18.2l2.5-2.5M15.7 8.3l2.5-2.5"/>',
+  fang:     '<path d="M4.5 5.5h15"/><path d="M8 5.5c0 5 1.1 8.6 2.4 10.5C11.7 14.1 12.8 10.5 12.8 5.5"/><path d="M14.6 5.5c0 3.8.8 6.6 1.8 8 1-1.4 1.8-4.2 1.8-8"/>',
+  scissors: '<circle cx="6.4" cy="6.4" r="2.4"/><circle cx="6.4" cy="17.6" r="2.4"/><path d="M19.8 4.6 8.6 15.8M19.8 19.4 8.6 8.2"/>',
+  rewind:   '<path d="M11 6 4 12l7 6V6Z"/><path d="M20 6l-7 6 7 6V6Z"/>',
+  book:     '<path d="M5 4.6A1.6 1.6 0 0 1 6.6 3H19v18H6.6A1.6 1.6 0 0 1 5 19.4Z"/><path d="M9 3v18"/>',
+  trophy:   '<path d="M7 4h10v4.4a5 5 0 0 1-10 0Z"/><path d="M7 6H4.6A2.4 2.4 0 0 0 7 8.4M17 6h2.4A2.4 2.4 0 0 1 17 8.4"/><path d="M12 13.4V17M8.6 20.4h6.8"/>',
+  sprout:   '<path d="M12 21v-7"/><path d="M12 14c0-3.8 3-6.8 6.8-6.8C18.8 11 15.8 14 12 14Z"/><path d="M12 14c0-3.2-2.6-5.8-5.8-5.8C6.2 11.4 8.8 14 12 14Z"/>',
+  link:     '<path d="m9.6 14.4 4.8-4.8"/><path d="M10.2 6.6 11.6 5.2a4.1 4.1 0 0 1 5.8 5.8L16 12.4"/><path d="M8 11.6 6.6 13a4.1 4.1 0 0 0 5.8 5.8l1.4-1.4"/>',
+  blade:    '<path d="M14.6 3.4h6v6L11 19l-6-6Z"/><path d="M5 13 3.4 18.8 9.2 17.2"/><path d="m7.4 17.2-3 3"/>',
+  crown:    '<path d="M4 18h16"/><path d="m4 18-1-10 5.2 3.8L12 5l3.8 6.8L21 8l-1 10"/>',
+  atom:     '<circle cx="12" cy="12" r="2"/><ellipse cx="12" cy="12" rx="9.2" ry="3.8"/><ellipse cx="12" cy="12" rx="9.2" ry="3.8" transform="rotate(60 12 12)"/><ellipse cx="12" cy="12" rx="9.2" ry="3.8" transform="rotate(-60 12 12)"/>',
+  hash:     '<path d="M6 9.2h13M5 14.8h13M10.2 4 8.2 20M16.8 4l-2 16"/>',
+  expand:   '<path d="M4 8.6V4h4.6M19.4 4H24M20 8.6V4h-4.6M4 15.4V20h4.6M20 15.4V20h-4.6"/>',
+  bricks:   '<path d="M3 4h18v16H3Z"/><path d="M3 9.4h18M3 14.6h18"/><path d="M9.4 4v5.4M14.6 9.4v5.2M9.4 14.6V20"/>',
+  alert:    '<path d="M12 3.6 21 19.4H3Z"/><path d="M12 10v4.2"/><path d="M12 17.2v.2"/>',
+  sound:    '<path d="M11 5 6.2 9H2.5v6h3.7L11 19Z"/><path d="M15.2 9.2a4 4 0 0 1 0 5.6"/><path d="M18.2 6a8 8 0 0 1 0 12"/>',
+  mute:     '<path d="M11 5 6.2 9H2.5v6h3.7L11 19Z"/><path d="m15.5 9.5 5 5M20.5 9.5l-5 5"/>',
+  pause:    '<path d="M8.6 4.5v15M15.4 4.5v15"/>',
+  chevron:  '<path d="m9.5 5.5 6.5 6.5-6.5 6.5"/>',
+  dot:      '<circle cx="12" cy="12" r="4"/>'
+};
+
+/** Inline SVG icon markup. Icons inherit colour and sit on a 24px grid. */
+function icon(name) {
+  const body = ICONS[name] || ICONS.dot;
+  return '<svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" ' +
+         'stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' + body + '</svg>';
+}
 
 /* ─────────────────────── 3. SOUND ENGINE (Web Audio) ─────────────────────── */
 
@@ -846,7 +906,7 @@ class ParticleSystem {
       for (let i = this.texts.length - 1; i >= 0; i--) if (this.texts[i].banner) this.texts.splice(i, 1);
     }
     this.texts.push({
-      str, x, y, color, life: 1,
+      str, x: clamp(x, 44, VIEW - 44), y, color, life: 1,
       decay: opt.decay ?? 0.02, vy: opt.vy ?? -0.55,
       size: opt.size ?? 15, layer: opt.layer ?? 0, weight: opt.weight ?? 800,
       banner: !!opt.banner
@@ -886,70 +946,70 @@ const FX = new ParticleSystem();
 
 const MUTATIONS = [
   {
-    id: 'hydra', name: 'Hydra Head', icon: '🐍', tint: 'rgba(52,211,153,.35)', max: 2,
+    id: 'hydra', name: 'Hydra Head', icon: 'fork', max: 2,
     desc: r => r === 0
       ? 'Grow a second mouth on your tail. The tail devours any biomass it touches.'
       : 'The tail mouth also bites through hostile minions.',
     tag: 'Tail'
   },
   {
-    id: 'scales', name: 'Diamond Scales', icon: '💎', tint: 'rgba(96,165,250,.35)', max: 3,
+    id: 'scales', name: 'Diamond Scales', icon: 'shield', max: 3,
     desc: r => r === 0
       ? 'Gain 2 armor stacks. Spend a stack to smash through a wall or lava instead of dying.'
       : 'Gain 2 more armor stacks and reinforce your plating.',
     tag: 'Defense'
   },
   {
-    id: 'plasma', name: 'Plasma Breath', icon: '🔥', tint: 'rgba(103,232,249,.35)', max: 3,
+    id: 'plasma', name: 'Plasma Breath', icon: 'beam', max: 3,
     desc: r => r === 0
       ? 'Press SPACE to exhale a plasma bolt that shreds enemies and boss armor.'
       : 'Plasma gains +2 charges, heavier damage and deeper penetration.',
     tag: 'Offense'
   },
   {
-    id: 'acid', name: 'Acid Trail', icon: '🧪', tint: 'rgba(163,230,53,.35)', max: 3,
+    id: 'acid', name: 'Acid Trail', icon: 'droplet', max: 3,
     desc: r => r === 0
       ? 'Secrete an acid trail that dissolves hazards and burns anything that follows you.'
       : 'Acid lingers longer and bites deeper.',
     tag: 'Control'
   },
   {
-    id: 'gravity', name: 'Gravity Well', icon: '🌌', tint: 'rgba(167,139,250,.35)', max: 3,
+    id: 'gravity', name: 'Gravity Well', icon: 'orbit', max: 3,
     desc: r => r === 0
       ? 'Your biomass warps space — distant food drifts toward your body.'
       : 'Extend the gravitational radius of your mass.',
     tag: 'Utility'
   },
   {
-    id: 'turret', name: 'Tail Turret', icon: '🔫', tint: 'rgba(56,189,248,.35)', max: 3,
+    id: 'turret', name: 'Tail Turret', icon: 'target', max: 3,
     desc: r => r === 0
       ? 'Amputated segments harden into auto-targeting laser turrets instead of barricades.'
       : 'Turrets fire faster and reach further.',
     tag: 'Offense'
   },
   {
-    id: 'chronos', name: 'Chronos Core', icon: '⏳', tint: 'rgba(251,191,36,.35)', max: 3,
+    id: 'chronos', name: 'Chronos Core', icon: 'clock', max: 3,
     desc: r => r === 0
       ? 'Press Q to rewind roughly two seconds of time. Starts with 2 charges.'
       : 'Store one extra rewind charge and reach further back.',
     tag: 'Utility'
   },
   {
-    id: 'ghost', name: 'Ghost Phase', icon: '👻', tint: 'rgba(192,132,252,.35)', max: 2,
+    id: 'ghost', name: 'Ghost Phase', icon: 'phase', max: 2,
     desc: r => r === 0
       ? 'Your body becomes permeable — pass through your own segments freely.'
       : 'Phase through rival snakes and their coils as well.',
     tag: 'Defense'
   },
   {
-    id: 'metabolism', name: 'Metabolic Surge', icon: '⚡', tint: 'rgba(251,113,133,.35)', max: 3,
+    id: 'metabolism', name: 'Metabolic Surge', icon: 'spark', max: 3,
     desc: r => r === 0
       ? 'Digest 50% faster: more DNA per meal and a far slower combo decay.'
       : 'Accelerate digestion further.',
     tag: 'Growth'
   },
   {
-    id: 'venom', name: 'Venom Fangs', icon: '☠️', tint: 'rgba(74,222,128,.35)', max: 3,
+    id: 'venom', name: 'Venom Fangs', icon: 'fang', max: 3,
     desc: r => r === 0
       ? 'Ramming an enemy head-on injects venom, dealing heavy contact damage.'
       : 'Venom potency increases.',
@@ -1135,7 +1195,8 @@ class SnakeEntity {
     this.growth = 0;
     this.color = opt.color || COLOR.rival;
     this.accent = opt.accent || this.color;
-    this.speedDiv = opt.speedDiv || 1;        // move once every N ticks
+    this.moveEvery = opt.moveEvery || 1;      // ticks between steps for this entity
+    this.lastMoveTick = opt.tick ?? 0;        // when that step happened
     this.phase = opt.phase || 0;
     this.hp = opt.hp ?? 1;
     this.cells = [];
@@ -1156,6 +1217,22 @@ class SnakeEntity {
 
   snapshotPrev() {
     this.prev = this.cells.map(c => ({ x: c.x, y: c.y }));
+  }
+
+  /**
+   * Begin a step: freeze the current body as the interpolation source and
+   * stamp the clock. Entities move at different cadences, so each one is
+   * drawn against its own step interval rather than the player's.
+   */
+  beginMove(tick) {
+    this.snapshotPrev();
+    this.lastMoveTick = tick;
+  }
+
+  /** 0 → 1 across this entity's own step interval. */
+  moveProgress(game) {
+    const every = this.moveEvery || 1;
+    return clamp(((game.tick - this.lastMoveTick) + game.alpha) / every, 0, 1);
   }
 
   contains(x, y, ignoreTail = false) {
@@ -1197,7 +1274,8 @@ class SnakeEntity {
     return {
       cells: this.cells.map(c => ({ x: c.x, y: c.y })),
       dir: { x: this.dir.x, y: this.dir.y },
-      layer: this.layer, growth: this.growth, alive: this.alive, hp: this.hp
+      layer: this.layer, growth: this.growth, alive: this.alive, hp: this.hp,
+      tick: this.lastMoveTick
     };
   }
   restore(s) {
@@ -1206,6 +1284,7 @@ class SnakeEntity {
     this.nextDir = { x: s.dir.x, y: s.dir.y };
     this.layer = s.layer; this.growth = s.growth; this.alive = s.alive; this.hp = s.hp;
     this.snapshotPrev();
+    this.lastMoveTick = s.tick ?? this.lastMoveTick;
   }
 }
 
@@ -1421,17 +1500,16 @@ class AIManager {
 
   spawnRival(level = 1) {
     const game = this.game;
-    const spot = game.freeCell(0, 6);
+    const spot = game.freeCell(null, 7);
     if (!spot) return null;
-    const hue = pick(['#94a3b8', '#cbd5e1', '#f472b6', '#38bdf8']);
+    const hue = pick(RIVAL_COLORS);
     const rival = new SnakeEntity({
       kind: 'rival', x: spot.x, y: spot.y, layer: spot.layer,
-      len: 4 + Math.min(6, level), dir: pick(DIRS), color: hue, accent: '#e2e8f0',
-      speedDiv: 2, hp: 2
+      len: 4 + Math.min(6, level), dir: pick(DIRS), color: hue, accent: '#b6c0cd',
+      moveEvery: 2, hp: 2, tick: game.tick
     });
     rival.aggression = rnd(0.55, 0.15);
-    rival.thinkTimer = 0;
-    rival.path = null;
+    rival.shiftCooldown = 0;
     this.rivals.push(rival);
     FX.ring(spot.x * CELL + CELL / 2, spot.y * CELL + CELL / 2, hue, 60, { layer: spot.layer });
     return rival;
@@ -1443,9 +1521,8 @@ class AIManager {
       const nx = clamp(x + d.x, 0, COLS - 1), ny = clamp(y + d.y, 0, ROWS - 1);
       const mini = new SnakeEntity({
         kind: 'mini', x: nx, y: ny, layer, len: 3, dir: d,
-        color: COLOR.mini, accent: '#fbcfe8', speedDiv: 3, hp: 1
+        color: COLOR.mini, accent: '#f0a8c4', moveEvery: 2, hp: 1, tick: this.game.tick
       });
-      mini.thinkTimer = 0;
       this.minis.push(mini);
     }
     FX.ring(x * CELL + CELL / 2, y * CELL + CELL / 2, COLOR.mini, 54, { layer });
@@ -1499,56 +1576,82 @@ class AIManager {
     return freeSpace(nx, ny, blocked, need + 4) >= need;
   }
 
-  update(game) {
-    // Rivals move on a slower cadence than the player and hunt opportunistically.
-    for (const r of this.rivals) {
-      if (!r.alive) continue;
-      if (game.tick % r.speedDiv !== 0) continue;
-      const hunt = game.player.alive &&
-        manhattan(r.head, game.player.head) < 9 &&
-        Math.random() < r.aggression;
-      const d = this.think(r, { huntPlayer: hunt });
-      r.snapshotPrev();
-      if (!d) { game.killSnake(r, 'trapped'); continue; }
-      r.dir = d; r.nextDir = d;
-      const nx = r.head.x + d.x, ny = r.head.y + d.y;
-      if (!inBounds(nx, ny) || game.world.isLethal(nx, ny, r.layer) || !game.world.playable(nx, ny)) {
-        game.killSnake(r, 'hazard'); continue;
-      }
-      const hitSelf = r.contains(nx, ny, true);
-      const hitOther = game.snakeOccupied(nx, ny, r.layer, r);
-      if (hitSelf || hitOther) {
-        // Rival rams the player: the player takes the hit, the rival dies.
-        if (game.player.alive && game.player.layer === r.layer && game.player.contains(nx, ny)) {
-          game.damagePlayer('A rival snake rammed you.', { x: nx, y: ny });
-        }
-        game.killSnake(r, 'collision');
-        continue;
-      }
-      const f = game.food.at(nx, ny, r.layer);
-      if (f) { game.food.removeAt(nx, ny, r.layer); r.grow(f.grow); game.food.spawn(); FX.burst(nx * CELL + CELL / 2, ny * CELL + CELL / 2, f.color, 8, { layer: r.layer, speed: 1.8 }); }
-      r.advance(nx, ny);
-      if (game.acidAt(nx, ny, r.layer)) game.damageSnake(r, 1, 'acid');
+  /**
+   * Step one AI snake. Rivals forage and pick their fights; mimic spawns only
+   * ever hunt the player. A snake with nowhere safe to go keeps its heading and
+   * crashes visibly rather than blinking out of existence.
+   */
+  moveAgent(game, s, opts) {
+    const chosen = this.think(s, opts) || s.dir;
+    s.beginMove(game.tick);
+    s.dir = chosen; s.nextDir = chosen;
+
+    const nx = s.head.x + chosen.x, ny = s.head.y + chosen.y;
+
+    if (!inBounds(nx, ny) || !game.world.playable(nx, ny) || game.world.isLethal(nx, ny, s.layer)) {
+      game.killSnake(s, 'hazard');
+      return;
+    }
+    if (game.barricadeAt(nx, ny, s.layer)) {
+      game.killSnake(s, 'barricade');
+      return;
     }
 
-    // Mimic spawn: relentless short hunters that always chase the player.
-    for (const m of this.minis) {
-      if (!m.alive) continue;
-      if (game.tick % m.speedDiv !== 0) continue;
-      const d = this.think(m, { huntPlayer: true });
-      m.snapshotPrev();
-      if (!d) { game.killSnake(m, 'trapped'); continue; }
-      m.dir = d; m.nextDir = d;
-      const nx = m.head.x + d.x, ny = m.head.y + d.y;
-      if (!inBounds(nx, ny) || game.world.isLethal(nx, ny, m.layer) || !game.world.playable(nx, ny)) { game.killSnake(m, 'hazard'); continue; }
-      if (game.player.alive && game.player.layer === m.layer && game.player.contains(nx, ny)) {
-        game.damagePlayer('A mimic spawn bit you.', { x: nx, y: ny });
-        game.killSnake(m, 'collision');
-        continue;
+    const blocker = game.snakeOccupied(nx, ny, s.layer, s);
+    if (s.contains(nx, ny, true) || blocker) {
+      if (blocker === game.player && game.player.alive) {
+        game.damagePlayer(s.kind === 'mini' ? 'A mimic spawn bit you.' : 'A rival snake rammed you.', { x: nx, y: ny });
       }
-      if (m.contains(nx, ny, true) || game.snakeOccupied(nx, ny, m.layer, m)) { game.killSnake(m, 'collision'); continue; }
-      m.advance(nx, ny);
-      if (game.acidAt(nx, ny, m.layer)) game.damageSnake(m, 1, 'acid');
+      game.killSnake(s, 'collision');
+      return;
+    }
+
+    if (opts.forage) {
+      const f = game.food.at(nx, ny, s.layer);
+      if (f) {
+        game.food.removeAt(nx, ny, s.layer);
+        s.grow(f.grow);
+        game.food.spawn();
+        FX.burst(nx * CELL + CELL / 2, ny * CELL + CELL / 2, f.color, 8, { layer: s.layer, speed: 1.8 });
+      }
+    }
+
+    s.advance(nx, ny);
+    if (game.acidAt(nx, ny, s.layer)) game.damageSnake(s, 1, 'acid');
+  }
+
+  /** Rivals follow the player between floors so no sub-grid is ever a safe room. */
+  considerLayerShift(game, r) {
+    if (game.cfg.layers < 2 || !game.player.alive) return;
+    if (r.shiftCooldown > 0) { r.shiftCooldown--; return; }
+    if (r.layer === game.player.layer) return;
+    if (Math.random() > r.aggression * 0.25) return;
+    if (game.world.isLethal(r.head.x, r.head.y, game.player.layer)) return;
+    if (game.snakeOccupied(r.head.x, r.head.y, game.player.layer, r)) return;
+
+    const cx = r.head.x * CELL + CELL / 2, cy = r.head.y * CELL + CELL / 2;
+    FX.ring(cx, cy, r.color, 70, { layer: r.layer });
+    r.layer = game.player.layer;
+    r.shiftCooldown = 40;
+    FX.ring(cx, cy, r.color, 70, { layer: r.layer });
+  }
+
+  update(game) {
+    for (const r of this.rivals) {
+      if (game.state !== 'PLAYING') break;
+      if (!r.alive) continue;
+      this.considerLayerShift(game, r);
+      if (game.tick % r.moveEvery !== 0) continue;
+      const hunt = game.player.alive && r.layer === game.player.layer &&
+        manhattan(r.head, game.player.head) < 9 && Math.random() < r.aggression;
+      this.moveAgent(game, r, { huntPlayer: hunt, forage: true });
+    }
+
+    for (const m of this.minis) {
+      if (game.state !== 'PLAYING') break;
+      if (!m.alive) continue;
+      if (game.tick % m.moveEvery !== 0) continue;
+      this.moveAgent(game, m, { huntPlayer: true, forage: false });
     }
 
     this.rivals = this.rivals.filter(r => r.alive);
@@ -1568,6 +1671,7 @@ class Boss {
     this.wave = wave;
     this.game = game;
     this.timer = 0;
+    this.lastMoveTimer = 0;
     this.flash = 0;
     this.dead = false;
     this.layer = 0;
@@ -1585,19 +1689,28 @@ class Boss {
       this.path = this.buildRing(game.world.perimeter);
       const p = this.path[0];
       this.x = p.x; this.y = p.y;
+      this.prevX = p.x; this.prevY = p.y;
     } else {
       this.name = 'The Hydra Centipede';
       this.maxHp = 26 + wave * 12;
       this.hp = this.maxHp;
-      this.moveEvery = Math.max(2, 4 - Math.floor(wave / 3));
+      this.moveEvery = Math.max(2, 3 - Math.floor(wave / 3));
       this.worms = [];
       const spot = game.freeCell(0, 8) || { x: 2, y: 2, layer: 0 };
       const len = 9 + wave * 2;
       const cells = [];
       for (let i = 0; i < len; i++) cells.push({ x: clamp(spot.x - i, 0, COLS - 1), y: spot.y });
-      this.worms.push({ cells, dir: { x: 1, y: 0 }, id: 1, phase: rnd(Math.PI * 2) });
+      this.worms.push({
+        cells, prev: cells.map(c => ({ x: c.x, y: c.y })),
+        dir: { x: 1, y: 0 }, id: 1, phase: rnd(Math.PI * 2)
+      });
       this.nextWormId = 2;
     }
+  }
+
+  /** 0 → 1 across this boss's own step interval, for smooth drawing. */
+  progress(game) {
+    return clamp(((this.timer - this.lastMoveTimer) + game.alpha) / (this.moveEvery || 1), 0, 1);
   }
 
   buildRing(r) {
@@ -1645,6 +1758,8 @@ class Boss {
   updateGridEater(game) {
     // Crawls the arena perimeter, converting the border into lava as it feeds.
     if (this.timer % this.moveEvery === 0) {
+      this.prevX = this.x; this.prevY = this.y;
+      this.lastMoveTimer = this.timer;
       this.ringPos = (this.ringPos + 1) % this.path.length;
       const p = this.path[this.ringPos];
       this.x = p.x; this.y = p.y;
@@ -1700,8 +1815,10 @@ class Boss {
   updateHydra(game) {
     if (this.timer % this.moveEvery !== 0) return;
     const target = game.player.alive ? game.player.head : { x: Math.floor(COLS / 2), y: Math.floor(ROWS / 2) };
+    this.lastMoveTimer = this.timer;
 
     for (const w of this.worms) {
+      w.prev = w.cells.map(c => ({ x: c.x, y: c.y }));
       const head = w.cells[0];
       const blocked = (x, y) => {
         if (!game.world.playable(x, y)) return true;
@@ -1747,8 +1864,12 @@ class Boss {
     const back = w.cells.splice(i);
     back.shift();
     if (back.length >= 3) {
-      this.worms.push({ cells: back, dir: { x: -w.dir.x || 1, y: -w.dir.y }, id: this.nextWormId++, phase: rnd(Math.PI * 2) });
+      this.worms.push({
+        cells: back, prev: back.map(c => ({ x: c.x, y: c.y })),
+        dir: { x: -w.dir.x || 1, y: -w.dir.y }, id: this.nextWormId++, phase: rnd(Math.PI * 2)
+      });
     }
+    w.prev = w.cells.map(c => ({ x: c.x, y: c.y }));
     this.worms = this.worms.filter(ww => ww.cells.length >= 3);
     return true;
   }
@@ -1961,8 +2082,8 @@ class Game {
   shake(n) { this.shakeAmount = Math.min(30, this.shakeAmount + n); }
 
   flashText(str, color) {
-    FX.text(str, VIEW / 2, VIEW * 0.34, color,
-      { size: 26, decay: 0.012, vy: -0.28, layer: this.player.layer, banner: true });
+    FX.text(str, VIEW / 2, VIEW * 0.3, color,
+      { size: 13, decay: 0.013, vy: 0, layer: this.player.layer, banner: true });
   }
 
   /* ───────── grid queries ───────── */
@@ -2087,7 +2208,7 @@ class Game {
   movePlayer() {
     const p = this.player;
     if (!p.alive) return;
-    p.snapshotPrev();
+    p.beginMove(this.tick);
 
     const onIce = this.world.at(p.head.x, p.head.y, p.layer) === TILE.ICE;
     if (!onIce && this.inputQueue.length) {
@@ -2369,7 +2490,7 @@ Object.assign(Game.prototype, {
       }
     }
 
-    ph.snapshotPrev();
+    ph.beginMove(this.tick);
     ph.layer = p.layer;
     ph.dir = { x: -p.dir.x, y: p.dir.y };
     const nx = ph.head.x + ph.dir.x, ny = ph.head.y + ph.dir.y;
@@ -2484,8 +2605,8 @@ Object.assign(Game.prototype, {
   firePlasma() {
     if (this.state !== 'PLAYING') return;
     const rank = this.dna.rank('plasma');
-    if (rank <= 0) { UI.toast('🔥 No offensive mutation spliced', 'dim'); return; }
-    if (this.plasmaAmmo <= 0) { UI.toast('🔥 Plasma reserves empty', 'dim'); return; }
+    if (rank <= 0) { UI.toast('No offensive mutation spliced', { icon: 'beam', tone: 'mute' }); return; }
+    if (this.plasmaAmmo <= 0) { UI.toast('Plasma reserves empty', { icon: 'beam', tone: 'mute' }); return; }
     if (this.abilityCooldown > 0) return;
 
     const p = this.player;
@@ -2508,7 +2629,7 @@ Object.assign(Game.prototype, {
   amputate() {
     if (this.state !== 'PLAYING') return;
     const p = this.player;
-    if (p.length < 8) { UI.toast('✂️ Need 8+ segments to shed', 'dim'); return; }
+    if (p.length < 8) { UI.toast('Need 8 segments to shed', { icon: 'scissors', tone: 'mute' }); return; }
 
     const shed = Math.max(2, Math.floor(p.length * 0.3));
     const isTurret = this.dna.has('turret');
@@ -2629,13 +2750,13 @@ Object.assign(Game.prototype, {
 
   shiftLayer() {
     if (this.state !== 'PLAYING') return;
-    if (this.cfg.layers < 2) { UI.toast('🌀 This arena has a single floor', 'dim'); return; }
+    if (this.cfg.layers < 2) { UI.toast('This arena has a single floor', { icon: 'layers', tone: 'mute' }); return; }
     if (this.shiftCooldown > 0) return;
     const p = this.player;
     const target = 1 - p.layer;
-    if (this.world.isLethal(p.head.x, p.head.y, target)) { UI.toast('🌀 That floor is molten here', 'dim'); return; }
+    if (this.world.isLethal(p.head.x, p.head.y, target)) { UI.toast('That floor is molten here', { icon: 'alert', tone: 'mute' }); return; }
     const blocker = this.snakeOccupied(p.head.x, p.head.y, target, p);
-    if (blocker) { UI.toast('🌀 Something is already there', 'dim'); return; }
+    if (blocker) { UI.toast('Something is already there', { icon: 'alert', tone: 'mute' }); return; }
 
     const cx = p.head.x * CELL + CELL / 2, cy = p.head.y * CELL + CELL / 2;
     FX.ring(cx, cy, COLOR.quantum, 100, { layer: p.layer });
@@ -2667,12 +2788,12 @@ Object.assign(Game.prototype, {
 
   rewind() {
     if (this.state !== 'PLAYING') return;
-    if (this.dna.rank('chronos') <= 0) { UI.toast('⏳ Chronos Core not spliced', 'dim'); return; }
-    if (this.rewinds <= 0) { UI.toast('⏳ No rewind charges left', 'dim'); return; }
+    if (this.dna.rank('chronos') <= 0) { UI.toast('Chronos Core not spliced', { icon: 'clock', tone: 'mute' }); return; }
+    if (this.rewinds <= 0) { UI.toast('No rewind charges left', { icon: 'clock', tone: 'mute' }); return; }
     const back = 18 + this.dna.rank('chronos') * 6;
     const idx = Math.max(0, this.history.length - back);
     const snap = this.history[idx];
-    if (!snap) { UI.toast('⏳ Not enough recorded time', 'dim'); return; }
+    if (!snap) { UI.toast('Not enough recorded time', { icon: 'clock', tone: 'mute' }); return; }
 
     this.rewinds--;
     this.player.restore(snap.player);
@@ -2876,7 +2997,7 @@ Object.assign(Game.prototype, {
     const p = this.player;
     FX.ring(p.head.x * CELL + CELL / 2, p.head.y * CELL + CELL / 2, this.skin.light, 110, { layer: p.layer });
     FX.burst(p.head.x * CELL + CELL / 2, p.head.y * CELL + CELL / 2, this.skin.light, 26, { layer: p.layer, speed: 3 });
-    UI.toast(`${def.icon} ${def.name} ${rank > 1 ? 'RANK ' + rank : 'spliced'}`);
+    UI.toast(`${def.name} ${rank > 1 ? 'rank ' + rank : 'spliced'}`, { icon: def.icon });
     Sound.powerup();
   },
 
@@ -2887,7 +3008,7 @@ Object.assign(Game.prototype, {
     Store.data.achievements[id] = Date.now();
     Store.save();
     this.runAchievements.push(id);
-    UI.toast(`${def.icon} ${def.name} unlocked`);
+    UI.toast(`${def.name} unlocked`, { icon: def.icon });
     Sound.achieve();
   },
 
@@ -2969,15 +3090,26 @@ const Renderer = {
     floor.width = floor.height = px;
     const f = floor.getContext('2d');
     f.setTransform(this.scale, 0, 0, this.scale, 0, 0);
-    const g = f.createRadialGradient(VIEW / 2, VIEW / 2, 40, VIEW / 2, VIEW / 2, VIEW * 0.78);
-    g.addColorStop(0, '#0d1421');
-    g.addColorStop(1, '#070a11');
+    const g = f.createRadialGradient(VIEW / 2, VIEW / 2, 40, VIEW / 2, VIEW / 2, VIEW * 0.8);
+    g.addColorStop(0, '#0b0d11');
+    g.addColorStop(1, '#06070a');
     f.fillStyle = g;
     f.fillRect(0, 0, VIEW, VIEW);
-    f.strokeStyle = 'rgba(148,163,184,0.055)';
+
+    // Minor grid, then a stronger line every five cells for readable spacing.
     f.lineWidth = 1;
+    f.strokeStyle = 'rgba(150,163,180,0.035)';
     f.beginPath();
     for (let i = 0; i <= COLS; i++) {
+      if (i % 5 === 0) continue;
+      const v = i * CELL;
+      f.moveTo(v, 0); f.lineTo(v, VIEW);
+      f.moveTo(0, v); f.lineTo(VIEW, v);
+    }
+    f.stroke();
+    f.strokeStyle = 'rgba(150,163,180,0.075)';
+    f.beginPath();
+    for (let i = 0; i <= COLS; i += 5) {
       const v = i * CELL;
       f.moveTo(v, 0); f.lineTo(v, VIEW);
       f.moveTo(0, v); f.lineTo(VIEW, v);
@@ -3040,13 +3172,16 @@ const Renderer = {
     ctx.globalAlpha = prev;
   },
 
-  /** Interpolated pixel centre of a snake segment. */
-  segPos(s, i, alpha) {
+  /**
+   * Interpolated pixel centre of a snake segment, advanced on that entity's own
+   * step clock so slower snakes glide instead of stuttering.
+   */
+  segPos(s, i, game) {
     const cur = s.cells[i];
     const prev = s.prev[i] || cur;
     const dx = Math.abs(cur.x - prev.x), dy = Math.abs(cur.y - prev.y);
     const jump = dx > 1.5 || dy > 1.5;          // wrapped — snap instead of sliding
-    const t = jump ? 1 : alpha;
+    const t = jump ? 1 : s.moveProgress(game);
     return {
       x: lerp(prev.x, cur.x, t) * CELL + CELL / 2,
       y: lerp(prev.y, cur.y, t) * CELL + CELL / 2
@@ -3095,7 +3230,7 @@ const Renderer = {
 
     // Playfield boundary (shrinks as the Grid-Eater feeds)
     const x0 = p * CELL, size = VIEW - p * CELL * 2;
-    ctx.strokeStyle = p > 0 ? rgba(COLOR.lava, 0.55) : 'rgba(148,163,184,0.18)';
+    ctx.strokeStyle = p > 0 ? rgba(COLOR.lava, 0.5) : 'rgba(150,163,180,0.13)';
     ctx.lineWidth = 2;
     this.roundRect(ctx, x0 + 1, x0 + 1, size - 2, size - 2, 10);
     ctx.stroke();
@@ -3129,21 +3264,21 @@ const Renderer = {
         if (t === TILE.FLOOR) continue;
         const px = x * CELL, py = y * CELL;
         if (t === TILE.ICE) {
-          ctx.fillStyle = 'rgba(125,211,252,0.13)';
-          this.roundRect(ctx, px + 1, py + 1, CELL - 2, CELL - 2, 4); ctx.fill();
-          ctx.strokeStyle = 'rgba(186,230,253,0.28)';
+          ctx.fillStyle = 'rgba(150,200,235,0.055)';
+          ctx.fillRect(px, py, CELL, CELL);
+          ctx.strokeStyle = 'rgba(190,225,250,0.17)';
           ctx.lineWidth = 1;
           ctx.beginPath();
-          ctx.moveTo(px + 4, py + CELL - 5); ctx.lineTo(px + CELL - 5, py + 4);
-          ctx.moveTo(px + 9, py + CELL - 4); ctx.lineTo(px + CELL - 4, py + 9);
+          ctx.moveTo(px + 3.5, py + CELL - 4.5); ctx.lineTo(px + CELL - 4.5, py + 3.5);
+          ctx.moveTo(px + 9.5, py + CELL - 3.5); ctx.lineTo(px + CELL - 3.5, py + 9.5);
           ctx.stroke();
         } else if (t === TILE.CONVEYOR) {
           const d = game.world.convDir(x, y, layer);
-          ctx.fillStyle = 'rgba(129,140,248,0.14)';
-          this.roundRect(ctx, px + 1, py + 1, CELL - 2, CELL - 2, 4); ctx.fill();
+          ctx.fillStyle = 'rgba(120,132,190,0.05)';
+          ctx.fillRect(px, py, CELL, CELL);
           const phase = ((now / 260) + (x * d.x + y * d.y) * 0.4) % 1;
-          ctx.strokeStyle = 'rgba(165,180,252,0.62)';
-          ctx.lineWidth = 1.8;
+          ctx.strokeStyle = 'rgba(150,165,225,0.38)';
+          ctx.lineWidth = 1.6;
           ctx.lineCap = 'round';
           for (let k = 0; k < 2; k++) {
             const off = ((phase + k * 0.5) % 1) * CELL - CELL / 2;
@@ -3156,12 +3291,14 @@ const Renderer = {
           }
           ctx.lineCap = 'butt';
         } else if (t === TILE.LAVA) {
-          const pulse = 0.5 + 0.5 * Math.sin(now / 420 + (x + y) * 0.7);
-          ctx.fillStyle = `rgba(249,115,22,${0.2 + pulse * 0.24})`;
-          this.roundRect(ctx, px + 1, py + 1, CELL - 2, CELL - 2, 4); ctx.fill();
-          ctx.fillStyle = `rgba(254,215,170,${0.16 + pulse * 0.2})`;
+          // Scorched plate with an ember breathing underneath it.
+          const pulse = 0.5 + 0.5 * Math.sin(now / 520 + (x * 1.7 + y * 2.3));
+          ctx.fillStyle = '#17090a';
+          ctx.fillRect(px, py, CELL, CELL);
+          this.glow(ctx, px + CELL / 2, py + CELL / 2, CELL * 0.78, COLOR.lava, 0.2 + pulse * 0.2);
+          ctx.fillStyle = `rgba(255,186,120,${0.35 + pulse * 0.4})`;
           ctx.beginPath();
-          ctx.arc(px + CELL / 2, py + CELL / 2, 2.6 + pulse * 1.6, 0, Math.PI * 2);
+          ctx.arc(px + CELL / 2, py + CELL / 2, 1.5 + pulse * 1.1, 0, Math.PI * 2);
           ctx.fill();
         }
       }
@@ -3173,14 +3310,25 @@ const Renderer = {
       if (a.layer !== layer) continue;
       const t = a.life / a.max;
       const px = a.x * CELL, py = a.y * CELL;
-      const wob = Math.sin(now / 200 + a.x * 1.7 + a.y) * 1.2;
-      ctx.fillStyle = rgba(COLOR.acid, 0.12 + t * 0.26);
-      this.roundRect(ctx, px + 2 - wob * 0.3, py + 2, CELL - 4, CELL - 4, 6);
-      ctx.fill();
-      ctx.fillStyle = rgba('#d9f99d', 0.1 + t * 0.2);
+      const seed = (a.x * 7 + a.y * 13) % 5;
+      const wob = Math.sin(now / 260 + seed) * 0.9;
+
+      ctx.fillStyle = rgba(COLOR.acid, 0.05 + t * 0.11);
+      ctx.fillRect(px, py, CELL, CELL);
+
+      // Irregular etch marks so a trail looks eaten, not stamped.
+      ctx.fillStyle = rgba(COLOR.acid, 0.14 + t * 0.3);
       ctx.beginPath();
-      ctx.arc(px + CELL / 2 + wob, py + CELL / 2 - wob, 2 + t * 2, 0, Math.PI * 2);
+      ctx.ellipse(px + CELL / 2 + wob, py + CELL / 2 - wob * 0.6,
+        CELL * (0.2 + seed * 0.025) * (0.55 + t * 0.45),
+        CELL * (0.16 + ((seed + 2) % 4) * 0.025) * (0.55 + t * 0.45),
+        seed, 0, Math.PI * 2);
       ctx.fill();
+      if (seed % 2 === 0) {
+        ctx.beginPath();
+        ctx.arc(px + CELL * 0.72, py + CELL * 0.3, 1.1 * (0.4 + t), 0, Math.PI * 2);
+        ctx.fill();
+      }
     }
   },
 
@@ -3191,12 +3339,40 @@ const Renderer = {
       const turret = b.type === 'turret';
       const c = turret ? COLOR.turret : COLOR.wall;
 
-      ctx.fillStyle = rgba(c, turret ? 0.26 : 0.32);
-      this.roundRect(ctx, px + 2, py + 2, CELL - 4, CELL - 4, turret ? 7 : 4);
-      ctx.fill();
-      ctx.strokeStyle = rgba(c, 0.75);
-      ctx.lineWidth = 1.4;
-      ctx.stroke();
+      if (!turret) {
+        // Hardened plate: filled block, hatched face, lit top edge.
+        ctx.fillStyle = 'rgba(112,126,148,0.17)';
+        this.roundRect(ctx, px + 1.5, py + 1.5, CELL - 3, CELL - 3, 2.5);
+        ctx.fill();
+        ctx.save();
+        ctx.beginPath();
+        this.roundRect(ctx, px + 1.5, py + 1.5, CELL - 3, CELL - 3, 2.5);
+        ctx.clip();
+        ctx.strokeStyle = 'rgba(170,184,204,0.22)';
+        ctx.lineWidth = 1;
+        ctx.beginPath();
+        for (let k = -CELL; k < CELL; k += 5) {
+          ctx.moveTo(px + k, py + CELL);
+          ctx.lineTo(px + k + CELL, py);
+        }
+        ctx.stroke();
+        ctx.restore();
+        ctx.strokeStyle = 'rgba(150,166,188,0.42)';
+        ctx.lineWidth = 1;
+        this.roundRect(ctx, px + 2, py + 2, CELL - 4, CELL - 4, 2.5);
+        ctx.stroke();
+        ctx.strokeStyle = 'rgba(200,214,232,0.2)';
+        ctx.beginPath();
+        ctx.moveTo(px + 3.5, py + 2.6); ctx.lineTo(px + CELL - 3.5, py + 2.6);
+        ctx.stroke();
+      } else {
+        ctx.fillStyle = 'rgba(56,189,248,0.12)';
+        this.roundRect(ctx, px + 2, py + 2, CELL - 4, CELL - 4, 5);
+        ctx.fill();
+        ctx.strokeStyle = rgba(c, 0.6);
+        ctx.lineWidth = 1.1;
+        ctx.stroke();
+      }
 
       if (turret) {
         const ang = now / 900 + b.x + b.y;
@@ -3211,12 +3387,6 @@ const Renderer = {
         ctx.beginPath();
         ctx.arc(px + CELL / 2, py + CELL / 2, 2.6, 0, Math.PI * 2);
         ctx.fill();
-      } else {
-        ctx.strokeStyle = rgba('#cbd5e1', 0.32);
-        ctx.lineWidth = 1;
-        ctx.beginPath();
-        ctx.moveTo(px + 5, py + CELL / 2); ctx.lineTo(px + CELL - 5, py + CELL / 2);
-        ctx.stroke();
       }
 
       if (b.beam) {
@@ -3240,7 +3410,7 @@ const Renderer = {
       const pulse = 0.5 + 0.5 * Math.sin(now / 300 + f.wobble);
       const r = (CELL * 0.3) * f.size + pulse * 1.3;
 
-      this.glow(ctx, cx, cy, r * 3.4, f.color, 0.3);
+      this.glow(ctx, cx, cy, r * 3.8, f.color, 0.42);
 
       if (f.type === 'apple') {
         ctx.fillStyle = f.color;
@@ -3356,8 +3526,7 @@ const Renderer = {
 
   drawSnake(ctx, game, s, now, opt = {}) {
     if (!s.cells.length) return;
-    const alpha = game.alpha;
-    const pts = s.cells.map((c, i) => this.segPos(s, i, alpha));
+    const pts = s.cells.map((c, i) => this.segPos(s, i, game));
 
     let bodyColor, headColor, deepColor, lightColor;
     if (opt.player) {
@@ -3390,7 +3559,7 @@ const Renderer = {
     // Outer light bloom
     ctx.lineJoin = 'round'; ctx.lineCap = 'round';
     ctx.globalCompositeOperation = 'lighter';
-    ctx.strokeStyle = rgba(headColor, opt.player ? 0.13 : 0.07);
+    ctx.strokeStyle = rgba(headColor, opt.player ? 0.085 : 0.04);
     ctx.lineWidth = width * 1.55;
     for (const run of runs) {
       if (run.length < 2) continue;
@@ -3509,22 +3678,25 @@ const Renderer = {
 
     if (boss.type === 'gridEater') {
       const size = CELL * boss.size;
-      const px = boss.x * CELL, py = boss.y * CELL;
+      const t = boss.progress(game);
+      const px = lerp(boss.prevX, boss.x, t) * CELL, py = lerp(boss.prevY, boss.y, t) * CELL;
       const cx = px + size / 2, cy = py + size / 2;
-      this.glow(ctx, cx, cy, size * 1.2, COLOR.lava, 0.38);
+      this.glow(ctx, cx, cy, size * 1.15, COLOR.lava, 0.26);
 
       ctx.save();
       ctx.translate(cx, cy);
       ctx.rotate(Math.sin(now / 600) * 0.05);
 
       // Armoured chassis
-      ctx.fillStyle = flash > 0.05 ? '#fee2e2' : '#151b27';
-      this.roundRect(ctx, -size / 2, -size / 2, size, size, 12); ctx.fill();
-      ctx.strokeStyle = rgba(COLOR.boss, 0.85); ctx.lineWidth = 2.4;
-      this.roundRect(ctx, -size / 2 + 2, -size / 2 + 2, size - 4, size - 4, 10); ctx.stroke();
+      ctx.fillStyle = flash > 0.05 ? '#f3d9d4' : '#14161b';
+      this.roundRect(ctx, -size / 2, -size / 2, size, size, 6); ctx.fill();
+      ctx.strokeStyle = rgba('#b3452f', 0.7); ctx.lineWidth = 1.6;
+      this.roundRect(ctx, -size / 2 + 1.5, -size / 2 + 1.5, size - 3, size - 3, 5); ctx.stroke();
+      ctx.strokeStyle = 'rgba(160,172,190,0.13)'; ctx.lineWidth = 1;
+      this.roundRect(ctx, -size / 2 + 5.5, -size / 2 + 5.5, size - 11, size - 11, 3); ctx.stroke();
 
       // Corner rivets
-      ctx.fillStyle = rgba('#475569', 0.9);
+      ctx.fillStyle = rgba('#6b7686', 0.8);
       for (const sx of [-1, 1]) for (const sy of [-1, 1]) {
         ctx.beginPath();
         ctx.arc(sx * (size / 2 - 7), sy * (size / 2 - 7), 2.4, 0, Math.PI * 2);
@@ -3533,30 +3705,44 @@ const Renderer = {
 
       // Intake maw
       ctx.save();
-      ctx.rotate(now / 1100);
-      const teeth = 10;
-      ctx.fillStyle = rgba(COLOR.lava, 0.9);
-      ctx.beginPath();
-      for (let i = 0; i < teeth * 2; i++) {
-        const rr = i % 2 === 0 ? size * 0.33 : size * 0.17;
-        const a = (i / (teeth * 2)) * Math.PI * 2;
-        i === 0 ? ctx.moveTo(Math.cos(a) * rr, Math.sin(a) * rr) : ctx.lineTo(Math.cos(a) * rr, Math.sin(a) * rr);
+      ctx.rotate(now / 2600);
+      const blades = 6, bite = 0.5 + 0.5 * Math.sin(now / 480);
+      const outer = size * 0.34, inner = size * (0.1 + bite * 0.07);
+      for (let i = 0; i < blades; i++) {
+        const a0 = (i / blades) * Math.PI * 2;
+        const a1 = a0 + (Math.PI * 2 / blades) * 0.72;
+        ctx.beginPath();
+        ctx.moveTo(Math.cos(a0) * outer, Math.sin(a0) * outer);
+        ctx.lineTo(Math.cos(a1) * outer, Math.sin(a1) * outer);
+        ctx.lineTo(Math.cos(a1) * inner, Math.sin(a1) * inner);
+        ctx.lineTo(Math.cos(a0) * inner, Math.sin(a0) * inner);
+        ctx.closePath();
+        ctx.fillStyle = i % 2 ? 'rgba(122,44,20,0.95)' : 'rgba(154,58,24,0.95)';
+        ctx.fill();
+        ctx.strokeStyle = 'rgba(28,14,10,0.7)';
+        ctx.lineWidth = 1;
+        ctx.stroke();
       }
-      ctx.closePath(); ctx.fill();
       ctx.restore();
 
       // Exposed core — the weak spot doubles incoming damage
       const corePulse = 0.5 + 0.5 * Math.sin(now / 190);
-      this.glow(ctx, 0, 0, size * 0.34 + corePulse * 5, COLOR.golden, 0.55);
-      ctx.fillStyle = rgba('#fffbeb', 0.75 + corePulse * 0.25);
+      this.glow(ctx, 0, 0, size * 0.3 + corePulse * 4, COLOR.golden, 0.4);
+      ctx.fillStyle = rgba('#ffe9b8', 0.7 + corePulse * 0.3);
       ctx.beginPath(); ctx.arc(0, 0, size * 0.11 + corePulse * 1.8, 0, Math.PI * 2); ctx.fill();
       ctx.restore();
       return;
     }
 
     // Hydra Centipede
+    const wt = boss.progress(game);
     for (const w of boss.worms) {
-      const pts = w.cells.map(c => ({ x: c.x * CELL + CELL / 2, y: c.y * CELL + CELL / 2 }));
+      const pts = w.cells.map((c, i) => {
+        const p = (w.prev && w.prev[i]) || c;
+        const jump = Math.abs(c.x - p.x) > 1.5 || Math.abs(c.y - p.y) > 1.5;
+        const k = jump ? 1 : wt;
+        return { x: lerp(p.x, c.x, k) * CELL + CELL / 2, y: lerp(p.y, c.y, k) * CELL + CELL / 2 };
+      });
       ctx.lineJoin = 'round'; ctx.lineCap = 'round';
       ctx.globalCompositeOperation = 'lighter';
       ctx.strokeStyle = rgba(COLOR.boss, 0.1);
@@ -3575,7 +3761,7 @@ const Renderer = {
       ctx.stroke();
 
       w.cells.forEach((c, i) => {
-        const cx = c.x * CELL + CELL / 2, cy = c.y * CELL + CELL / 2;
+        const cx = pts[i].x, cy = pts[i].y;
         const weak = i > 0 && i % 3 === 0;
         if (weak) {
           const pulse = 0.5 + 0.5 * Math.sin(now / 180 + i + w.phase);
@@ -3588,8 +3774,8 @@ const Renderer = {
         }
         // Legs
         if (i % 2 === 0 && i > 0) {
-          const prev = w.cells[i - 1];
-          const ang = Math.atan2(c.y - prev.y, c.x - prev.x) + Math.PI / 2;
+          const prevPt = pts[i - 1];
+          const ang = Math.atan2(cy - prevPt.y, cx - prevPt.x) + Math.PI / 2;
           ctx.strokeStyle = rgba('#fda4af', 0.45);
           ctx.lineWidth = 1.4;
           const swing = Math.sin(now / 130 + i) * 2.2;
@@ -3650,13 +3836,35 @@ const Renderer = {
       const a = clamp(t.life, 0, 1);
       ctx.save();
       ctx.globalAlpha = a;
-      ctx.font = `${t.weight} ${t.size}px "Plus Jakarta Sans", system-ui, sans-serif`;
-      ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
-      ctx.lineWidth = 3;
-      ctx.strokeStyle = 'rgba(5,7,12,0.75)';
-      ctx.strokeText(t.str, t.x, t.y);
-      ctx.fillStyle = t.color;
-      ctx.fillText(t.str, t.x, t.y);
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+
+      if (t.banner) {
+        // Headline announcements read as a plate in the HUD's own type.
+        const label = t.str.toUpperCase();
+        const spaced = 'letterSpacing' in ctx;
+        if (spaced) ctx.letterSpacing = '1.6px';
+        ctx.font = `500 ${t.size}px ${MONO_STACK}`;
+        const w = Math.ceil(ctx.measureText(label).width) + 28;
+        const h = t.size + 15;
+        ctx.fillStyle = 'rgba(8,10,13,0.88)';
+        this.roundRect(ctx, t.x - w / 2, t.y - h / 2, w, h, 5);
+        ctx.fill();
+        ctx.strokeStyle = rgba(t.color, 0.45);
+        ctx.lineWidth = 1;
+        this.roundRect(ctx, t.x - w / 2 + 0.5, t.y - h / 2 + 0.5, w - 1, h - 1, 5);
+        ctx.stroke();
+        ctx.fillStyle = t.color;
+        ctx.fillText(label, t.x, t.y);
+        if (spaced) ctx.letterSpacing = '0px';
+      } else {
+        ctx.font = `${t.weight} ${t.size}px ${MONO_STACK}`;
+        ctx.lineWidth = 3;
+        ctx.strokeStyle = 'rgba(5,7,12,0.8)';
+        ctx.strokeText(t.str, t.x, t.y);
+        ctx.fillStyle = t.color;
+        ctx.fillText(t.str, t.x, t.y);
+      }
       ctx.restore();
     }
   },
@@ -3675,8 +3883,8 @@ const Renderer = {
       budget--;
     }
     if (game.player.alive && game.state === 'PLAYING') {
-      const h = this.segPos(game.player, 0, game.alpha);
-      this.glow(ctx, h.x, h.y, CELL * 3.2, game.skin.head, 0.12);
+      const h = this.segPos(game.player, 0, game);
+      this.glow(ctx, h.x, h.y, CELL * 2.8, game.skin.head, 0.08);
     }
     ctx.restore();
   },
@@ -3700,7 +3908,6 @@ const UI = {
   _statusSig: null,
   _mutSig: null,
   _keySig: null,
-  toastTimers: [],
 
   init(game) {
     this.game = game;
@@ -3708,12 +3915,17 @@ const UI = {
       'uiLength', 'uiArmor', 'uiEaten', 'uiBosses', 'uiKills', 'uiFloor', 'uiMutCount', 'mutList',
       'statusLine', 'bossBar', 'bossName', 'bossFill', 'bossHp', 'modeTag', 'mutCards', 'levelTitle',
       'resultGrid', 'overReason', 'overEyebrow', 'overAch', 'helpGrid', 'achGrid', 'careerGrid',
-      'abilityKeys', 'skinRow', 'toasts', 'touchDeck', 'btnSound'];
+      'abilityKeys', 'skinRow', 'toasts', 'touchDeck', 'btnSound', 'modeList'];
     for (const id of ids) this.el[id] = document.getElementById(id);
 
+    document.getElementById('btnHelp').innerHTML = icon('book');
+    document.getElementById('btnPause').innerHTML = icon('pause');
+
+    this.buildModes();
     this.buildSkins();
-    this.buildHelp();
-    this.bindButtons();
+    this.buildDeck();
+    this.buildCodex();
+    this.bind();
 
     if ('ontouchstart' in window || (navigator.maxTouchPoints || 0) > 0) {
       this.el.touchDeck.classList.add('on');
@@ -3723,85 +3935,47 @@ const UI = {
 
   /* ── construction ── */
 
+  buildModes() {
+    this.el.modeList.innerHTML = Object.entries(MODES).map(([id, m], i) => `
+      <button class="mode${i === 0 ? ' lead' : ''}" data-mode="${id}">
+        ${icon(m.icon)}
+        <span class="txt"><span class="t">${m.label}</span><span class="d">${m.blurb}</span></span>
+        <span class="go">${i + 1}</span>
+      </button>`).join('');
+    this.el.modeList.querySelectorAll('.mode').forEach(b => {
+      b.addEventListener('click', () => { Sound.init(); this.game.start(b.dataset.mode); });
+    });
+  },
+
   buildSkins() {
-    const row = this.el.skinRow;
-    row.innerHTML = '';
-    for (const k of Object.keys(SKINS)) {
-      const s = SKINS[k];
-      const b = document.createElement('button');
-      b.className = 'pill' + (Store.data.skin === k ? ' on' : '');
-      b.textContent = s.name;
-      b.style.borderColor = Store.data.skin === k ? s.head : '';
+    this.el.skinRow.innerHTML = Object.values(SKINS).map(s =>
+      `<button class="swatch${Store.data.skin === s.id ? ' on' : ''}" data-skin="${s.id}">
+         <i style="background:${s.head}"></i>${s.name}</button>`).join('');
+    this.el.skinRow.querySelectorAll('.swatch').forEach(b => {
       b.addEventListener('click', () => {
-        Store.data.skin = k; Store.save();
-        this.game.skin = s;
+        Store.data.skin = b.dataset.skin;
+        Store.save();
+        this.game.skin = SKINS[b.dataset.skin];
         this.buildSkins();
         Sound.init(); Sound.laser();
       });
-      row.appendChild(b);
-    }
+    });
   },
 
-  buildHelp() {
-    this.el.helpGrid.innerHTML = `
-      <div class="help-box">
-        <h3>Movement</h3>
-        <p><b>WASD</b> or <b>arrow keys</b> steer. Inputs are buffered, so fast double-turns land.</p>
-        <p>On <b>ice</b> you keep sliding — only every other input bites. <b>Conveyors</b> shove you an extra cell.</p>
-      </div>
-      <div class="help-box">
-        <h3>Tactical keys</h3>
-        <p><b>Space</b> — Plasma Breath (needs the mutation).</p>
-        <p><b>Shift</b> — amputate 30% of your tail into barricades or turrets.</p>
-        <p><b>E</b> — shift between Floor 1 and Floor 2 in Dimensional Shift.</p>
-        <p><b>Q</b> — rewind time with a Chronos charge. <b>P</b> pauses, <b>M</b> mutes.</p>
-      </div>
-      <div class="help-box">
-        <h3>The DNA engine</h3>
-        <p>Biomass grants XP. Every level triggers a splice: pick 1 of 3 mutations from a pool of ten, each stacking up to rank 2–3.</p>
-      </div>
-      <div class="help-box">
-        <h3>Living prey</h3>
-        <p><b>Scarab</b> flees your head. <b>Mimic</b> hatches hostile spawns. <b>Golden clusters</b> merge with nearby food into fat targets. <b>Quantum</b> fruit splits you into a mirrored twin until you grab the collapse shard.</p>
-      </div>
-      <div class="help-box">
-        <h3>Bosses</h3>
-        <p>Every 100 points wakes one. <b>The Grid-Eater</b> devours the arena perimeter — kill it to win the space back. <b>The Hydra Centipede</b> splits when you strike a glowing weak spot.</p>
-      </div>
-      <div class="help-box">
-        <h3>Staying alive</h3>
-        <p>Diamond Scales convert a fatal hit into a wall smash. Ghost Phase lets you cross your own coils. Venom Fangs turn a head-on ram into a kill.</p>
-      </div>`;
-  },
-
-  bindButtons() {
-    const g = this.game;
-    document.querySelectorAll('.mode-btn').forEach(b => {
-      b.addEventListener('click', () => { Sound.init(); g.start(b.dataset.mode); });
-    });
-    document.getElementById('btnResume').addEventListener('click', () => g.togglePause());
-    document.getElementById('btnQuit').addEventListener('click', () => g.quitToMenu());
-    document.getElementById('btnRetry').addEventListener('click', () => g.start(g.mode));
-    document.getElementById('btnMenu').addEventListener('click', () => g.quitToMenu());
-    document.getElementById('btnPause').addEventListener('click', () => g.togglePause());
-    document.getElementById('btnSound').addEventListener('click', () => this.toggleMute());
-    document.getElementById('btnHelp').addEventListener('click', () => this.openHelp());
-    document.getElementById('btnCodex').addEventListener('click', () => this.openHelp());
-    document.getElementById('btnCloseHelp').addEventListener('click', () => this.closeSubOverlay());
-    document.getElementById('btnAchv').addEventListener('click', () => this.openAchievements());
-    document.getElementById('btnCloseAch').addEventListener('click', () => this.closeSubOverlay());
-    document.getElementById('btnWipe').addEventListener('click', () => {
-      Store.wipe();
-      this.buildSkins();
-      this.openAchievements();
-      this.toast('🧹 Save data cleared');
-    });
-
-    this.el.touchDeck.querySelectorAll('.tbtn').forEach(b => {
+  buildDeck() {
+    const pads = [
+      ['ability', 'beam', 'Fire'],
+      ['shed', 'scissors', 'Shed'],
+      ['shift', 'layers', 'Floor'],
+      ['rewind', 'rewind', 'Rewind']
+    ];
+    this.el.touchDeck.innerHTML = pads.map(([act, ic, label]) =>
+      `<button class="pad" data-act="${act}">${icon(ic)}<span>${label}</span></button>`).join('');
+    this.el.touchDeck.querySelectorAll('.pad').forEach(b => {
       b.addEventListener('click', (e) => {
         e.preventDefault();
         Sound.init();
-        const act = b.dataset.act;
+        const g = this.game, act = b.dataset.act;
         if (act === 'ability') g.firePlasma();
         else if (act === 'shed') g.amputate();
         else if (act === 'shift') g.shiftLayer();
@@ -3810,30 +3984,82 @@ const UI = {
     });
   },
 
-  /* ── overlays ── */
-
-  showOverlay(id) {
-    document.querySelectorAll('.overlay').forEach(o => o.classList.toggle('on', o.id === id));
+  buildCodex() {
+    this.el.helpGrid.innerHTML = `
+      <section>
+        <h3>Movement</h3>
+        <p><b>WASD</b> or the <b>arrow keys</b> steer. Inputs are buffered, so fast double-turns land.</p>
+        <p><b>Ice</b> keeps you sliding — only every other input bites. <b>Conveyors</b> shove you an extra cell.</p>
+      </section>
+      <section>
+        <h3>Tactical keys</h3>
+        <p><b>Space</b> exhales plasma once the mutation is spliced.</p>
+        <p><b>Shift</b> amputates 30% of your tail into barricades, or turrets.</p>
+        <p><b>E</b> shifts floors. <b>Q</b> spends a Chronos charge. <b>P</b> pauses, <b>M</b> mutes.</p>
+      </section>
+      <section>
+        <h3>DNA engine</h3>
+        <p>Biomass grants XP. Every level offers three of ten mutations, most stacking to rank 2 or 3.</p>
+      </section>
+      <section>
+        <h3>Living prey</h3>
+        <p><b>Scarabs</b> flee your head. <b>Mimics</b> hatch hostile spawns. <b>Golden clusters</b> absorb nearby food. <b>Quantum</b> fruit splits you in two until you take the collapse shard.</p>
+      </section>
+      <section>
+        <h3>Bosses</h3>
+        <p>Every 100 points wakes one. <b>The Grid-Eater</b> devours the perimeter — kill it to win the space back. <b>The Hydra Centipede</b> splits when struck on a glowing weak spot.</p>
+      </section>
+      <section>
+        <h3>Staying alive</h3>
+        <p>Diamond Scales turn a fatal hit into a wall smash. Ghost Phase lets you cross your own coils. Venom Fangs make a head-on ram lethal for the other snake.</p>
+      </section>`;
   },
 
-  openHelp() {
+  bind() {
+    const g = this.game;
+    const on = (id, fn) => document.getElementById(id).addEventListener('click', fn);
+    on('btnResume', () => g.togglePause());
+    on('btnQuit', () => g.quitToMenu());
+    on('btnRetry', () => g.start(g.mode));
+    on('btnMenu', () => g.quitToMenu());
+    on('btnPause', () => g.togglePause());
+    on('btnSound', () => this.toggleMute());
+    on('btnHelp', () => this.openCodex());
+    on('btnCodex', () => this.openCodex());
+    on('btnCloseHelp', () => this.closeSheet());
+    on('btnAchv', () => this.openRecords());
+    on('btnCloseAch', () => this.closeSheet());
+    on('btnWipe', () => {
+      Store.wipe();
+      this.buildSkins();
+      this.openRecords();
+      this.toast('Save data cleared', { icon: 'alert', tone: 'mute' });
+    });
+  },
+
+  /* ── sheets ── */
+
+  showOverlay(id) {
+    document.querySelectorAll('.sheet').forEach(o => o.classList.toggle('on', o.id === id));
+  },
+
+  openCodex() {
     if (this.game.state === 'PLAYING') this.game.togglePause();
     this.showOverlay('ovHelp');
   },
 
-  openAchievements() {
-    const a = Store.data.achievements;
-    const t = Store.data.totals;
+  openRecords() {
+    const a = Store.data.achievements, t = Store.data.totals;
     this.el.careerGrid.innerHTML = [
-      ['Runs', t.runs], ['Total score', t.score], ['Biomass', t.apples],
+      ['Runs', t.runs], ['Score', t.score], ['Biomass', t.apples],
       ['Bosses', t.bosses], ['Rivals', t.kills], ['Longest', t.bestLength]
-    ].map(([l, v]) => `<div class="res"><div class="v">${v}</div><div class="l">${l}</div></div>`).join('');
+    ].map(([l, v]) => `<div class="r"><div class="v">${v}</div><div class="l">${l}</div></div>`).join('');
     this.el.achGrid.innerHTML = ACHIEVEMENTS.map(x =>
-      `<span class="ach ${a[x.id] ? '' : 'locked'}" title="${x.desc}">${x.icon} ${x.name}</span>`).join('');
+      `<span class="medal${a[x.id] ? '' : ' locked'}" title="${x.desc}">${icon(x.icon)}${x.name}</span>`).join('');
     this.showOverlay('ovAch');
   },
 
-  closeSubOverlay() {
+  closeSheet() {
     const s = this.game.state;
     if (s === 'PAUSED') this.showOverlay('ovPause');
     else if (s === 'GAMEOVER') this.showOverlay('ovOver');
@@ -3846,24 +4072,23 @@ const UI = {
     this._statusSig = null; this._mutSig = null; this._keySig = null;
     this.el.statusLine.innerHTML = '';
     this.el.bossBar.classList.remove('on');
-    this.el.mutList.innerHTML = '<p class="empty-note">No mutations spliced yet. Eat biomass to trigger a DNA splice.</p>';
+    this.el.mutList.innerHTML = '<p class="hint-empty">No mutations spliced.</p>';
     this.el.uiMutCount.textContent = '0';
     this._statusSig = ''; this._mutSig = '';
-    for (const [id, v] of [['uiScore', '0'], ['uiEaten', '0'], ['uiBosses', '0'], ['uiKills', '0'],
-                           ['uiLength', '0'], ['uiArmor', '0'], ['uiFloor', '1'], ['uiLevel', 'LV 1'],
-                           ['uiXp', '0/4'], ['uiCombo', '1.0×'], ['uiComboNote', 'build a chain']]) {
-      if (this.el[id]) this.el[id].textContent = v;
-    }
+    const zero = [['uiScore', '0'], ['uiEaten', '0'], ['uiBosses', '0'], ['uiKills', '0'],
+      ['uiLength', '0'], ['uiArmor', '0'], ['uiFloor', '1'], ['uiLevel', 'LV 1'],
+      ['uiXp', '0/4'], ['uiCombo', '1.0×'], ['uiComboNote', 'idle']];
+    for (const [id, v] of zero) if (this.el[id]) this.el[id].textContent = v;
     this.el.uiXpBar.style.width = '0%';
     this.el.uiComboBar.style.width = '0%';
     this.el.uiHigh.textContent = Store.data.high[game.mode] || 0;
-    this.el.modeTag.textContent = MODES[game.mode].label.split(' ')[0];
+    this.el.modeTag.textContent = MODES[game.mode].short;
     this.syncKeys(game);
   },
 
   onRunStart(game) {
     this.showOverlay(null);
-    this.el.modeTag.textContent = MODES[game.mode].label.split(' ')[0];
+    this.el.modeTag.textContent = MODES[game.mode].short;
     this.el.bossBar.classList.remove('on');
     this._statusSig = null; this._mutSig = null; this._keySig = null;
     this.syncKeys(game);
@@ -3871,20 +4096,20 @@ const UI = {
 
   showLevelUp(game, offer) {
     this.el.levelTitle.textContent = `LEVEL ${game.dna.level}`;
-    this.el.mutCards.innerHTML = '';
-    offer.forEach((m, i) => {
+    this.el.mutCards.innerHTML = offer.map((m, i) => {
       const rank = game.dna.rank(m.id);
-      const card = document.createElement('button');
-      card.className = 'mut-card';
-      card.style.setProperty('--tint', m.tint);
-      card.innerHTML = `
-        <span class="num">${i + 1}</span>
-        <div class="ic">${m.icon}</div>
-        <div class="nm">${m.name}</div>
-        <div class="tg">${m.tag} · ${rank > 0 ? 'rank ' + (rank + 1) + '/' + m.max : 'new'}</div>
-        <div class="ds">${m.desc(rank)}</div>`;
-      card.addEventListener('click', () => game.chooseMutation(m.id));
-      this.el.mutCards.appendChild(card);
+      const pips = Array.from({ length: m.max }, (_, k) =>
+        `<i class="${k <= rank ? 'fill' : ''}"></i>`).join('');
+      return `
+        <button class="card" data-mut="${m.id}">
+          <div class="top">${icon(m.icon)}<span class="slot">${i + 1}</span></div>
+          <div class="nm">${m.name}</div>
+          <div class="meta"><span class="cat">${m.tag}</span><span class="pips">${pips}</span></div>
+          <div class="ds">${m.desc(rank)}</div>
+        </button>`;
+    }).join('');
+    this.el.mutCards.querySelectorAll('.card').forEach(c => {
+      c.addEventListener('click', () => game.chooseMutation(c.dataset.mut));
     });
     this.showOverlay('ovLevel');
   },
@@ -3893,30 +4118,30 @@ const UI = {
     this.el.overReason.textContent = game.overReason;
     this.el.overEyebrow.textContent = `${MODES[game.mode].label} · DNA level ${game.dna.level}`;
     const best = Store.data.high[game.mode] || 0;
-    const isRecord = game.score >= best && game.score > 0;
+    const record = game.score >= best && game.score > 0;
     this.el.resultGrid.innerHTML = [
-      ['Score', game.score], ['Biomass', game.eaten], ['Best combo', game.maxCombo.toFixed(1) + '×'],
-      ['Mutations', game.dna.count], ['Bosses', game.bossKills], ['Rivals', game.kills]
-    ].map(([l, v]) => `<div class="res"><div class="v">${v}</div><div class="l">${l}</div></div>`).join('');
-    const ach = game.runAchievements.map(id => ACHIEVEMENTS.find(a => a.id === id)).filter(Boolean);
+      ['Score', game.score], ['Biomass', game.eaten], ['Combo', game.maxCombo.toFixed(1) + '×'],
+      ['Splices', game.dna.count], ['Bosses', game.bossKills], ['Rivals', game.kills]
+    ].map(([l, v]) => `<div class="r"><div class="v">${v}</div><div class="l">${l}</div></div>`).join('');
+    const earned = game.runAchievements.map(id => ACHIEVEMENTS.find(a => a.id === id)).filter(Boolean);
     this.el.overAch.innerHTML =
-      (isRecord ? `<span class="ach">🏆 New personal best</span>` : '') +
-      ach.map(a => `<span class="ach">${a.icon} ${a.name}</span>`).join('');
+      (record ? `<span class="medal">${icon('trophy')}Personal best</span>` : '') +
+      earned.map(a => `<span class="medal">${icon(a.icon)}${a.name}</span>`).join('');
     this.el.bossBar.classList.remove('on');
     this.showOverlay('ovOver');
     this.sync(game);
   },
 
   onBossSpawn(game) { this.syncBoss(game); },
-  onBossEnd(game) { this.el.bossBar.classList.remove('on'); },
+  onBossEnd() { this.el.bossBar.classList.remove('on'); },
 
   syncBoss(game) {
     const b = game.boss;
-    if (!b) { this.el.bossBar.classList.remove('on'); return; }
+    const live = game.state === 'PLAYING' || game.state === 'PAUSED' || game.state === 'LEVELUP';
+    if (!b || !live) { this.el.bossBar.classList.remove('on'); return; }
     this.el.bossBar.classList.add('on');
     this.el.bossName.textContent = b.name;
-    const pct = clamp(b.hp / b.maxHp, 0, 1) * 100;
-    this.el.bossFill.style.width = pct + '%';
+    this.el.bossFill.style.width = clamp(b.hp / b.maxHp, 0, 1) * 100 + '%';
     this.el.bossHp.textContent = `${Math.max(0, Math.ceil(b.hp))}/${b.maxHp}`;
   },
 
@@ -3929,9 +4154,9 @@ const UI = {
 
     const mult = game.multiplier;
     e.uiCombo.textContent = mult.toFixed(1) + '×';
-    e.uiCombo.classList.toggle('pump', mult > 1.01);
-    e.uiComboBar.style.width = clamp(game.comboTimer / (game.comboMax + game.dna.rank('metabolism') * 14), 0, 1) * 100 + '%';
-    e.uiComboNote.textContent = game.chain > 0 ? `${game.chain} chain` : 'build a chain';
+    e.uiComboBar.style.width =
+      clamp(game.comboTimer / (game.comboMax + game.dna.rank('metabolism') * 14), 0, 1) * 100 + '%';
+    e.uiComboNote.textContent = game.chain > 0 ? `${game.chain} chain` : 'idle';
 
     e.uiLevel.textContent = 'LV ' + game.dna.level;
     e.uiXp.textContent = `${Math.floor(game.dna.xp)}/${game.dna.need}`;
@@ -3950,43 +4175,45 @@ const UI = {
   },
 
   syncMutations(game) {
-    const sig = game.dna.list.map(m => m.def.id + m.rank).join(',');
+    const list = game.dna.list;
+    const sig = list.map(m => m.def.id + m.rank).join(',');
     if (sig === this._mutSig) return;
     this._mutSig = sig;
-    const list = game.dna.list;
-    if (!list.length) {
-      this.el.mutList.innerHTML = '<p class="empty-note">No mutations spliced yet. Eat biomass to trigger a DNA splice.</p>';
-    } else {
-      this.el.mutList.innerHTML = list.map(m =>
-        `<div class="mut-row"><span class="ic">${m.def.icon}</span><span class="nm">${m.def.name}</span><span class="tier">R${m.rank}</span></div>`
-      ).join('');
-    }
+    this.el.mutList.innerHTML = list.length
+      ? list.map(m => {
+          const pips = Array.from({ length: m.def.max }, (_, k) =>
+            `<i class="${k < m.rank ? 'fill' : ''}"></i>`).join('');
+          return `<div class="g">${icon(m.def.icon)}<span class="n">${m.def.name}</span><span class="pips">${pips}</span></div>`;
+        }).join('')
+      : '<p class="hint-empty">No mutations spliced.</p>';
     this.el.uiMutCount.textContent = game.dna.count;
   },
 
   syncStatus(game) {
-    const badges = [];
-    if (game.cfg.layers > 1) badges.push(['🌀', `FLOOR ${game.player.layer + 1}`, 'var(--cyan)']);
-    if (game.armor > 0) badges.push(['💎', `ARMOR ${game.armor}`, 'var(--blue)']);
-    if (game.plasmaMax > 0) badges.push(['🔥', `PLASMA ${game.plasmaAmmo}/${game.plasmaMax}`, 'var(--cyan)']);
-    if (game.rewindMax > 0) badges.push(['⏳', `REWIND ${game.rewinds}`, 'var(--amber)']);
-    if (game.dna.has('ghost')) badges.push(['👻', 'PHASED', 'var(--violet)']);
-    if (game.dna.has('acid')) badges.push(['🧪', 'ACID TRAIL', '#a3e635']);
-    if (game.dna.has('gravity')) badges.push(['🌌', 'GRAVITY WELL', 'var(--violet)']);
-    if (game.phantom) badges.push(['🔮', 'ENTANGLED', 'var(--cyan)']);
-    if (game.barricades.length) badges.push(['🧱', `${game.barricades.length} STRUCTURES`, 'var(--text-2)']);
-    if (game.world.perimeter > 0) badges.push(['🔥', `ARENA -${game.world.perimeter}`, 'var(--rose)']);
+    const cells = [];
+    const add = (ic, label, value, cls) => cells.push({ ic, label, value, cls: cls || '' });
 
-    const sig = badges.map(b => b[1]).join('|');
+    if (game.cfg.layers > 1) add('layers', 'Floor', game.player.layer + 1, 'live');
+    if (game.armor > 0) add('shield', 'Armor', game.armor);
+    if (game.plasmaMax > 0) add('beam', 'Plasma', `${game.plasmaAmmo}/${game.plasmaMax}`);
+    if (game.rewindMax > 0) add('clock', 'Rewind', game.rewinds);
+    if (game.dna.has('ghost')) add('phase', 'Phased', '');
+    if (game.dna.has('acid')) add('droplet', 'Acid', '');
+    if (game.dna.has('gravity')) add('orbit', 'Well', '');
+    if (game.phantom) add('atom', 'Twin', '', 'live');
+    if (game.barricades.length) add('bricks', 'Built', game.barricades.length);
+    if (game.world.perimeter > 0) add('alert', 'Arena', `-${game.world.perimeter}`, 'hot');
+
+    const sig = cells.map(c => c.label + c.value + c.cls).join('|');
     if (sig === this._statusSig) return;
     this._statusSig = sig;
-    this.el.statusLine.innerHTML = badges.map(([ic, label, color]) =>
-      `<span class="badge" style="color:${color}"><span class="dot"></span>${ic} ${label}</span>`).join('');
+    this.el.statusLine.innerHTML = cells.map(c =>
+      `<span class="cell ${c.cls}">${icon(c.ic)}${c.label}${c.value !== '' ? ` <b>${c.value}</b>` : ''}</span>`).join('');
   },
 
   syncKeys(game) {
     const rows = [
-      ['Space', 'Plasma Breath', game.dna.has('plasma')],
+      ['Space', 'Plasma breath', game.dna.has('plasma')],
       ['Shift', 'Amputate tail', game.player.length >= 8],
       ['E', 'Shift floor', game.cfg.layers > 1],
       ['Q', 'Rewind time', game.rewinds > 0],
@@ -3996,34 +4223,33 @@ const UI = {
     const sig = rows.map(r => r[0] + (r[2] ? 1 : 0)).join(',');
     if (sig === this._keySig) return;
     this._keySig = sig;
-    this.el.abilityKeys.innerHTML = rows.map(([k, d, on]) =>
-      `<div class="key-row ${on ? '' : 'locked'}"><kbd>${k}</kbd><span class="desc">${d}</span></div>`).join('');
+    this.el.abilityKeys.innerHTML = rows.map(([k, d, live]) =>
+      `<div class="k${live ? '' : ' off'}"><kbd>${k}</kbd><span>${d}</span></div>`).join('');
 
-    this.el.touchDeck.querySelectorAll('.tbtn').forEach(b => {
+    this.el.touchDeck.querySelectorAll('.pad').forEach(b => {
       const act = b.dataset.act;
-      const on = act === 'ability' ? game.dna.has('plasma')
+      const live = act === 'ability' ? game.dna.has('plasma')
         : act === 'shed' ? game.player.length >= 8
         : act === 'shift' ? game.cfg.layers > 1
         : game.rewinds > 0;
-      b.toggleAttribute('disabled', !on);
+      b.toggleAttribute('disabled', !live);
     });
   },
 
   /* ── toasts & audio ── */
 
-  toast(msg, kind) {
-    // Collapse repeats so spammed hints do not stack up.
+  toast(text, opts = {}) {
     const last = this.el.toasts.lastElementChild;
-    if (last && last.textContent === msg && !last.classList.contains('out')) return;
+    if (last && last.dataset.text === text && !last.classList.contains('out')) return;
     const t = document.createElement('div');
-    t.className = 'toast';
-    if (kind === 'dim') { t.style.borderColor = 'rgba(148,163,184,.3)'; t.style.color = 'var(--text-2)'; }
-    t.textContent = msg;
+    t.className = 'toast' + (opts.tone === 'mute' ? ' mute' : '');
+    t.dataset.text = text;
+    t.innerHTML = icon(opts.icon || 'dot') + `<span>${text}</span>`;
     this.el.toasts.appendChild(t);
     while (this.el.toasts.children.length > 3) this.el.toasts.removeChild(this.el.toasts.firstChild);
     setTimeout(() => {
       t.classList.add('out');
-      setTimeout(() => t.remove(), 400);
+      setTimeout(() => t.remove(), 360);
     }, 1900);
   },
 
@@ -4039,9 +4265,7 @@ const UI = {
     const b = this.el.btnSound || document.getElementById('btnSound');
     if (!b) return;
     b.classList.toggle('off', Sound.muted);
-    b.innerHTML = Sound.muted
-      ? `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 5 6 9H2v6h4l5 4V5z"/><line x1="23" y1="9" x2="17" y2="15"/><line x1="17" y1="9" x2="23" y2="15"/></svg>`
-      : `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 5 6 9H2v6h4l5 4V5z"/><path d="M15.5 8.5a5 5 0 0 1 0 7"/><path d="M19 5a9 9 0 0 1 0 14"/></svg>`;
+    b.innerHTML = icon(Sound.muted ? 'mute' : 'sound');
   }
 };
 
@@ -4067,23 +4291,30 @@ const Input = {
 
       if ([' ', 'ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight'].includes(k)) e.preventDefault();
 
-      // Level-up picker
-      if (game.state === 'LEVELUP' && ['1', '2', '3'].includes(k)) {
-        const m = game.dna.offer[Number(k) - 1];
-        if (m) game.chooseMutation(m.id);
-        return;
+      // 1·2·3 pick a splice mid-run, or a mode from the menu
+      if (['1', '2', '3'].includes(k)) {
+        if (game.state === 'LEVELUP') {
+          const m = game.dna.offer[Number(k) - 1];
+          if (m) game.chooseMutation(m.id);
+          return;
+        }
+        if (game.state === 'MENU') {
+          const mode = Object.keys(MODES)[Number(k) - 1];
+          if (mode) { Sound.init(); game.start(mode); }
+          return;
+        }
       }
 
       if (k === 'p' || k === 'P' || k === 'Escape') {
         if (document.getElementById('ovHelp').classList.contains('on') ||
-            document.getElementById('ovAch').classList.contains('on')) { UI.closeSubOverlay(); return; }
+            document.getElementById('ovAch').classList.contains('on')) { UI.closeSheet(); return; }
         game.togglePause();
         return;
       }
       if (k === 'm' || k === 'M') { UI.toggleMute(); return; }
       if (k === 'h' || k === 'H') {
-        if (document.getElementById('ovHelp').classList.contains('on')) UI.closeSubOverlay();
-        else UI.openHelp();
+        if (document.getElementById('ovHelp').classList.contains('on')) UI.closeSheet();
+        else UI.openCodex();
         return;
       }
       if (k === 'Enter') {

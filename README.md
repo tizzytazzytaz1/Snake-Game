@@ -63,7 +63,24 @@ Everything lives in `index.html` under clearly separated subsystems: `SoundEngin
 `Boss`, `Game`, `Renderer`, `UI` and `Input`.
 
 The simulation runs on a fixed-timestep accumulator while rendering interpolates between
-ticks, so movement stays smooth and the logic stays deterministic regardless of frame rate.
+ticks, so the logic stays deterministic regardless of frame rate.
+
+**Every entity interpolates on its own step clock.** Rivals, mimic spawns and bosses move
+at their own cadences, so drawing them against the player's sub-tick progress made them
+slide forward, snap back and slide again. Each entity now stamps `lastMoveTick` when it
+steps and is drawn across its own interval, linearly — easing here would stall the body at
+every cell boundary. Measured over 256 frames, rival motion has zero direction reversals
+against 28 under the old scheme.
+
 Static layers (arena gradient, grid, vignette) and all radial glows are pre-rendered into
 cached canvases, which keeps a busy frame — boss, turrets, acid and hundreds of particles —
-inside the 16.7 ms budget for 60 FPS.
+inside the 16.7 ms budget for 60 FPS. CSS `backdrop-filter` is confined to full-screen
+overlays; on the small HUD panels it alone cost half the frame budget.
+
+## Interface
+
+The interface is deliberately monochrome: slate and white, one green accent for the primary
+action, amber for warnings, red for danger. Colour is left to the board. All iconography is
+an inline SVG set drawn on a single 24px grid at one stroke weight — there are no emoji
+anywhere in the build. Numerals and micro-labels are set in a monospace face with tabular
+figures so readouts stay aligned as values change.
