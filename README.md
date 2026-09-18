@@ -23,16 +23,32 @@ python3 -m http.server 8000   # then open http://127.0.0.1:8000
 
 ## Controls
 
+`Space` is the only key you have to remember. While you are playing it fires your
+ability; everywhere else it means continue — start a run, take a splice, resume, run it
+back. `Esc` always backs out.
+
 | Input | Action |
 | --- | --- |
 | `WASD` / arrow keys | Steer. Inputs are buffered, so fast double-turns register. |
-| `Space` | Plasma Breath, once the mutation is spliced. |
+| `Space` | Plasma Breath while playing. Continue on every screen. |
 | `Shift` | Amputate 30% of your tail into barricades or turrets. |
 | `E` | Shift between Floor 1 and Floor 2. |
 | `Q` | Rewind roughly two seconds of time. |
 | `P` / `Esc` | Pause. `M` mutes, `H` opens the codex. |
-| `1` `2` `3` | Pick a mutation during a DNA splice. |
-| Swipe | Steer on touch devices. Tap the board to fire. On-screen buttons cover the abilities. |
+| `1` `2` `3` | Pick a mode on the menu, or a mutation during a splice. |
+| `←` `→` | Move the splice cursor, then `Space` to take it. |
+| Swipe | Steer on touch devices. Tap to fire. The pads under the board cover the abilities. |
+
+## Quality of life
+
+- A run is **held at the line** until you steer, so a retry never starts mid-move.
+- `Space` on the results screen runs it back immediately, and skips the death animation
+  if you press it early.
+- The menu remembers your last mode; `Space` starts it.
+- Splicing a mutation that binds a key says which key in the notification.
+- The control list dims anything you have not unlocked yet.
+- The spawn runway is cleared of hazards, so no run opens with lava in your face.
+- A run log records what happened and when, so a death is explicable.
 
 ## The DNA engine
 
@@ -79,8 +95,12 @@ overlays; on the small HUD panels it alone cost half the frame budget.
 
 ## Interface
 
-The interface is deliberately monochrome: slate and white, one green accent for the primary
-action, amber for warnings, red for danger. Colour is left to the board. All iconography is
-an inline SVG set drawn on a single 24px grid at one stroke weight — there are no emoji
-anywhere in the build. Numerals and micro-labels are set in a monospace face with tabular
-figures so readouts stay aligned as values change.
+The screen, its status bar, the boss meter and the touch pads are one console frame rather
+than a stack of floating cards, flanked by two instrument panels that run the full height.
+The board is sized from the viewport, so the whole machine fits without scrolling.
+
+Colour is used semantically and sparingly: green for you and your growth, amber for the
+combo, red for danger. All iconography is an inline SVG set drawn on a single 24px grid at
+one stroke weight — there are no emoji anywhere in the build. Numerals and micro-labels are
+set in a monospace face with tabular figures so readouts stay aligned as values change, and
+the meters are segmented so they read as instruments rather than progress bars.
