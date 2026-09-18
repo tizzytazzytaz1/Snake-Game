@@ -39,6 +39,27 @@ back. `Esc` always backs out.
 | `←` `→` | Move the splice cursor, then `Space` to take it. |
 | Swipe | Steer on touch devices. Tap to fire. The pads under the board cover the abilities. |
 
+## Gambling Mode (optional)
+
+Off by default. Toggle it on the main menu, or press `G` there. Every prey you eat banks
+apples into a wallet (1 each, golden 3, quantum 2) whether the mode is on or off.
+
+With it on, every run-start path opens a bet screen first. Stake apples, and the payout
+multiplier grows with both score and survival time. A short run returns less than the stake,
+a decent run roughly breaks even, a long one pays well. The stake is deducted up front, so
+quitting mid-run forfeits it.
+
+The house has an edge, and it grows. Payout efficiency decays from 100% toward a 60% floor
+as you place more lifetime bets, and a rigged-spawn chance climbs from 3% to a 18% cap. A
+rigged run drops a wall on you the moment you steer, and nothing saves you from it — not
+armor, not Diamond Scales, not Ghost Phase. It says so on the way down.
+
+All of it lives in `GAMBLE_CFG` near the top of the script. `window.gambleDebug()` prints
+the current efficiency, trap chance, lifetime return rate and sample multipliers.
+
+With the mode off, none of this code is reachable: no bet screen, no trap roll, and the
+cleared spawn runway behaves exactly as it always has.
+
 ## Quality of life
 
 - A run is **held at the line** until you steer, so a retry never starts mid-move.

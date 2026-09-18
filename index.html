@@ -399,6 +399,130 @@ kbd{
   border:1px solid var(--line);border-radius:4px;padding:2px 5px;margin:0 1px;
 }
 
+
+/* ── gambling mode ────────────────────────────────────────── */
+.gamble-bar{
+  display:flex;align-items:center;gap:12px;flex-wrap:wrap;justify-content:center;
+  padding:9px 13px;border:1px solid var(--line);border-radius:var(--r);
+  background:linear-gradient(180deg,var(--panel-a),var(--panel-b));
+}
+.switch{display:inline-flex;align-items:center;gap:9px;cursor:pointer;background:none;border:0;font-family:inherit;padding:0}
+.switch .lbl{
+  font-family:var(--mono);font-size:9.5px;letter-spacing:.15em;text-transform:uppercase;color:var(--ink-3);
+  transition:color .15s;
+}
+.switch .track{
+  position:relative;width:38px;height:21px;border-radius:99px;flex:none;
+  background:var(--well);border:1px solid var(--line);
+  box-shadow:inset 0 1px 2px rgba(0,0,0,.6);transition:background .15s,border-color .15s;
+}
+.switch .track::after{
+  content:'';position:absolute;top:2px;left:2px;width:15px;height:15px;border-radius:50%;
+  background:var(--ink-4);transition:transform .16s cubic-bezier(.3,.8,.4,1.2),background .15s;
+}
+.switch:hover .lbl{color:var(--ink-2)}
+.switch.on .lbl{color:var(--amber)}
+.switch.on .track{background:rgba(217,90,70,.2);border-color:var(--amber)}
+.switch.on .track::after{transform:translateX(17px);background:var(--amber);box-shadow:0 0 9px rgba(240,176,74,.6)}
+.switch .hot{font-family:var(--mono);font-size:8.5px;color:var(--ink-4);letter-spacing:.1em}
+
+.wallet-chip{
+  display:inline-flex;align-items:center;gap:7px;padding:5px 11px;border-radius:7px;
+  border:1px solid var(--line);background:var(--panel-b);
+  font-family:var(--mono);font-size:12px;color:var(--ink);font-variant-numeric:tabular-nums;
+}
+.wallet-chip .ico{width:14px;height:14px;color:var(--red)}
+
+/* bet sheet */
+.bet-wallet{
+  display:flex;align-items:center;gap:8px;font-family:var(--mono);font-size:11px;
+  letter-spacing:.12em;text-transform:uppercase;color:var(--ink-3);
+}
+.bet-wallet b{color:var(--ink);font-weight:500;font-size:13px}
+.bet-wallet .ico{width:14px;height:14px;color:var(--red)}
+
+.stake-box{
+  display:flex;align-items:center;gap:14px;padding:12px 16px;border-radius:var(--r);
+  border:1px solid var(--line);background:linear-gradient(180deg,var(--panel-a),var(--panel-b));
+  box-shadow:inset 0 1px 0 var(--bevel);
+}
+.stake-box .step{
+  width:34px;height:34px;border-radius:8px;cursor:pointer;flex:none;
+  border:1px solid var(--line);background:var(--panel-b);color:var(--ink);
+  font-family:var(--mono);font-size:17px;line-height:1;transition:.13s;
+}
+.stake-box .step:hover{border-color:var(--amber);color:var(--amber)}
+.stake-box .step[disabled]{opacity:.3;cursor:default}
+.stake-box .step[disabled]:hover{border-color:var(--line);color:var(--ink)}
+.stake-amount{min-width:118px;text-align:center}
+.stake-amount .v{
+  font-family:var(--mono);font-size:32px;font-weight:500;letter-spacing:-.04em;color:var(--amber);
+  font-variant-numeric:tabular-nums;line-height:1;
+}
+.stake-amount .l{font-family:var(--mono);font-size:8.5px;letter-spacing:.16em;text-transform:uppercase;color:var(--ink-4);margin-top:6px}
+
+.chips{display:flex;gap:6px;flex-wrap:wrap;justify-content:center}
+.chip{
+  font-family:var(--mono);font-size:9.5px;letter-spacing:.1em;text-transform:uppercase;
+  padding:6px 11px;border-radius:6px;cursor:pointer;color:var(--ink-3);
+  border:1px solid var(--line-soft);background:var(--panel-b);transition:.13s;
+}
+.chip:hover{color:var(--ink);border-color:var(--amber)}
+.chip[disabled]{opacity:.3;cursor:default}
+.chip[disabled]:hover{color:var(--ink-3);border-color:var(--line-soft)}
+
+.paytable{
+  width:100%;max-width:400px;border:1px solid var(--line);border-radius:var(--r);overflow:hidden;
+  background:var(--panel-b);
+}
+.paytable .head,.paytable .row{display:grid;grid-template-columns:1fr auto auto;gap:12px;padding:7px 13px;align-items:baseline}
+.paytable .head{
+  font-family:var(--mono);font-size:8.5px;letter-spacing:.15em;text-transform:uppercase;
+  color:var(--ink-4);border-bottom:1px solid var(--line);
+}
+.paytable .row{font-size:11px;color:var(--ink-2);border-top:1px solid var(--line-soft)}
+.paytable .row:first-of-type{border-top:0}
+.paytable .m,.paytable .p{font-family:var(--mono);font-size:11px;font-variant-numeric:tabular-nums;text-align:right;min-width:52px}
+.paytable .m{color:var(--ink)}
+.paytable .p.up{color:var(--green)}
+.paytable .p.down{color:var(--red)}
+
+.bet-warn{
+  display:flex;flex-direction:column;align-items:center;gap:11px;padding:14px 16px;
+  border:1px solid var(--amber);border-radius:var(--r);background:rgba(240,176,74,.07);
+  font-size:12px;color:var(--ink-2);max-width:380px;line-height:1.6;
+}
+
+/* live stake readout in the left panel */
+.stake-live{display:none}
+.stake-live.on{display:block}
+.stake-live .rowline{display:flex;align-items:baseline;justify-content:space-between;gap:10px;padding:3px 0}
+.stake-live .rowline span{font-size:11px;color:var(--ink-2)}
+.stake-live .rowline b{font-family:var(--mono);font-size:12.5px;font-weight:500;font-variant-numeric:tabular-nums}
+.stake-live .rowline b.mult{color:var(--amber)}
+.stake-live .rowline b.up{color:var(--green)}
+.stake-live .rowline b.down{color:var(--red)}
+
+/* gambling settlement on the results sheet */
+.settle{
+  display:none;width:100%;max-width:434px;border:1px solid var(--line);border-radius:var(--r);
+  overflow:hidden;background:var(--panel-b);
+}
+.settle.on{display:block}
+.settle .head{
+  display:flex;align-items:center;gap:8px;padding:8px 13px;border-bottom:1px solid var(--line);
+  font-family:var(--mono);font-size:9px;letter-spacing:.16em;text-transform:uppercase;color:var(--ink-3);
+}
+.settle .head .ico{width:13px;height:13px;color:var(--amber)}
+.settle .head.rigged{color:var(--red)}
+.settle .head.rigged .ico{color:var(--red)}
+.settle .grid{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--line-soft)}
+.settle .c{background:var(--panel-b);padding:10px 8px;text-align:center}
+.settle .c .v{font-family:var(--mono);font-size:15px;font-variant-numeric:tabular-nums}
+.settle .c .v.up{color:var(--green)}
+.settle .c .v.down{color:var(--red)}
+.settle .c .l{font-family:var(--mono);font-size:8px;letter-spacing:.13em;text-transform:uppercase;color:var(--ink-4);margin-top:4px}
+
 /* toasts */
 .toasts{position:fixed;left:50%;transform:translateX(-50%);bottom:22px;z-index:50;display:flex;flex-direction:column;gap:7px;align-items:center;pointer-events:none}
 .toast{
@@ -476,6 +600,13 @@ kbd{
         <div class="sub">Best <b id="uiHigh">0</b></div>
       </section>
 
+      <section class="stake-live" id="stakeLive">
+        <div class="cap">Wager <span id="stakeEdge">·</span></div>
+        <div class="rowline"><span>Stake</span><b id="liveStake">0</b></div>
+        <div class="rowline"><span>Multiplier</span><b class="mult" id="liveMult">0.00×</b></div>
+        <div class="rowline"><span>Return</span><b id="liveReturn">0</b></div>
+      </section>
+
       <section>
         <div class="cap">Combo <span id="uiComboNote">idle</span></div>
         <span class="big amber" id="uiCombo">1.0×</span>
@@ -524,6 +655,14 @@ kbd{
           <h1>SNAKE<br>UNBOUND<span class="rule"></span></h1>
           <div class="modes" id="modeList"></div>
           <div class="primer" id="primer"></div>
+          <div class="gamble-bar">
+            <button class="switch" id="gambleSwitch" role="switch" aria-checked="false">
+              <span class="track"></span>
+              <span class="lbl">Gambling Mode</span>
+              <span class="hot">G</span>
+            </button>
+            <span class="wallet-chip" id="walletChip"></span>
+          </div>
           <div class="menu-foot">
             <div class="swatches" id="skinRow"></div>
             <div class="btns">
@@ -532,6 +671,31 @@ kbd{
             </div>
           </div>
           <p class="footnote">Press <b>SPACE</b> to play &nbsp;·&nbsp; <b>1</b> <b>2</b> <b>3</b> pick a mode</p>
+        </div>
+
+        <!-- bet -->
+        <div class="sheet" id="ovBet">
+          <div class="kicker">Ante up</div>
+          <h1 id="betTitle">PLACE YOUR BET<span class="rule"></span></h1>
+          <div class="bet-wallet">Wallet <b id="betWallet">0</b> apples</div>
+          <div class="stake-box" id="betStakeBox">
+            <button class="step" id="betMinus" aria-label="Lower stake">&minus;</button>
+            <div class="stake-amount">
+              <div class="v" id="betStake">5</div>
+              <div class="l">Stake</div>
+            </div>
+            <button class="step" id="betPlus" aria-label="Raise stake">+</button>
+          </div>
+          <div class="chips" id="betChips"></div>
+          <div class="paytable" id="betTable"></div>
+          <div class="bet-warn" id="betWarn"></div>
+          <div class="btns" id="betActions">
+            <button class="btn key" id="btnPlaceBet">Place bet</button>
+            <button class="btn" id="btnBetBack">Back</button>
+          </div>
+          <p class="footnote" id="betFoot">
+            <b>&larr;</b> <b>&rarr;</b> adjust &nbsp;·&nbsp; <b>SPACE</b> place it &nbsp;·&nbsp; <b>ESC</b> back
+          </p>
         </div>
 
         <!-- splice -->
@@ -560,6 +724,7 @@ kbd{
           <h1 class="bad">GAME OVER<span class="rule"></span></h1>
           <p class="note" id="overReason">You crashed.</p>
           <div class="results" id="resultGrid"></div>
+          <div class="settle" id="settleBlock"></div>
           <div class="medals" id="overAch"></div>
           <div class="btns">
             <button class="btn key" id="btnRetry">Run it back</button>
@@ -714,6 +879,88 @@ function mixHex(a, b, t) {
   return `rgb(${m[0]},${m[1]},${m[2]})`;
 }
 
+/* ─────────────────── 1b. GAMBLING MODE (config & maths) ─────────────────── */
+
+/**
+ * Every tunable for the optional apple-betting mode. The payout curve rewards
+ * both scoreboard and survival; the house edge and the spawn-trap odds both
+ * ramp with how many bets this save has placed.
+ */
+const GAMBLE_CFG = {
+  startingWallet: 25,        // apples a fresh save begins with
+  minBet: 5,                 // smallest legal stake
+
+  // Apples banked per prey eaten. Applies whether or not gambling is on.
+  appleValue: { base: 1, golden: 3, quantum: 2 },
+
+  payout: {
+    baseMult: 0.35,          // floor so a short run still returns something
+    scorePerX: 600,          // score that buys +1.00x
+    secondsPerX: 150,        // seconds alive that buy +1.00x
+    maxMult: 25              // hard ceiling on the multiplier
+  },
+
+  // Payout efficiency decays with lifetime bets: the same run pays less later.
+  edge: { decayPerBet: 0.012, floor: 0.60 },
+
+  // Odds that a gambling run is rigged from the spawn, also rising with use.
+  trap: { base: 0.03, growth: 0.004, max: 0.18, minTicks: 1, maxTicks: 2 },
+
+  // Milestones shown on the bet screen so the curve is legible before staking.
+  preview: [
+    { label: 'Short run', score: 80, secs: 25 },
+    { label: 'Decent run', score: 300, secs: 75 },
+    { label: 'Strong run', score: 900, secs: 200 },
+    { label: 'Elite run', score: 2200, secs: 420 }
+  ]
+};
+
+const Gamble = {
+  get data() { return Store.data.gamble; },
+
+  /** Payout efficiency for this save, 1.0 down to the configured floor. */
+  efficiency() {
+    const { decayPerBet, floor } = GAMBLE_CFG.edge;
+    return Math.max(floor, 1 - this.data.betsPlaced * decayPerBet);
+  },
+
+  /** Chance that a given gambling run spawns rigged. */
+  trapChance() {
+    const { base, growth, max } = GAMBLE_CFG.trap;
+    return Math.min(max, base + this.data.betsPlaced * growth);
+  },
+
+  /** Multiplier earned by a run of this score and duration, after the edge. */
+  multiplier(score, seconds) {
+    const p = GAMBLE_CFG.payout;
+    const raw = p.baseMult + (score / p.scorePerX) + (seconds / p.secondsPerX);
+    return Math.min(p.maxMult, raw * this.efficiency());
+  },
+
+  payoutFor(stake, score, seconds) {
+    return Math.floor(stake * this.multiplier(score, seconds));
+  },
+
+  credit(apples) {
+    if (!(apples > 0)) return;
+    this.data.wallet = Math.max(0, Math.floor(this.data.wallet + apples));
+    Store.save();
+  },
+
+  /** Take a stake. Returns false when the wallet cannot cover it. */
+  debit(stake) {
+    if (!(stake > 0) || stake > this.data.wallet) return false;
+    this.data.wallet = Math.max(0, this.data.wallet - stake);
+    return true;
+  },
+
+  canBet() { return this.data.wallet >= GAMBLE_CFG.minBet; },
+
+  rtp() {
+    return this.data.totalWagered > 0 ? this.data.totalReturned / this.data.totalWagered : 0;
+  }
+};
+
 /* ─────────────────────────── 2. SAVE / STORAGE ─────────────────────────── */
 
 const Store = {
@@ -724,7 +971,11 @@ const Store = {
     achievements: {},
     skin: 'emerald',
     lastMode: 'classic',
-    muted: false
+    muted: false,
+    gamble: {
+      enabled: false, wallet: 25, betsPlaced: 0, totalWagered: 0,
+      totalReturned: 0, biggestWin: 0, trapDeaths: 0
+    }
   },
   load() {
     try {
@@ -737,7 +988,9 @@ const Store = {
           achievements: parsed.achievements || {},
           skin: SKINS[parsed.skin] ? parsed.skin : 'emerald',
           lastMode: MODES[parsed.lastMode] ? parsed.lastMode : 'classic',
-          muted: !!parsed.muted
+          muted: !!parsed.muted,
+          // Saves written before gambling mode existed simply take the defaults.
+          gamble: sanitizeGamble(parsed.gamble)
         };
       }
     } catch (e) { /* storage blocked — run with defaults */ }
@@ -751,10 +1004,33 @@ const Store = {
     this.data = {
       high: { classic: 0, frenzy: 0, dimensional: 0 },
       totals: { runs: 0, apples: 0, bosses: 0, kills: 0, score: 0, bestLength: 0, bestCombo: 1 },
-      achievements: {}, skin: 'emerald', lastMode: 'classic', muted: false
+      achievements: {}, skin: 'emerald', lastMode: 'classic', muted: false,
+      gamble: {
+        enabled: false, wallet: GAMBLE_CFG.startingWallet, betsPlaced: 0,
+        totalWagered: 0, totalReturned: 0, biggestWin: 0, trapDeaths: 0
+      }
     };
   }
 };
+
+/** Coerce a loaded gamble blob into something the rest of the code can trust. */
+function sanitizeGamble(raw) {
+  const d = {
+    enabled: false, wallet: GAMBLE_CFG.startingWallet, betsPlaced: 0,
+    totalWagered: 0, totalReturned: 0, biggestWin: 0, trapDeaths: 0
+  };
+  if (!raw || typeof raw !== 'object') return d;
+  const num = (v, fallback) => (typeof v === 'number' && isFinite(v) && v >= 0 ? Math.floor(v) : fallback);
+  return {
+    enabled: !!raw.enabled,
+    wallet: num(raw.wallet, d.wallet),
+    betsPlaced: num(raw.betsPlaced, 0),
+    totalWagered: num(raw.totalWagered, 0),
+    totalReturned: num(raw.totalReturned, 0),
+    biggestWin: num(raw.biggestWin, 0),
+    trapDeaths: num(raw.trapDeaths, 0)
+  };
+}
 
 const ACHIEVEMENTS = [
   { id: 'genesis',   icon: 'sprout', name: 'Biogenesis',       desc: 'Eat your first biomass.' },
@@ -805,6 +1081,9 @@ const ICONS = {
   pause:    '<path d="M8.6 4.5v15M15.4 4.5v15"/>',
   chevron:  '<path d="m9.5 5.5 6.5 6.5-6.5 6.5"/>',
   keycap:   '<rect x="2.8" y="5.6" width="18.4" height="12.8" rx="2.6"/><path d="M7 10h.01M11 10h.01M15 10h.01M7.6 14.2h8.8"/>',
+  apple:    '<path d="M12 8c-1.1-1.7-2.9-2.4-4.5-1.6C5.3 7.4 4.4 9.8 5 12.4c.6 2.7 2.4 5.9 4.4 6.7.9.4 1.8 0 2.6 0s1.7.4 2.6 0c2-.8 3.8-4 4.4-6.7.6-2.6-.3-5-2.5-6-1.6-.8-3.4-.1-4.5 1.6Z"/><path d="M12 8V5.6c0-1.4 1.1-2.5 2.5-2.6"/>',
+  chips:    '<ellipse cx="12" cy="6.8" rx="7.4" ry="3.1"/><path d="M4.6 6.8v10.4c0 1.7 3.3 3.1 7.4 3.1s7.4-1.4 7.4-3.1V6.8"/><path d="M4.6 12c0 1.7 3.3 3.1 7.4 3.1s7.4-1.4 7.4-3.1"/>',
+  dice:     '<rect x="3.4" y="3.4" width="17.2" height="17.2" rx="3.6"/><path d="M8.4 8.4h.01M15.6 8.4h.01M12 12h.01M8.4 15.6h.01M15.6 15.6h.01"/>',
   dot:      '<circle cx="12" cy="12" r="4"/>'
 };
 
@@ -2090,7 +2369,7 @@ class Game {
 
   /* ───────── lifecycle ───────── */
 
-  start(mode) {
+  start(mode, opts = {}) {
     this.mode = MODES[mode] ? mode : 'classic';
     this.cfg = MODES[this.mode];
     this.skin = SKINS[Store.data.skin] || SKINS.emerald;
@@ -2147,8 +2426,26 @@ class Game {
     this.turretKill = false;
     this.awaitingStart = true;
 
+    // ── gambling state ──
+    // `gambleRun` is the single gate for this whole feature. A run started
+    // without opts.gamble can reach none of the wagering or trap code: no
+    // stake, no settlement, no trap roll, no armed trap.
+    this.gambleRun = !!opts.gamble;
+    this.stake = this.gambleRun ? Math.max(0, Math.floor(opts.stake || 0)) : 0;
+    this.gambleSettled = !this.gambleRun;
+    this.gamblePayout = 0;
+    this.gambleMult = 0;
+    this.gambleTrapped = false;
+    this.rigged = this.gambleRun && Math.random() < Gamble.trapChance();
+    this.trapArmed = false;
+    this.trapTicks = 0;
+    this.trapFireNow = false;
+    this.trapFlashAt = 0;
+
     // Seed hazards, then guarantee a clean runway ahead of the spawn so no run
-    // opens with a hazard in the snake's face.
+    // opens with a hazard in the snake's face. This safety guarantee is
+    // unconditional and applies to gambling runs too — the trap below is a
+    // separate, announced mechanic, not a hazard hidden in the runway.
     const patches = this.mode === 'classic' ? 2 : 4;
     for (let l = 0; l < this.cfg.layers; l++) {
       for (let i = 0; i < patches; i++) this.world.seedPatch(l);
@@ -2169,7 +2466,79 @@ class Game {
     UI.sync(this);
   }
 
+  /**
+   * The only way a run should ever be started from the UI. With gambling off
+   * it is a straight passthrough to start(); with it on, the bet screen comes
+   * first and start() is reached from confirmBet().
+   */
+  requestStart(mode) {
+    if (!Store.data.gamble.enabled) { this.start(mode); return; }
+    this.betReturn = (this.state === 'GAMEOVER' || this.state === 'DYING') ? 'GAMEOVER' : 'MENU';
+    this.pendingMode = MODES[mode] ? mode : 'classic';
+    this.state = 'BETTING';
+    UI.openBet(this);
+  }
+
+  cancelBet() {
+    const back = this.betReturn === 'GAMEOVER' ? 'GAMEOVER' : 'MENU';
+    this.state = back;
+    UI.showOverlay(back === 'GAMEOVER' ? 'ovOver' : 'ovMenu');
+  }
+
+  /** Take the stake up front, then start the run for real. */
+  confirmBet(stake) {
+    const g = Store.data.gamble;
+    const amount = clamp(Math.floor(stake), GAMBLE_CFG.minBet, g.wallet);
+    if (!Gamble.debit(amount)) return false;
+    g.betsPlaced++;
+    g.totalWagered += amount;
+    Store.save();
+    this.start(this.pendingMode, { gamble: true, stake: amount });
+    return true;
+  }
+
+  /** Bankruptcy escape hatch: a normal, un-wagered, un-rigged run. */
+  startFreeRun() {
+    this.start(this.pendingMode || Store.data.lastMode || 'classic');
+    UI.toast('Free run — no stake, no payout', { icon: 'apple', tone: 'mute' });
+  }
+
+  /** Resolve the wager. Called once per gambling run, at death. */
+  settleWager() {
+    if (!this.gambleRun || this.gambleSettled) return;
+    this.gambleSettled = true;
+    const g = Store.data.gamble;
+    if (this.gambleTrapped) {
+      this.gambleMult = 0;
+      this.gamblePayout = 0;
+    } else {
+      this.gambleMult = Gamble.multiplier(this.score, this.elapsed / 1000);
+      this.gamblePayout = Math.floor(this.stake * this.gambleMult);
+    }
+    g.wallet = Math.max(0, g.wallet + this.gamblePayout);
+    g.totalReturned += this.gamblePayout;
+    const net = this.gamblePayout - this.stake;
+    if (net > g.biggestWin) g.biggestWin = net;
+    Store.save();
+  }
+
+  /** Live multiplier for the HUD readout. */
+  get liveMult() {
+    if (!this.gambleRun) return 0;
+    if (this.gambleSettled) return this.gambleMult;
+    return Gamble.multiplier(this.score, this.elapsed / 1000);
+  }
+
   quitToMenu() {
+    // Walking away mid-run forfeits the stake — otherwise a losing run could
+    // be escaped for free.
+    if (this.gambleRun && !this.gambleSettled) {
+      this.gambleSettled = true;
+      this.gambleMult = 0;
+      this.gamblePayout = 0;
+      UI.toast(`Wager forfeited — ${this.stake} apples`, { icon: 'chips', tone: 'mute' });
+      Store.save();
+    }
     this.state = 'MENU';
     this.boss = null;
     this.phantom = null;
@@ -2385,6 +2754,11 @@ class Game {
       if (!(d.x === -p.dir.x && d.y === -p.dir.y)) p.dir = d;
     }
 
+    if (this.trapArmed) {
+      this.trapTicks--;
+      if (this.trapTicks <= 0) this.trapFireNow = true;
+    }
+
     if (!this.advancePlayer(p.dir, false)) return;
 
     // Conveyor belts give a free extra shove in the belt's vector.
@@ -2404,6 +2778,13 @@ class Game {
     const p = this.player;
     let nx = p.head.x + d.x;
     let ny = p.head.y + d.y;
+
+    // ── rigged spawn ──
+    // Deliberately the first thing checked: armour, Diamond Scales wall
+    // smashing, Ghost Phase and invulnerability are all evaluated below this
+    // point, so none of them can answer the trap. Only reachable when
+    // gambleRun && rigged armed it.
+    if (this.trapFireNow) return this.springTrap(nx, ny);
 
     // ── walls / arena edge ──
     const outside = !inBounds(nx, ny) || !this.world.playable(nx, ny);
@@ -2558,6 +2939,10 @@ class Game {
     this.food.removeAt(f.x, f.y, f.layer);
     this.eaten++;
     Store.data.totals.apples++;
+
+    // Wallet currency, banked in every mode. Separate from the lifetime stat.
+    const values = GAMBLE_CFG.appleValue;
+    Gamble.credit(values[f.type] !== undefined ? values[f.type] : values.base);
 
     this.chain++;
     this.comboTimer = this.comboMax + this.dna.rank('metabolism') * 14;
@@ -2985,6 +3370,46 @@ Object.assign(Game.prototype, {
     UI.sync(this);
   },
 
+  /* ───────── rigged spawn (gambling mode only) ───────── */
+
+  armTrap() {
+    const t = GAMBLE_CFG.trap;
+    const span = Math.max(1, t.maxTicks - t.minTicks + 1);
+    this.trapArmed = true;
+    this.trapTicks = t.minTicks + rndInt(span);
+  },
+
+  /**
+   * Drop the wall on the cell the snake is entering and end the run there.
+   * Called from the top of advancePlayer, so nothing downstream can save it.
+   */
+  springTrap(x, y) {
+    this.trapFireNow = false;
+    this.trapArmed = false;
+    this.gambleTrapped = true;
+
+    const layer = this.player.layer;
+    const cx = x * CELL + CELL / 2, cy = y * CELL + CELL / 2;
+
+    this.barricades.push({
+      x, y, layer, type: 'wall', hp: 999, cooldown: 0, range: 0, power: 0,
+      beam: null, born: this.tick, dropAt: performance.now()
+    });
+
+    FX.ring(cx, cy, COLOR.boss, 150, { layer, decay: 0.028, width: 4 });
+    FX.ring(cx, cy, '#f8fafc', 80, { layer, decay: 0.06, width: 2 });
+    FX.burst(cx, cy, '#cbd5e1', 34, { layer, speed: 4.2 });
+    FX.burst(cx, cy, COLOR.boss, 20, { layer, speed: 2.6 });
+    this.flashText('THE HOUSE WINS', COLOR.boss);
+    this.trapFlashAt = performance.now();
+    this.shake(30);
+    Sound.explosion();
+
+    Store.data.gamble.trapDeaths++;
+    this.gameOver('THE HOUSE WINS. A wall dropped on your spawn.');
+    return false;
+  },
+
   /* ───────── combat resolution ───────── */
 
   damageSnake(s, n, source) {
@@ -3187,6 +3612,7 @@ Object.assign(Game.prototype, {
       this.awaitingStart = false;
       this.lastTime = performance.now();
       this.acc = 0;
+      if (this.gambleRun && this.rigged) this.armTrap();
     }
     const last = this.inputQueue.length ? this.inputQueue[this.inputQueue.length - 1] : this.player.dir;
     if (d.x === last.x && d.y === last.y) return;
@@ -3210,6 +3636,8 @@ Object.assign(Game.prototype, {
     FX.ring(this.player.head.x * CELL + CELL / 2, this.player.head.y * CELL + CELL / 2, this.skin.head, 160, { layer: this.player.layer, decay: 0.03 });
     this.shake(26);
     Sound.die();
+
+    this.settleWager();
 
     const t = Store.data.totals;
     t.score += this.score;
@@ -3538,6 +3966,15 @@ const Renderer = {
       const turret = b.type === 'turret';
       const c = turret ? COLOR.turret : COLOR.wall;
 
+      // A trap wall drops in from above over its first ~180ms.
+      let drop = 0;
+      if (b.dropAt) {
+        const age = (now - b.dropAt) / 180;
+        drop = age < 1 ? (1 - ease(clamp(age, 0, 1))) * CELL * 5 : 0;
+      }
+      ctx.save();
+      if (drop > 0) ctx.translate(0, -drop);
+
       if (!turret) {
         // Hardened plate: filled block, hatched face, lit top edge.
         ctx.fillStyle = 'rgba(112,126,148,0.17)';
@@ -3587,6 +4024,8 @@ const Renderer = {
         ctx.arc(px + CELL / 2, py + CELL / 2, 2.6, 0, Math.PI * 2);
         ctx.fill();
       }
+
+      ctx.restore();
 
       if (b.beam) {
         const t = b.beam.life / 5;
@@ -4097,6 +4536,14 @@ const Renderer = {
       ctx.fillStyle = `rgba(190,18,60,${0.18 * (1 - t) + 0.05})`;
       ctx.fillRect(0, 0, VIEW, VIEW);
     }
+
+    if (game.trapFlashAt) {
+      const age = (now - game.trapFlashAt) / 520;
+      if (age < 1) {
+        ctx.fillStyle = `rgba(226,42,58,${0.5 * (1 - age)})`;
+        ctx.fillRect(0, 0, VIEW, VIEW);
+      }
+    }
   }
 };
 
@@ -4116,7 +4563,10 @@ const UI = {
       'uiLength', 'uiArmor', 'uiEaten', 'uiBosses', 'uiKills', 'uiFloor', 'uiMutCount', 'mutList',
       'statusLine', 'bossBar', 'bossName', 'bossFill', 'bossHp', 'modeTag', 'mutCards', 'levelTitle',
       'resultGrid', 'overReason', 'overEyebrow', 'overAch', 'helpGrid', 'achGrid', 'careerGrid',
-      'abilityKeys', 'skinRow', 'toasts', 'touchDeck', 'btnSound', 'modeList', 'barMode', 'runLog'];
+      'abilityKeys', 'skinRow', 'toasts', 'touchDeck', 'btnSound', 'modeList', 'barMode', 'runLog',
+      'gambleSwitch', 'walletChip', 'betTitle', 'betWallet', 'betStake', 'betChips', 'betTable',
+      'betWarn', 'betActions', 'betStakeBox', 'betFoot', 'betMinus', 'betPlus',
+      'stakeLive', 'stakeEdge', 'liveStake', 'liveMult', 'liveReturn', 'settleBlock'];
     for (const id of ids) this.el[id] = document.getElementById(id);
 
     document.getElementById('sigil').innerHTML = icon('helix');
@@ -4124,6 +4574,7 @@ const UI = {
     document.getElementById('btnPause').innerHTML = icon('pause');
 
     this.buildModes();
+    this.buildGamble();
     this.buildPrimer();
     this.buildSkins();
     this.buildDeck();
@@ -4146,8 +4597,130 @@ const UI = {
         <span class="go">${i + 1}</span>
       </button>`).join('');
     this.el.modeList.querySelectorAll('.mode').forEach(b => {
-      b.addEventListener('click', () => { Sound.init(); this.game.start(b.dataset.mode); });
+      b.addEventListener('click', () => { Sound.init(); this.game.requestStart(b.dataset.mode); });
     });
+  },
+
+  buildGamble() {
+    const sw = this.el.gambleSwitch;
+    sw.addEventListener('click', () => this.toggleGamble());
+    this.el.betMinus.addEventListener('click', () => this.nudgeStake(-GAMBLE_CFG.minBet));
+    this.el.betPlus.addEventListener('click', () => this.nudgeStake(GAMBLE_CFG.minBet));
+    document.getElementById('btnPlaceBet').addEventListener('click', () => this.placeBet());
+    document.getElementById('btnBetBack').addEventListener('click', () => this.game.cancelBet());
+    this.syncGamble();
+  },
+
+  /** Only reachable from the menu — never mid-run. */
+  toggleGamble() {
+    if (this.game.state !== 'MENU') return;
+    const g = Store.data.gamble;
+    g.enabled = !g.enabled;
+    Store.save();
+    this.syncGamble();
+    Sound.init();
+    if (g.enabled) { Sound.powerup(); this.toast('Gambling Mode on — runs cost apples', { icon: 'dice' }); }
+    else { Sound.laser(); this.toast('Gambling Mode off', { icon: 'dice', tone: 'mute' }); }
+  },
+
+  syncGamble() {
+    const g = Store.data.gamble;
+    this.el.gambleSwitch.classList.toggle('on', g.enabled);
+    this.el.gambleSwitch.setAttribute('aria-checked', g.enabled ? 'true' : 'false');
+    this.el.walletChip.innerHTML = icon('apple') + g.wallet;
+  },
+
+  /* ── bet screen ── */
+
+  openBet(game) {
+    const g = Store.data.gamble;
+    const start = this._lastStake || GAMBLE_CFG.minBet;
+    this.betStake = clamp(start, GAMBLE_CFG.minBet, Math.max(GAMBLE_CFG.minBet, g.wallet));
+    const m = MODES[game.pendingMode];
+    this.el.betTitle.innerHTML = m.label.toUpperCase() + '<span class="rule"></span>';
+    // The console bar should name the run being staked, not the last one played.
+    this.el.barMode.innerHTML = icon(m.icon) + m.label;
+    this.el.modeTag.textContent = m.short;
+    this.renderBet();
+    this.showOverlay('ovBet');
+  },
+
+  nudgeStake(delta) {
+    const g = Store.data.gamble;
+    if (!Gamble.canBet()) return;
+    this.betStake = clamp(this.betStake + delta, GAMBLE_CFG.minBet, g.wallet);
+    this.renderBet();
+    Sound.laser();
+  },
+
+  setStake(v) {
+    const g = Store.data.gamble;
+    this.betStake = clamp(Math.floor(v), GAMBLE_CFG.minBet, g.wallet);
+    this.renderBet();
+    Sound.laser();
+  },
+
+  renderBet() {
+    const g = Store.data.gamble;
+    const affordable = Gamble.canBet();
+    this.el.betWallet.textContent = g.wallet;
+
+    // Below the minimum stake: offer a free run instead of a dead end.
+    for (const id of ['betStakeBox', 'betChips', 'betTable', 'betActions', 'betFoot']) {
+      this.el[id].style.display = affordable ? '' : 'none';
+    }
+    this.el.betWarn.style.display = affordable ? 'none' : 'flex';
+    if (!affordable) {
+      this.el.betWarn.innerHTML =
+        `<span>You need at least ${GAMBLE_CFG.minBet} apples to place a bet, and you have ${g.wallet}. ` +
+        `Play a run without a stake to bank some more.</span>` +
+        `<button class="btn key" id="btnFreeRun">Play a free run to earn apples</button>` +
+        `<button class="btn" id="btnFreeBack">Back</button>`;
+      document.getElementById('btnFreeRun').addEventListener('click', () => this.game.startFreeRun());
+      document.getElementById('btnFreeBack').addEventListener('click', () => this.game.cancelBet());
+      return;
+    }
+
+    this.el.betStake.textContent = this.betStake;
+    this.el.betMinus.toggleAttribute('disabled', this.betStake <= GAMBLE_CFG.minBet);
+    this.el.betPlus.toggleAttribute('disabled', this.betStake >= g.wallet);
+
+    const chips = [
+      ['Min', GAMBLE_CFG.minBet],
+      ['10', 10],
+      ['25', 25],
+      ['50%', Math.floor(g.wallet / 2)],
+      ['All in', g.wallet]
+    ];
+    this.el.betChips.innerHTML = chips.map(([label, value]) => {
+      const ok = value >= GAMBLE_CFG.minBet && value <= g.wallet;
+      return `<button class="chip" data-stake="${value}" ${ok ? '' : 'disabled'}>${label}</button>`;
+    }).join('');
+    this.el.betChips.querySelectorAll('.chip').forEach(c => {
+      c.addEventListener('click', () => { if (!c.hasAttribute('disabled')) this.setStake(Number(c.dataset.stake)); });
+    });
+
+    // Payout preview on the curve as it stands for this save right now.
+    const eff = Math.round(Gamble.efficiency() * 100);
+    const rows = GAMBLE_CFG.preview.map(row => {
+      const mult = Gamble.multiplier(row.score, row.secs);
+      const pay = Math.floor(this.betStake * mult);
+      const cls = pay >= this.betStake ? 'up' : 'down';
+      return `<div class="row"><span>${row.label}</span>` +
+             `<span class="m">${mult.toFixed(2)}×</span>` +
+             `<span class="p ${cls}">${pay}</span></div>`;
+    }).join('');
+    this.el.betTable.innerHTML =
+      `<div class="head"><span>If the run goes</span><span>Mult</span><span>Return</span></div>` +
+      rows +
+      `<div class="row"><span style="color:var(--ink-4)">Payout odds at ${g.betsPlaced} lifetime bets</span>` +
+      `<span class="m" style="color:var(--ink-3)">${eff}%</span><span class="p"></span></div>`;
+  },
+
+  placeBet() {
+    this._lastStake = this.betStake;
+    if (!this.game.confirmBet(this.betStake)) return;
+    Sound.powerup();
   },
 
   buildPrimer() {
@@ -4233,7 +4806,7 @@ const UI = {
     const on = (id, fn) => document.getElementById(id).addEventListener('click', fn);
     on('btnResume', () => g.togglePause());
     on('btnQuit', () => g.quitToMenu());
-    on('btnRetry', () => g.start(g.mode));
+    on('btnRetry', () => g.requestStart(g.mode));
     on('btnMenu', () => g.quitToMenu());
     on('btnPause', () => g.togglePause());
     on('btnSound', () => this.toggleMute());
@@ -4245,6 +4818,7 @@ const UI = {
     on('btnWipe', () => {
       Store.wipe();
       this.buildSkins();
+      this.syncGamble();
       this.openRecords();
       this.toast('Save data cleared', { icon: 'alert', tone: 'mute' });
     });
@@ -4262,10 +4836,14 @@ const UI = {
   },
 
   openRecords() {
-    const a = Store.data.achievements, t = Store.data.totals;
+    const a = Store.data.achievements, t = Store.data.totals, g = Store.data.gamble;
+    const rtp = g.totalWagered > 0 ? Math.round(Gamble.rtp() * 100) + '%' : '—';
     this.el.careerGrid.innerHTML = [
       ['Runs', t.runs], ['Score', t.score], ['Biomass', t.apples],
-      ['Bosses', t.bosses], ['Rivals', t.kills], ['Longest', t.bestLength]
+      ['Bosses', t.bosses], ['Rivals', t.kills], ['Longest', t.bestLength],
+      ['Wallet', g.wallet], ['Bets', g.betsPlaced], ['Wagered', g.totalWagered],
+      ['Returned', g.totalReturned], ['Biggest win', g.biggestWin], ['Trapped', g.trapDeaths],
+      ['Return rate', rtp]
     ].map(([l, v]) => `<div class="r"><div class="v">${v}</div><div class="l">${l}</div></div>`).join('');
     this.el.achGrid.innerHTML = ACHIEVEMENTS.map(x =>
       `<span class="medal${a[x.id] ? '' : ' locked'}" title="${x.desc}">${icon(x.icon)}${x.name}</span>`).join('');
@@ -4295,8 +4873,10 @@ const UI = {
     this.el.uiXpBar.style.width = '0%';
     this.el.uiComboBar.style.width = '0%';
     this.el.uiHigh.textContent = Store.data.high[game.mode] || 0;
+    this.el.stakeLive.classList.remove('on');
     this.setMode(game);
     this.clearLog();
+    this.syncGamble();
     this.syncKeys(game);
   },
 
@@ -4309,6 +4889,10 @@ const UI = {
   onRunStart(game) {
     this.showOverlay(null);
     this.clearLog();
+    this.syncGamble();
+    if (game.gambleRun) {
+      this.log(`Staked ${game.stake} apples`, { icon: 'chips', tone: 'warn' });
+    }
     this.setMode(game);
     this.el.bossBar.classList.remove('on');
     this._statusSig = null; this._mutSig = null; this._keySig = null;
@@ -4365,6 +4949,25 @@ const UI = {
       ['Score', game.score], ['Biomass', game.eaten], ['Combo', game.maxCombo.toFixed(1) + '×'],
       ['Splices', game.dna.count], ['Bosses', game.bossKills], ['Rivals', game.kills]
     ].map(([l, v]) => `<div class="r"><div class="v">${v}</div><div class="l">${l}</div></div>`).join('');
+    const settle = this.el.settleBlock;
+    settle.classList.toggle('on', !!game.gambleRun);
+    if (game.gambleRun) {
+      const net = game.gamblePayout - game.stake;
+      const netCls = net > 0 ? 'up' : (net < 0 ? 'down' : '');
+      const rigged = game.gambleTrapped;
+      settle.innerHTML =
+        `<div class="head${rigged ? ' rigged' : ''}">${icon(rigged ? 'dice' : 'chips')}` +
+        `${rigged ? 'The house took this one' : 'Wager settled'}</div>` +
+        `<div class="grid">` +
+        `<div class="c"><div class="v">${game.stake}</div><div class="l">Stake</div></div>` +
+        `<div class="c"><div class="v">${game.gambleMult.toFixed(2)}×</div><div class="l">Final mult</div></div>` +
+        `<div class="c"><div class="v">${game.gamblePayout}</div><div class="l">Payout</div></div>` +
+        `<div class="c"><div class="v ${netCls}">${net > 0 ? '+' : ''}${net}</div><div class="l">Net</div></div>` +
+        `</div>` +
+        `<div class="head" style="border-top:1px solid var(--line);border-bottom:0">` +
+        `${icon('apple')}Wallet ${Store.data.gamble.wallet} apples</div>`;
+    }
+
     const earned = game.runAchievements.map(id => ACHIEVEMENTS.find(a => a.id === id)).filter(Boolean);
     this.el.overAch.innerHTML =
       (record ? `<span class="medal">${icon('trophy')}Personal best</span>` : '') +
@@ -4420,6 +5023,17 @@ const UI = {
     e.uiBosses.textContent = game.bossKills;
     e.uiKills.textContent = game.kills;
     e.uiFloor.textContent = game.player.layer + 1;
+
+    this.el.stakeLive.classList.toggle('on', !!game.gambleRun);
+    if (game.gambleRun) {
+      const mult = game.liveMult;
+      const ret = Math.floor(game.stake * mult);
+      e.liveStake.textContent = game.stake;
+      e.liveMult.textContent = mult.toFixed(2) + '×';
+      e.liveReturn.textContent = ret;
+      e.liveReturn.className = ret >= game.stake ? 'up' : 'down';
+      e.stakeEdge.textContent = Math.round(Gamble.efficiency() * 100) + '% odds';
+    }
 
     if (game.boss) this.syncBoss(game);
     this.syncMutations(game);
@@ -4591,10 +5205,11 @@ const Input = {
       case 'MENU': {
         if (['1', '2', '3'].includes(k)) {
           const mode = Object.keys(MODES)[Number(k) - 1];
-          if (mode) { Sound.init(); game.start(mode); }
+          if (mode) { Sound.init(); game.requestStart(mode); }
           return;
         }
-        if (confirm) { Sound.init(); game.start(Store.data.lastMode || 'classic'); }
+        if (k === 'g' || k === 'G') { UI.toggleGamble(); return; }
+        if (confirm) { Sound.init(); game.requestStart(Store.data.lastMode || 'classic'); }
         return;
       }
 
@@ -4610,6 +5225,19 @@ const Input = {
         return;
       }
 
+      case 'BETTING': {
+        if (back) { game.cancelBet(); return; }
+        if (!Gamble.canBet()) {
+          if (confirm) game.startFreeRun();
+          return;
+        }
+        const step = this.DIRS[k];
+        if (step && step.x) { UI.nudgeStake(step.x * GAMBLE_CFG.minBet); return; }
+        if (step && step.y) { UI.nudgeStake(-step.y * GAMBLE_CFG.minBet * 5); return; }
+        if (confirm) UI.placeBet();
+        return;
+      }
+
       case 'PAUSED': {
         if (confirm || back || k === 'p' || k === 'P') game.togglePause();
         return;
@@ -4622,7 +5250,7 @@ const Input = {
       }
 
       case 'GAMEOVER': {
-        if (confirm) { Sound.init(); game.start(game.mode); }
+        if (confirm) { Sound.init(); game.requestStart(game.mode); }
         else if (back) game.quitToMenu();
         return;
       }
@@ -4702,7 +5330,29 @@ const Input = {
   requestAnimationFrame(loop);
 
   // Expose a small surface for debugging and automated smoke tests.
-  window.SnakeUnbound = { game, Store, Sound, FX, Renderer, UI, MUTATIONS, MODES };
+  window.SnakeUnbound = { game, Store, Sound, FX, Renderer, UI, MUTATIONS, MODES, Gamble, GAMBLE_CFG };
+
+  /** Console helper for tuning the gambling balance. */
+  window.gambleDebug = () => {
+    const g = Store.data.gamble;
+    const report = {
+      betsPlaced: g.betsPlaced,
+      efficiency: +Gamble.efficiency().toFixed(4),
+      trapChance: +Gamble.trapChance().toFixed(4),
+      wallet: g.wallet,
+      totalWagered: g.totalWagered,
+      totalReturned: g.totalReturned,
+      lifetimeRTP: g.totalWagered > 0 ? +Gamble.rtp().toFixed(4) : null,
+      biggestWin: g.biggestWin,
+      trapDeaths: g.trapDeaths,
+      sampleMultipliers: GAMBLE_CFG.preview.reduce((acc, r) => {
+        acc[r.label] = +Gamble.multiplier(r.score, r.secs).toFixed(3);
+        return acc;
+      }, {})
+    };
+    console.log('[gamble]', report);
+    return report;
+  };
 })();
 </script>
 </body>
